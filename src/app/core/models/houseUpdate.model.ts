@@ -1,4 +1,4 @@
-export interface houseUpdate {
+export interface HouseUpdate {
   title: string;
   description: string;
   guests: number;
