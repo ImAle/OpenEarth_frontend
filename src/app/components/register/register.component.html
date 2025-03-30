@@ -1,1 +1,58 @@
-<p>register works!</p>
+<app-header/>
+<div class="bg-cover bg-center w-100 position-relative"
+     style="background: no-repeat center center / cover;
+            background-color: white;
+            min-height: 91.5vh;">
+  <!-- background-image: url('/login.gif'); -->
+
+  <!-- Overlay with opacity -->
+  <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+
+  <!-- Content -->
+  <div class="d-flex flex-column align-items-center justify-content-center position-relative pt-5" style="height: 75vh;">
+    <h1 class="text-center text-white mb-4">Register</h1>
+
+    <!-- Display error message if exists -->
+    @if (errorMessage != null){
+      <div class="alert alert-danger mb-3">{{errorMessage}}</div>
+    }
+
+    <!-- Column Content -->
+    <div class="d-flex flex-wrap justify-content-center w-50">
+      <div class="col-md-6 d-flex flex-column">
+        <p-floatlabel class="m-3" variant="in">
+          <input pInputText id="username" [(ngModel)]="username"/>
+          <label for="username">Username</label>
+        </p-floatlabel>
+        <p-floatlabel class="m-3" variant="in">
+          <input pInputText id="firstName" [(ngModel)]="firstName"/>
+          <label for="firstName">First Name</label>
+        </p-floatlabel>
+        <p-floatlabel class="m-3" variant="in">
+          <input pInputText id="lastName" [(ngModel)]="lastName"/>
+          <label for="lastName">Last Name</label>
+        </p-floatlabel>
+      </div>
+      <div class="col-md-6 d-flex flex-column">
+        <p-floatlabel class="m-3" variant="in">
+          <input pInputText id="email" [(ngModel)]="email"/>
+          <label for="email">Email</label>
+        </p-floatlabel>
+        <p-floatlabel class="m-3" variant="in">
+          <input pInputText id="password" type="password" [(ngModel)]="password"/>
+          <label for="password">Password</label>
+        </p-floatlabel>
+        <p-floatlabel class="m-3" variant="in">
+          <input pInputText id="passwordConfirmation" type="password" [(ngModel)]="confirmation"/>
+          <label for="passwordConfirmation">Password Confirmation</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <!-- Roles and Register Button -->
+    <div class="d-flex flex-column align-items-center mt-4">
+      <p-selectbutton [options]="roles" [(ngModel)]="pickedRole" optionLabel="label" optionValue="value" aria-labelledby="basic"/>
+      <button class="px-5 py-2 btn btn-lg btn-danger mt-3" (click)="register()">Register</button>
+    </div>
+  </div>
+</div>

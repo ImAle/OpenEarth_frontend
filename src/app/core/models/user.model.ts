@@ -2,7 +2,7 @@ import {House} from './house.model';
 import {Review} from './review.model';
 import {Rent} from './rent.model';
 
-export interface User {
+export class User {
   id: number;
   username: string;
   firstName: string;
@@ -14,4 +14,19 @@ export interface User {
   houses: House[];
   rents: Rent[];
   reviews: Review[];
+
+  constructor(id: number, username: string, firstName: string, lastName: string, email: string,
+              role: string, enabled: boolean, picture: string, houses: House[], rents: Rent[], reviews: Review[]) {
+    this.id = id;
+    this.username = username;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.role = role;
+    this.enabled = enabled;
+    this.picture = picture;
+    this.houses = houses;
+    this.rents = rents;
+    this.reviews = reviews;
+  }
 }

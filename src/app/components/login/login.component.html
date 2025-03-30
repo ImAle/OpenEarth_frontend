@@ -1,5 +1,36 @@
-<h1>Login</h1>
+<app-header/>
+<div class="bg-cover bg-center w-100 position-relative"
+     style="background: no-repeat center center / cover;
+            background-image: url('/login.gif');
+            min-height: 92vh;">
 
-<p-iftalabel>
+  <!-- Overlay con opacidad -->
+  <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
 
-</p-iftalabel>
+  <!-- Contenido -->
+  <div class="d-flex flex-column align-items-center justify-content-center position-relative" style="height: 75vh;">
+    <h1 class="text-center text-white">Login</h1>
+
+    <!-- Display error message if exists -->
+    @if (errorMessage != null){
+      <div class="alert alert-danger mb-3">{{errorMessage}}</div>
+    }
+
+    <div class="flex justify-center p-1">
+      <div>
+        <p-floatlabel class="m-4" variant="in">
+          <input pInputText id="email" #emailInput/>
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </div>
+      <div>
+        <p-floatlabel class="m-4" variant="in">
+          <input pInputText id="password" type="password" #passwordInput/>
+          <label for="password">Password</label>
+        </p-floatlabel>
+      </div>
+    </div>
+    <button class="px-5 py-2 btn btn-lg btn-danger" (click)="login()">Log in</button>
+  </div>
+</div>
+
