@@ -49,7 +49,7 @@ export class AuthService {
   }
 
    getToken(): string | null {
-     return sessionStorage.getItem('token');
+     return "Bearer " + sessionStorage.getItem('token');
    }
 
    removeToken(): void {

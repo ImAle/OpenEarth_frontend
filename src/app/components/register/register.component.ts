@@ -44,7 +44,7 @@ export class RegisterComponent {
       next: (response) => {
         if(response && response.token){
           sessionStorage.setItem('token', response.token);
-          this.router.navigate(['/login']);
+          this.router.navigate(['/home']);
         }
       },
       error: (err: Error) => {

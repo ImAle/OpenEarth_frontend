@@ -7,6 +7,7 @@ import {HouseCreation} from '../models/houseCreation.model';
 import {HousePreview} from '../models/housePreview.model';
 import {HouseUpdateForm} from '../models/houseUpdateForm.model';
 import {HouseUpdate} from '../models/houseUpdate.model';
+import {AuthService} from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +16,23 @@ export class HouseService {
 
   baseUrl: string = environment.rootUrl + "/api/house";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   //POST /api/house/create
-  create(token: string, house: HouseCreation, pictures: File[]): Observable<any> {
+  create(house: HouseCreation, pictures: File[]): any {
     const url = this.baseUrl + '/create';
+    const token = this.authService.getToken();
+
+    if (!token) {
+      return "You must login first."
+    }
 
     const formData = new FormData();
-    formData.append('house', JSON.stringify(house));
-    pictures.forEach(picture => {formData.append('pictures', picture, picture.name);});
+    formData.append('house', new Blob([JSON.stringify(house)], { type: 'application/json' }));
+    pictures.forEach(picture => {formData.append(`pictures`, picture);});
 
     const headers = new HttpHeaders({
-      'Authorization': token
+      'Authorization': token,
     });
 
     return this.http.post(url, formData, {headers});
@@ -47,8 +53,13 @@ export class HouseService {
   }
 
   // GET /api/house/details
-  getById(token: string, id: number): Observable<House | HouseUpdateForm> {
+  getById(id: number): any {
     const url = this.baseUrl + '/details';
+    const token = this.authService.getToken();
+
+    if (!token) {
+      return "You must login first."
+    }
 
     const headers = new HttpHeaders({
       'Authorization': token
@@ -63,13 +74,29 @@ export class HouseService {
   // GET /api/house/categories
   getCategories(): Observable<string[]>{
     const url = this.baseUrl + '/categories';
+    return this.http.get<string[]>(url);
+  }
 
+  // GET /api/house/status
+  getStatuses(): Observable<string[]>{
+    const url = this.baseUrl + '/status';
+    return this.http.get<string[]>(url);
+  }
+
+  // GET /api/house/countries
+  getCountries(): Observable<string[]>{
+    const url = this.baseUrl + '/countries';
     return this.http.get<string[]>(url);
   }
 
   //PUT /api/house/update
-  update(token: string, id: number, house: HouseUpdate, newPictures: File[]){
+  update(id: number, house: HouseUpdate, newPictures: File[]): any{
     const url = this.baseUrl + '/update';
+    const token = this.authService.getToken();
+
+    if (!token) {
+      return "You must login first."
+    }
 
     const formData = new FormData();
     formData.append('house', JSON.stringify(house));
@@ -84,8 +111,13 @@ export class HouseService {
   }
 
   // DELETE /api/house/delete
-  delete(token: string, id: number){
+  delete(id: number): any{
     const url = this.baseUrl + '/delete';
+    const token = this.authService.getToken();
+
+    if (!token) {
+      return "You must login first."
+    }
 
     const headers = new HttpHeaders({
       'Authorization': token

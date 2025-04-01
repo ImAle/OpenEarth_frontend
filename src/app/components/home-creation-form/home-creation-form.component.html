@@ -1,0 +1,84 @@
+<div class="container mt-4">
+  <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Title:</label>
+        <input formControlName="title" type="text" class="form-control" required />
+
+        <label class="form-label mt-2">Description:</label>
+        <textarea formControlName="description" class="form-control" rows="3" required></textarea>
+
+        <label class="form-label mt-2">Guests:</label>
+        <input formControlName="guests" type="number" class="form-control" required />
+
+        <label class="form-label mt-2">Bedrooms:</label>
+        <input formControlName="bedrooms" type="number" class="form-control" required />
+
+        <label class="form-label mt-2">Beds:</label>
+        <input formControlName="beds" type="number" class="form-control" required />
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Bathrooms:</label>
+        <input formControlName="bathrooms" type="number" class="form-control" required />
+
+        <label class="form-label mt-2">Price:</label>
+        <input formControlName="price" type="number" class="form-control" required />
+
+        <label class="form-label mt-2">Currency:</label>
+        <input formControlName="currency" type="text" class="form-control" required />
+
+        <label class="form-label mt-2">Country:</label>
+        <p-autoComplete (onSelect)="onCountrySelect($event)"
+                        [dropdown]="true"
+                        [suggestions]="countries"
+                        (completeMethod)="searchCountries($event)"
+                        formControlName="country"
+                        class="form-control border-0" required>
+        </p-autoComplete>
+
+        <label class="form-label mt-2">Location:</label>
+        <input formControlName="location" type="text" class="form-control" required />
+
+        <label class="form-label mt-2">Category:</label>
+        <p-autoComplete (onSelect)="onCategorySelect($event)"
+                        [dropdown]="true"
+                        [suggestions]="categories"
+                        (completeMethod)="searchCategories($event)"
+                        formControlName="category"
+                        class="form-control border-0" required>
+        </p-autoComplete>
+
+      </div>
+    </div>
+
+    <div class="image-upload border border-dashed border-primary rounded p-3 text-center mt-3"
+         [class.dragging]="isDragging"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)"
+         [ngClass]="{'bg-light border-info': isDragging}"
+         style="transition: all 0.3s ease-in-out; cursor: pointer;">
+      <p>Drag & Drop images here or click to select</p>
+      <input type="file" (change)="onFileSelect($event)" multiple accept="image/*" class="form-control" />
+    </div>
+
+    <div class="preview d-flex flex-wrap mt-3">
+      @for (image of imagePreviews; track image; let i = $index) {
+        <div class="image-container position-relative m-1"
+             (mouseover)="showDeleteButton[i] = true"
+             (mouseleave)="showDeleteButton[i] = false">
+          <img [src]="image" alt="image" class="img-thumbnail" width="100" height="100">
+          <button class="btn btn-danger btn-sm position-absolute top-0 end-0"
+                  (click)="removeImage(i)"
+                  [style.opacity]="showDeleteButton[i] ? '1' : '0'"
+                  style="transition: opacity 0.2s; width: 24px; height: 24px; font-size: 18px; display: flex; align-items: center; justify-content: center; padding: 0;">
+            &times;
+          </button>
+        </div>
+      }
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3 w-100">Create House</button>
+  </form>
+</div>

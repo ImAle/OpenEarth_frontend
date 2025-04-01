@@ -31,7 +31,7 @@ export class LoginComponent {
     this.authService.login(this.emailInput.nativeElement.value, this.passwordInput.nativeElement.value).subscribe({next: (response) => {
       if (response && response.token) {
         sessionStorage.setItem('token', response.token);
-        this.router.navigate(['/register']);
+        this.router.navigate(['/home']);
       }
       },
       error: (err: Error) => {
