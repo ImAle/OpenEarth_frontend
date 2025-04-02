@@ -4,6 +4,7 @@ import {NgClass} from '@angular/common';
 import {HouseService} from '../../core/services/house.service';
 import {HouseCreation} from '../../core/models/houseCreation.model';
 import {AutoComplete} from 'primeng/autocomplete';
+import {MapComponent} from '../map/map.component';
 
 @Component({
   selector: 'app-home-creation-form',
@@ -11,7 +12,8 @@ import {AutoComplete} from 'primeng/autocomplete';
     ReactiveFormsModule,
     NgClass,
     AutoComplete,
-    FormsModule
+    FormsModule,
+    MapComponent
   ],
   templateUrl: './home-creation-form.component.html',
   styleUrl: './home-creation-form.component.css'
@@ -24,9 +26,10 @@ export class HomeCreationFormComponent implements OnInit {
   showDeleteButton: boolean[] = [];
   countries: string[] = [];
   categories: string[] = [];
-  selectedCountry: string = '';
-  selectedCategory: string = '';
-
+  filteredCountries: string[] = [];
+  filteredCategories: string[] = [];
+  filteredCurrencies: string[] = [];
+  currencies: string[] = ['EUR', 'USD', 'GBP'];
 
   constructor(private fb: FormBuilder, private houseService: HouseService) {
     this.houseForm = this.fb.group({
@@ -54,11 +57,15 @@ export class HomeCreationFormComponent implements OnInit {
   }
 
   searchCountries(event: any) {
-    this.countries = this.countries.filter(c => c.toLowerCase().includes(event.query.toLowerCase()));
+    this.filteredCountries = this.countries.filter(c => c.toLowerCase().includes(event.query.toLowerCase()));
   }
 
   searchCategories(event: any){
-    this.categories = this.categories.filter(c => c.toLowerCase().includes(event.query.toLowerCase()));
+    this.filteredCategories = this.categories.filter(c => c.toLowerCase().includes(event.query.toLowerCase()));
+  }
+
+  searchCurrency(event: any){
+    this.filteredCurrencies = this.currencies.filter(c => c.toLowerCase().includes(event.query.toLowerCase()));
   }
 
   onCountrySelect(event: any) {
@@ -67,6 +74,10 @@ export class HomeCreationFormComponent implements OnInit {
 
   onCategorySelect(event: any) {
     this.houseForm.controls['category'].setValue(event.value);
+  }
+
+  onCurrencySelect(event: any) {
+    this.houseForm.controls['currency'].setValue(event.value);
   }
 
   onFileSelect(event: any) {
