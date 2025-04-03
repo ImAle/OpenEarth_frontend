@@ -87,7 +87,9 @@
       }
     </div>
 
-    <app-map/>
+    <app-map [isInteractive]="true"
+             (addressSelected)="onAddressReceived($event)"
+             [coordsByUser]="coords"/>
 
     <button type="submit" class="btn btn-primary mt-3 w-100">Create House</button>
   </form>
