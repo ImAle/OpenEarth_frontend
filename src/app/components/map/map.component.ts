@@ -14,9 +14,19 @@ export class MapComponent implements AfterViewInit, OnChanges {
   @Input() coordsByUser: {latitude: number, longitude: number} | null = null;
   @Output() addressSelected = new EventEmitter<string>();
   private map!: L.Map;
+  private marker!: L.Marker | null;
 
-  constructor(private geolocationService: GeolocationService, private houseService: HouseService) {
-  }
+  private icon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+
+  constructor(private geolocationService: GeolocationService, private houseService: HouseService) {}
 
   ngAfterViewInit(): void {
     this.initializeMap();
@@ -47,6 +57,14 @@ export class MapComponent implements AfterViewInit, OnChanges {
   onMapClick(event: any){
     const { lat, lng } = event.latlng;
     this.setView(lat, lng);
+
+    if(this.marker){
+      this.map.removeLayer(this.marker);
+    }
+
+    const icon = this.icon;
+    this.marker = L.marker([lat, lng], {icon}).addTo(this.map);
+
     this.getLocationByCoords(lat, lng);
   }
 
