@@ -1,17 +1,38 @@
-import { Component } from '@angular/core';
-import {HouseService} from '../../core/services/house.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {HousePreview} from '../../core/models/housePreview.model';
+import {FormsModule} from '@angular/forms';
+import {CurrencyPipe} from '@angular/common';
+import {RouterLink} from '@angular/router';
+import {GalleriaModule} from 'primeng/galleria';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-card',
-  imports: [],
+  imports: [
+    FormsModule,
+    CurrencyPipe,
+    RouterLink,
+    GalleriaModule
+  ],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
 })
-export class CardComponent {
+export class CardComponent implements OnInit {
+  @Input() house!: HousePreview;
+  galleryImages: any[] = [];
 
-  constructor(private houseService: HouseService) {}
+  constructor() {}
 
-  getHouses(){
-    this.houseService.getAll().subscribe((data) => {})
+  ngOnInit(): void {
+    if(this.house?.pictures){
+      this.galleryImages = this.house.pictures.map((url: string) => ({
+        itemImageSrc: url
+      }));
+    }
   }
+
+  getImageUrl(url: string){
+    return environment.rootUrl + url;
+  }
+
 }

@@ -1,5 +1,4 @@
 import {User} from './user.model';
-import {Picture} from './picture.model';
 import {Review} from './review.model';
 
 export class House{
@@ -17,13 +16,13 @@ export class House{
   category: string;
   status: string;
   creationDate: string;
-  pictures: Picture[];
+  pictures: string[];
   owner: User;
   reviews: Review[];
 
   constructor(id: number, title: string, description: string, guests: number, beds: number,
               bathrooms: number, price: number, currency: string, country: string, location: string, coordinates: string,
-              category: string, status: string, creationDate: string, pictures: Picture[], owner: User, reviews: Review[]) {
+              category: string, status: string, creationDate: string, pictures: string[], owner: User, reviews: Review[]) {
     this.id = id;
     this.title = title;
     this.description = description;

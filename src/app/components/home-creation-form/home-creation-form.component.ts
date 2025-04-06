@@ -6,6 +6,7 @@ import {HouseCreation} from '../../core/models/houseCreation.model';
 import {AutoComplete} from 'primeng/autocomplete';
 import {MapComponent} from '../map/map.component';
 import {GeolocationService} from '../../core/services/geolocation.service';
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-home-creation-form',
@@ -14,7 +15,8 @@ import {GeolocationService} from '../../core/services/geolocation.service';
     NgClass,
     AutoComplete,
     FormsModule,
-    MapComponent
+    MapComponent,
+    HeaderComponent
   ],
   templateUrl: './home-creation-form.component.html',
   styleUrl: './home-creation-form.component.css'

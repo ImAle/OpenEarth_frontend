@@ -1,3 +1,5 @@
+<app-header/>
+
 <div class="container mt-4">
   <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
     <div class="row">
@@ -33,20 +35,6 @@
                         formControlName="currency"
                         class="form-control border-0" required>
         </p-autoComplete>
-        <!--
-        <input formControlName="currency" type="text" class="form-control" required />
-        -->
-        <label class="form-label mt-2">Country:</label>
-        <p-autoComplete (onSelect)="onCountrySelect($event)"
-                        [dropdown]="true"
-                        [suggestions]="filteredCountries"
-                        (completeMethod)="searchCountries($event)"
-                        formControlName="country"
-                        class="form-control border-0" required>
-        </p-autoComplete>
-
-        <label class="form-label mt-2">Location:</label>
-        <input formControlName="location" type="text" class="form-control" required />
 
         <label class="form-label mt-2">Category:</label>
         <p-autoComplete (onSelect)="onCategorySelect($event)"
@@ -86,6 +74,18 @@
         </div>
       }
     </div>
+
+    <label class="form-label mt-2">Country:</label>
+    <p-autoComplete (onSelect)="onCountrySelect($event)"
+                    [dropdown]="true"
+                    [suggestions]="filteredCountries"
+                    (completeMethod)="searchCountries($event)"
+                    formControlName="country"
+                    class="form-control border-0" required>
+    </p-autoComplete>
+
+    <label class="form-label mt-2">Location:</label>
+    <input formControlName="location" type="text" class="form-control" required />
 
     <app-map [isInteractive]="true"
              (addressSelected)="onAddressReceived($event)"

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {catchError, Observable, tap, throwError} from 'rxjs';
 import {UserCreation} from '../models/userCreation.model';
+import {House} from '../models/house.model';
+import {HouseUpdateForm} from '../models/houseUpdateForm.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +34,17 @@ export class AuthService {
     );
   }
 
+  getRole(){
+    const url = this.baseUrl + '/role';
+    const token = this.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': token
+    });
+
+    return this.http.get<any>(url, {headers});
+  }
+
   private handleError(error: any, method: string): Observable<never> {
     let errorMessage = 'An unexpected error occurred. Please try again later.';
 
@@ -48,7 +61,7 @@ export class AuthService {
     return throwError(() => new Error(errorMessage));
   }
 
-   getToken(): string | null {
+   getToken(): string {
      return "Bearer " + sessionStorage.getItem('token');
    }
 

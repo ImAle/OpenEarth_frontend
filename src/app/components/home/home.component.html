@@ -2,4 +2,7 @@
 <!--
 <button (click)="getCategories()">Get Categories</button>
 -->
-<app-home-creation-form/>
+@for (house of houses; track house.id) {
+  <app-card [house]="house"/>
+}
+

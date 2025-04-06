@@ -39,7 +39,7 @@ export class HouseService {
   }
 
   // GET /api/house
-  getAll(country?: string, minPrice?: number, maxPrice?: number, beds?: number, guests?: number, category?: string): Observable<HousePreview[]> {
+  getAll(country?: string, minPrice?: number, maxPrice?: number, beds?: number, guests?: number, category?: string): Observable<any> {
     let params = new HttpParams();
 
     if (country) params.set('country', country);
@@ -68,7 +68,7 @@ export class HouseService {
     const params = new HttpParams();
     params.set('id', id.toString());
 
-    return this.http.get<House | HouseUpdateForm>(url, {headers, params})
+    return this.http.get<House | HouseUpdateForm>(url, {headers, params});
   }
 
   // GET /api/house/categories

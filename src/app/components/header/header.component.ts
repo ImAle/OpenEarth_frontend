@@ -12,14 +12,22 @@ import {RouterLink} from '@angular/router';
 })
 export class HeaderComponent implements OnInit{
   isLoggedIn: boolean = false;
+  role!: string;
 
   constructor(private authService: AuthService) {
   }
 
   ngOnInit() {
-    // let token: string | null = this.authService.getToken();
-    // if(token){
-    //   this.isLoggedIn = true;
-    // }
+     let token: string | null = this.authService.getToken();
+     if(token){
+       this.isLoggedIn = true;
+       this.getRole();
+     }
+  }
+
+  getRole(){
+    this.authService.getRole().subscribe(response => {
+      this.role = response.role;
+    });
   }
 }

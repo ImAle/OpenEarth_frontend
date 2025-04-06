@@ -1,5 +1,3 @@
-import {Picture} from './picture.model';
-
 export class HousePreview {
   id: number;
   title: string;
@@ -8,10 +6,10 @@ export class HousePreview {
   coordinates: string;
   price: number;
   currency: string;
-  pictures: Picture[];
+  pictures: string[];
 
   constructor(id: number, title: string, country: string, location: string, coordinates: string,
-              price: number, currency: string, pictures: Picture[]) {
+              price: number, currency: string, pictures: string[]) {
     this.id = id;
     this.title = title;
     this.country = country;

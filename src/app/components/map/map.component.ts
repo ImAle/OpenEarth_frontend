@@ -34,7 +34,10 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(this.coordsByUser){
-      this.setView(this.coordsByUser.latitude, this.coordsByUser.longitude);
+      let lat: number = this.coordsByUser.latitude;
+      let lng: number = this.coordsByUser.longitude;
+      this.setView(lat, lng);
+      this.updateMarker(lat, lng);
     }
   }
 
@@ -54,17 +57,20 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   }
 
-  onMapClick(event: any){
-    const { lat, lng } = event.latlng;
-    this.setView(lat, lng);
-
+  updateMarker(lat: number, lng: number){
     if(this.marker){
       this.map.removeLayer(this.marker);
     }
 
     const icon = this.icon;
     this.marker = L.marker([lat, lng], {icon}).addTo(this.map);
+  }
 
+  onMapClick(event: any){
+    const { lat, lng } = event.latlng;
+    this.setView(lat, lng);
+
+    this.updateMarker(lat, lng);
     this.getLocationByCoords(lat, lng);
   }
 

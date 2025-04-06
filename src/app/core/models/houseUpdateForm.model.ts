@@ -1,5 +1,3 @@
-import {Picture} from './picture.model';
-
 export class HouseUpdateForm{
   title: string;
   description: string;
@@ -11,11 +9,11 @@ export class HouseUpdateForm{
   currency: string;
   category: string;
   status: string;
-  pictures: Picture[];
+  pictures: string[];
 
   constructor(title: string, description: string, guests: number, bedrooms: number,
               beds: number, bathrooms: number, price: number, currency: string, category: string,
-              status: string, pictures: Picture[]) {
+              status: string, pictures: string[]) {
 
     this.title = title;
     this.description = description;
