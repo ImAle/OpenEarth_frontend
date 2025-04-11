@@ -1,8 +1,15 @@
 <app-header/>
+<app-search-bar/>
+<app-filter/>
 <!--
 <button (click)="getCategories()">Get Categories</button>
 -->
 @for (house of houses; track house.id) {
   <app-card [house]="house"/>
+}
+
+<app-map (houseSelected)="onHouseSelected($event)" [isInteractive]="false"/>
+@if (selectedHouse) {
+  <app-house-side-modal [house]="selectedHouse" (close)="selectedHouse = null"/>
 }
 

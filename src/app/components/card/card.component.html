@@ -1,5 +1,5 @@
-<a [routerLink]="['house', house.id]" style="text-decoration: none">
-  <div class="card rounded-3 border-0" style="width: 20rem;">
+<div class="card rounded-3 border-0" style="width: 20rem;">
+
     <p-galleria [value]="galleryImages"
                 [numVisible]="5"
                 [circular]="true"
@@ -7,22 +7,21 @@
                 [showThumbnails]="false"
                 [containerStyle]="{ 'max-width': '100%', 'height': '12.5rem'}"
                 class="card-img-top shadow-sm rounded-3 overflow-hidden">
-
       <ng-template #item let-item>
-        <img [src]="getImageUrl(item.itemImageSrc)" style="width: 100%; height: 12.5rem; object-fit: cover;"/>
+        <a [routerLink]="['/house', house.id]" style="display: block; width: 100%; height: 100%;">
+          <img [src]="getImageUrl(item.itemImageSrc)" style="width: 100%; height: 12.5rem; object-fit: cover;" />
+        </a>
       </ng-template>
-
     </p-galleria>
+
+  <!-- También hace clic aquí para ir al detalle -->
+  <a [routerLink]="['/house', house.id]" style="text-decoration: none;">
     <div class="card-body">
       <h5 class="card-title text-dark">{{house.title}}</h5>
       <p class="card-text text-muted">{{house.country}}</p>
       <p class="card-text text-muted">{{house.location}}</p>
       <p class="card-text text-muted">{{house.price | currency:house.currency:'symbol'}}</p>
     </div>
-  </div>
-</a>
-<!--
-<div class="card-img-top shadow-sm rounded-3"
-     style="height: 12.5rem; background: linear-gradient(to right, #3b82f6, #2563eb);">
+  </a>
+
 </div>
--->

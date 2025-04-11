@@ -2,6 +2,7 @@ import {AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, Simple
 import {GeolocationService} from '../../core/services/geolocation.service';
 import * as L from 'leaflet';
 import {HouseService} from '../../core/services/house.service';
+import {HousePreview} from '../../core/models/housePreview.model';
 
 @Component({
   selector: 'app-map',
@@ -12,10 +13,12 @@ import {HouseService} from '../../core/services/house.service';
 export class MapComponent implements AfterViewInit, OnChanges {
   @Input() isInteractive: boolean = true; // true by default
   @Input() coordsByUser: {latitude: number, longitude: number} | null = null;
+  @Output() coords = new EventEmitter();
   @Output() addressSelected = new EventEmitter<string>();
-  private map!: L.Map;
-  private marker!: L.Marker | null;
+  @Output() houseSelected = new EventEmitter<HousePreview>();
 
+  private map!: L.Map;
+  private marker!: L.Marker;
   private icon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
@@ -43,7 +46,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   private initializeMap(){
     // Initialize map on Madrid View
-    this.map = L.map("map").setView([40.4168, -3.7038], 13);
+    this.map = L.map('map').setView([40.4168, -3.7038], 13);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {attribution: "© OpenStreetMap contributors"})
@@ -52,18 +55,23 @@ export class MapComponent implements AfterViewInit, OnChanges {
     if(this.isInteractive){
       this.map.on('click', this.onMapClick.bind(this));
     }else{
-      this.addHouseToMap();
+      this.getHouses();
     }
 
   }
 
+  addMarker(lat: number, lng: number){
+    const icon = this.icon;
+    this.marker = new L.Marker([lat, lng], {icon}).addTo(this.map);
+  }
+
+  // only used in house creation form
   updateMarker(lat: number, lng: number){
     if(this.marker){
       this.map.removeLayer(this.marker);
     }
 
-    const icon = this.icon;
-    this.marker = L.marker([lat, lng], {icon}).addTo(this.map);
+    this.addMarker(lat, lng);
   }
 
   onMapClick(event: any){
@@ -71,41 +79,61 @@ export class MapComponent implements AfterViewInit, OnChanges {
     this.setView(lat, lng);
 
     this.updateMarker(lat, lng);
+    this.coords.emit({lat,lng});
+
     this.getLocationByCoords(lat, lng);
   }
 
-  setView(lat: number, lng: number){
+  setView(lat: number, lng: number, zoom:number=85){
     if(this.map){
-      this.map.setView([lat, lng], 85);
+      this.map.setView([lat, lng], zoom);
     }
   }
 
-  getLocationByCoords(lat: number, lng: number){
-    this.geolocationService.getLocationByCoords(lat, lng).subscribe({
-      next: (location) => {
-        const data = (location as any).address;
-        const addressMap = new Map<string, string>(Object.entries(data));
+   getLocationByCoords(lat: number, lng: number){
+     this.geolocationService.getLocationByCoords(lat, lng).subscribe({
+       next: (location) => {
+         const data = (location as any).address;
+         const addressMap = new Map<string, string>(Object.entries(data));
 
-        const addressParts = [
-          addressMap.get("state"),
-          addressMap.get("city"),
-          addressMap.get("city_district"),
-          addressMap.get("postcode"),
-          addressMap.get("suburb"),
-          addressMap.get("neighbourhood"),
-          addressMap.get("road"),
-        ];
+         const addressParts = [
+           addressMap.get("state"),
+           addressMap.get("city"),
+           addressMap.get("city_district"),
+           addressMap.get("postcode"),
+           addressMap.get("suburb"),
+           addressMap.get("neighbourhood"),
+           addressMap.get("road"),
+         ];
 
-        const direction = addressParts.filter(Boolean).join(", ");
-        this.addressSelected.emit(direction);
-      },error: (err) => {
-        console.error("Error: " + err);
+         const direction = addressParts.filter(Boolean).join(", ");
+         this.addressSelected.emit(direction);
+       },error: (err) => {
+         console.error("Error: " + err);
+       }
+     })
+   }
+
+  async getHouses() {
+    this.houseService.getAll().subscribe({
+      next: (response) => {
+        let houses = response.houses;
+        houses.forEach((house: HousePreview) => {
+          this.addHouseToMap(house);
+        });
+      }, error: (err: Error) => {
+        console.log(err);
       }
-    })
+    });
   }
 
-  addHouseToMap(){
-    //this.houseService.getAll().subscribe()
+  async addHouseToMap(house: HousePreview){
+
+      // const lat = parseFloat();
+      // const lng = parseFloat();
+
+      this.addMarker(house.latitude, house.longitude);
+      this.marker.on("click", () => {this.houseSelected.emit(house)});
   }
 
 }

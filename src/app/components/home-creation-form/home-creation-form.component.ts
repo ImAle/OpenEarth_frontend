@@ -33,10 +33,9 @@ export class HomeCreationFormComponent implements OnInit {
   filteredCategories: string[] = [];
   filteredCurrencies: string[] = [];
   currencies: string[] = ['EUR', 'USD', 'GBP'];
-  private coordsTimeout: any;
   coords: {latitude: number, longitude: number} | null = null;
 
-  constructor(private fb: FormBuilder, private houseService: HouseService, private geolocationService: GeolocationService) {
+  constructor(private fb: FormBuilder, private houseService: HouseService) {
     this.houseForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -48,7 +47,9 @@ export class HomeCreationFormComponent implements OnInit {
       currency: ['', Validators.required],
       country: ['', Validators.required],
       location: ['', Validators.required],
-      category: ['', Validators.required]
+      category: ['', Validators.required],
+      latitude: ['', [Validators.required, Validators.min(0)]],
+      longitude: ['', [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -59,41 +60,17 @@ export class HomeCreationFormComponent implements OnInit {
     this.houseService.getCategories().subscribe((data:any) => {
       this.categories = data.categories;
     })
-
-    this.houseForm.get('country')?.valueChanges.subscribe(() => this.scheduleGetCoords());
-    this.houseForm.get('location')?.valueChanges.subscribe(() => this.scheduleGetCoords());
   }
 
   onAddressReceived(event : any) {
     this.houseForm.controls['location'].setValue(event.toString());
   }
 
-  private scheduleGetCoords(){
-    if(this.coordsTimeout){
-      clearTimeout(this.coordsTimeout);
-    }
-
-    this.coordsTimeout = setTimeout(() => {
-      const country = this.houseForm.value.country;
-      const location = this.houseForm.value.location;
-      if(country && location) {
-        this.getCoords(country, location);
-      }
-    }, 3000);
-  }
-
-  getCoords(country: string, location: string){
-    this.geolocationService.getCoords(country, location).subscribe({
-      next: (coords) => {
-        this.coords = {
-          latitude: (coords as any).latitude,
-          longitude: (coords as any).longitude
-        };
-
-      }, error: (err) => {
-        console.error("Error: " + err);
-      }
-    })
+  setCoords(event: any){
+    const latitude = event.lat
+    const longitude = event.lng
+    this.houseForm.controls['latitude'].setValue(latitude);
+    this.houseForm.controls['longitude'].setValue(longitude);
   }
 
   searchCountries(event: any) {
@@ -175,7 +152,9 @@ export class HomeCreationFormComponent implements OnInit {
         this.houseForm.value.currency,
         this.houseForm.value.country,
         this.houseForm.value.location,
-        this.houseForm.value.category
+        this.houseForm.value.category,
+        this.houseForm.value.latitude,
+        this.houseForm.value.longitude,
       );
 
       const formData = new FormData();

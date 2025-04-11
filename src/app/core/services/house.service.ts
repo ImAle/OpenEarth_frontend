@@ -23,10 +23,6 @@ export class HouseService {
     const url = this.baseUrl + '/create';
     const token = this.authService.getToken();
 
-    if (!token) {
-      return "You must login first."
-    }
-
     const formData = new FormData();
     formData.append('house', new Blob([JSON.stringify(house)], { type: 'application/json' }));
     pictures.forEach(picture => {formData.append(`pictures`, picture);});
@@ -53,50 +49,35 @@ export class HouseService {
   }
 
   // GET /api/house/details
-  getById(id: number): any {
+  getById(id: number): Observable<any> {
     const url = this.baseUrl + '/details';
-    const token = this.authService.getToken();
+    const params = new HttpParams().set('id', id.toString());
 
-    if (!token) {
-      return "You must login first."
-    }
-
-    const headers = new HttpHeaders({
-      'Authorization': token
-    });
-
-    const params = new HttpParams();
-    params.set('id', id.toString());
-
-    return this.http.get<House | HouseUpdateForm>(url, {headers, params});
+    return this.http.get<any>(url, {params});
   }
 
   // GET /api/house/categories
-  getCategories(): Observable<string[]>{
+  getCategories(): Observable<any>{
     const url = this.baseUrl + '/categories';
     return this.http.get<string[]>(url);
   }
 
   // GET /api/house/status
-  getStatuses(): Observable<string[]>{
+  getStatuses(): Observable<any>{
     const url = this.baseUrl + '/status';
     return this.http.get<string[]>(url);
   }
 
   // GET /api/house/countries
-  getCountries(): Observable<string[]>{
+  getCountries(): Observable<any>{
     const url = this.baseUrl + '/countries';
     return this.http.get<string[]>(url);
   }
 
   //PUT /api/house/update
-  update(id: number, house: HouseUpdate, newPictures: File[]): any{
+  update(id: number, house: HouseUpdate, newPictures: File[]): Observable<any>{
     const url = this.baseUrl + '/update';
     const token = this.authService.getToken();
-
-    if (!token) {
-      return "You must login first."
-    }
 
     const formData = new FormData();
     formData.append('house', JSON.stringify(house));
@@ -111,20 +92,15 @@ export class HouseService {
   }
 
   // DELETE /api/house/delete
-  delete(id: number): any{
+  delete(id: number): Observable<any>{
     const url = this.baseUrl + '/delete';
     const token = this.authService.getToken();
-
-    if (!token) {
-      return "You must login first."
-    }
 
     const headers = new HttpHeaders({
       'Authorization': token
     });
 
-    const params = new HttpParams();
-    params.set('id', id.toString());
+    const params = new HttpParams().set('id', id.toString());
 
     return this.http.delete(url, {headers, params});
   }

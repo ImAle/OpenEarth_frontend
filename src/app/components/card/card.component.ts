@@ -11,8 +11,8 @@ import {environment} from '../../../environments/environment';
   imports: [
     FormsModule,
     CurrencyPipe,
-    RouterLink,
-    GalleriaModule
+    GalleriaModule,
+    RouterLink
   ],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'

@@ -1,5 +1,5 @@
-import {User} from './user.model';
 import {Review} from './review.model';
+import {UserInfoModel} from './userInfo.model';
 
 export class House{
   id: number;
@@ -12,17 +12,18 @@ export class House{
   currency: string;
   country: string;
   location: string;
-  coordinates: string;
+  latitude: number;
+  longitude: number;
   category: string;
   status: string;
   creationDate: string;
   pictures: string[];
-  owner: User;
+  owner: UserInfoModel;
   reviews: Review[];
 
   constructor(id: number, title: string, description: string, guests: number, beds: number,
-              bathrooms: number, price: number, currency: string, country: string, location: string, coordinates: string,
-              category: string, status: string, creationDate: string, pictures: string[], owner: User, reviews: Review[]) {
+              bathrooms: number, price: number, currency: string, country: string, location: string, latitude: number, longitude: number,
+              category: string, status: string, creationDate: string, pictures: string[], owner: UserInfoModel, reviews: Review[]) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -33,7 +34,8 @@ export class House{
     this.currency = currency;
     this.country = country;
     this.location = location;
-    this.coordinates = coordinates;
+    this.latitude = latitude;
+    this.longitude = longitude;
     this.category = category;
     this.status = status;
     this.creationDate = creationDate;

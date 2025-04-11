@@ -10,9 +10,12 @@ export class HouseCreation {
   country: string;
   location: string;
   category: string;
+  latitude: number;
+  longitude: number;
 
   constructor(title: string, description: string, guests: number, bedrooms: number, beds: number,
-              bathrooms: number, price: number, currency: string, country: string, location: string, category: string) {
+              bathrooms: number, price: number, currency: string, country: string, location: string, category: string,
+              latitude: number, longitude: number) {
     this.title = title;
     this.description = description;
     this.guests = guests;
@@ -24,5 +27,7 @@ export class HouseCreation {
     this.country = country;
     this.location = location;
     this.category = category;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 }

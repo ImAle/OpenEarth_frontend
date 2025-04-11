@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit{
 
   ngOnInit() {
      let token: string | null = this.authService.getToken();
-     if(token){
+     if(token && token != 'Bearer null'){
        this.isLoggedIn = true;
        this.getRole();
      }
