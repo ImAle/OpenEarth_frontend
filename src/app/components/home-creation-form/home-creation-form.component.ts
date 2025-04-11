@@ -48,8 +48,8 @@ export class HomeCreationFormComponent implements OnInit {
       country: ['', Validators.required],
       location: ['', Validators.required],
       category: ['', Validators.required],
-      latitude: ['', [Validators.required, Validators.min(0)]],
-      longitude: ['', [Validators.required, Validators.min(0)]]
+      latitude: ['', [Validators.required]],
+      longitude: ['', [Validators.required]]
     });
   }
 
@@ -140,6 +140,7 @@ export class HomeCreationFormComponent implements OnInit {
   }
 
   onSubmit() {
+
     if (this.houseForm.valid) {
       const houseData = new HouseCreation(
         this.houseForm.value.title,

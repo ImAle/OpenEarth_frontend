@@ -4,9 +4,11 @@
 <!--
 <button (click)="getCategories()">Get Categories</button>
 -->
-@for (house of houses; track house.id) {
-  <app-card [house]="house"/>
-}
+<div class="container d-flex flex-row justify-content-around">
+  @for (house of houses; track house.id) {
+    <app-card [house]="house"/>
+  }
+</div>
 
 <app-map (houseSelected)="onHouseSelected($event)" [isInteractive]="false"/>
 @if (selectedHouse) {

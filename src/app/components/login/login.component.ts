@@ -5,7 +5,10 @@ import {AuthService} from '../../core/services/auth.service';
 import {FloatLabelModule} from 'primeng/floatlabel';
 import {CommonModule} from '@angular/common';
 import {HeaderComponent} from '../header/header.component';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {Checkbox} from 'primeng/checkbox';
+import {ButtonDirective} from 'primeng/button';
+import {Ripple} from 'primeng/ripple';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +17,11 @@ import {Router} from '@angular/router';
     InputTextModule,
     FormsModule,
     FloatLabelModule,
-    HeaderComponent
+    HeaderComponent,
+    Checkbox,
+    ButtonDirective,
+    Ripple,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
