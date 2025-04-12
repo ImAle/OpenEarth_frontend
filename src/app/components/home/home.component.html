@@ -1,12 +1,14 @@
 <app-header/>
 <app-search-bar/>
 <app-filter/>
-<!--
-<button (click)="getCategories()">Get Categories</button>
--->
-<div class="container d-flex flex-row justify-content-around">
-  @for (house of houses; track house.id) {
-    <app-card [house]="house"/>
+
+<div class="container row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+  @if(houses && houses.length > 0){
+    @for (house of houses; track house.id) {
+      <app-card [house]="house"/>
+    }
+  } @else {
+    <p>There are no available houses</p>
   }
 </div>
 

@@ -7,6 +7,7 @@ import {AutoComplete} from 'primeng/autocomplete';
 import {MapComponent} from '../map/map.component';
 import {GeolocationService} from '../../core/services/geolocation.service';
 import {HeaderComponent} from '../header/header.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home-creation-form',
@@ -35,7 +36,7 @@ export class HomeCreationFormComponent implements OnInit {
   currencies: string[] = ['EUR', 'USD', 'GBP'];
   coords: {latitude: number, longitude: number} | null = null;
 
-  constructor(private fb: FormBuilder, private houseService: HouseService) {
+  constructor(private fb: FormBuilder, private houseService: HouseService, private router: Router) {
     this.houseForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -165,9 +166,10 @@ export class HomeCreationFormComponent implements OnInit {
       this.houseService.create(houseData, this.selectedFiles).subscribe({
         next: (response: any) => {
           console.log('House created:', response);
-          alert('House created successfully!');
+          alert('House registered successfully!');
           this.houseForm.reset();
           this.selectedFiles = [];
+          this.router.navigate(["/home"]);
         },
         error: (err: any) => {
           console.error('Error:', err);

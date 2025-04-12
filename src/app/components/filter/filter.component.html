@@ -1,20 +1,16 @@
-<div class="d-flex align-items-center border-bottom px-3 py-2 bg-white position-relative">
-  <button id="scrollLeft" class="scroll-btn me-2 d-none" (click)="scrollLeft()">
-    &lt;
-  </button>
+<div class="d-flex align-items-center border-bottom px-3 py-2 bg-white position-relative" style="margin-bottom: 0.5rem;">
+  <button id="scrollLeft" class="scroll-btn me-2" (click)="scrollLeft()"><</button>
 
   <div id="categoryScroll" class="category-scroll d-flex align-items-center">
     @for (category of categories; track category) {
-      <div class="category-item" (click)="onCategorySelected($event)">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" style="width:30px; height:30px;">
-        <div style="font-size: 0.875rem;">{{ category }}</div>
+      <div class="category-item d-flex flex-column align-items-center justify-content-center" style="margin-right: 15px; margin-left: 15px;" (click)="onCategorySelected($event)">
+        <fa-icon style="width: 30px; height: 30px;" [icon]="getCategoryIcon(category)"></fa-icon>
+        <div class="text-center" style="font-size: 0.675rem;">{{ category.replace("_"," ") }}</div>
       </div>
     }
   </div>
 
-  <button id="scrollRight" class="scroll-btn ms-2" (click)="scrollRight()">
-    &gt;
-  </button>
+  <button id="scrollRight" class="scroll-btn ms-2" (click)="scrollRight()">&gt;</button>
 
-  <button class="btn btn-outline-secondary ms-3">Filters</button>
+  <button class="btn btn-outline-primary ms-3">Filters</button>
 </div>
