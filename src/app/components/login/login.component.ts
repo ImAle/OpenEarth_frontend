@@ -9,6 +9,8 @@ import {Router, RouterLink} from '@angular/router';
 import {Checkbox} from 'primeng/checkbox';
 import {ButtonDirective} from 'primeng/button';
 import {Ripple} from 'primeng/ripple';
+import {MessageService} from 'primeng/api';
+import {Toast} from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
@@ -21,8 +23,10 @@ import {Ripple} from 'primeng/ripple';
     Checkbox,
     ButtonDirective,
     Ripple,
-    RouterLink
+    RouterLink,
+    Toast
   ],
+  providers: [MessageService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -30,19 +34,23 @@ export class LoginComponent {
 
   @ViewChild("emailInput") emailInput!: ElementRef;
   @ViewChild("passwordInput") passwordInput!: ElementRef;
-  errorMessage: string | null = null;
 
-  constructor(private router: Router,private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, private messageService: MessageService) {}
 
   login(): void{
     this.authService.login(this.emailInput.nativeElement.value, this.passwordInput.nativeElement.value).subscribe({next: (response) => {
-      if (response && response.token) {
         sessionStorage.setItem('token', response.token);
         this.router.navigate(['/home']);
-      }
       },
       error: (err: Error) => {
-        this.errorMessage = err.message;
+        console.log(err.message);
+        this.messageService.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Email or password wrong.",
+          key: 'err',
+          life: 5000
+        });
       }
     });
   }

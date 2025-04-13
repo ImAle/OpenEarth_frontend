@@ -8,6 +8,8 @@ import {MapComponent} from '../map/map.component';
 import {GeolocationService} from '../../core/services/geolocation.service';
 import {HeaderComponent} from '../header/header.component';
 import {Router} from '@angular/router';
+import {MessageService} from 'primeng/api';
+import {Toast} from 'primeng/toast';
 
 @Component({
   selector: 'app-home-creation-form',
@@ -17,8 +19,10 @@ import {Router} from '@angular/router';
     AutoComplete,
     FormsModule,
     MapComponent,
-    HeaderComponent
+    HeaderComponent,
+    Toast
   ],
+  providers: [MessageService],
   templateUrl: './home-creation-form.component.html',
   styleUrl: './home-creation-form.component.css'
 })
@@ -36,7 +40,7 @@ export class HomeCreationFormComponent implements OnInit {
   currencies: string[] = ['EUR', 'USD', 'GBP'];
   coords: {latitude: number, longitude: number} | null = null;
 
-  constructor(private fb: FormBuilder, private houseService: HouseService, private router: Router) {
+  constructor(private fb: FormBuilder, private houseService: HouseService, private router: Router, private messageService: MessageService) {
     this.houseForm = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -160,20 +164,20 @@ export class HomeCreationFormComponent implements OnInit {
       );
 
       const formData = new FormData();
-      formData.append('house', JSON.stringify(houseData)); // Convertir a JSON
+      formData.append('house', JSON.stringify(houseData));
       this.selectedFiles.forEach(file => formData.append('pictures', file, file.name));
 
       this.houseService.create(houseData, this.selectedFiles).subscribe({
         next: (response: any) => {
           console.log('House created:', response);
-          alert('House registered successfully!');
+          this.messageService.add({severity: 'success', summary: 'Success', detail: 'House registered successfully.', key: "successM"});
           this.houseForm.reset();
           this.selectedFiles = [];
           this.router.navigate(["/home"]);
         },
         error: (err: any) => {
+          this.messageService.add({severity: 'error', summary: 'Error', detail: 'Could not register this house.', key: "errorM"});
           console.error('Error:', err);
-          alert('Error creating house.');
         }
       });
     }

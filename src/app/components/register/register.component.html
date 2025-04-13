@@ -1,58 +1,158 @@
 <app-header/>
-<div class="bg-cover bg-center w-100 position-relative"
-     style="background: no-repeat center center / cover;
-            background-color: white;
-            min-height: 91.5vh;">
-  <!-- background-image: url('/login.gif'); -->
 
-  <!-- Overlay with opacity -->
-  <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+<!-- Background image -->
+<div style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;
+  background-image: url('/register.avif');background-size: cover;background-position: center;
+  z-index: -1;"></div>
 
-  <!-- Content -->
-  <div class="d-flex flex-column align-items-center justify-content-center position-relative pt-5" style="height: 75vh;">
-    <h1 class="text-center text-white mb-4">Register</h1>
+<div class="container py-4" style="max-width: 700px; width: 100%; background-color: #fff; padding: 25px 30px; border-radius: 5px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); margin-top: 40px; margin-bottom: 40px;">
+  <!-- Title section -->
+  <div class="title mb-4" style="font-size: 25px; font-weight: 500; position: relative;">
+    Registration
+    <span style="content: ''; position: absolute; left: 0; bottom: -3px; height: 3px; width: 30px; border-radius: 5px; background: linear-gradient(135deg, #1e3a8a, #a7c9f5);"></span>
+  </div>
 
-    <!-- Display error message if exists -->
-    @if (errorMessage != null){
-      <div class="alert alert-danger mb-3">{{errorMessage}}</div>
-    }
-
-    <!-- Column Content -->
-    <div class="d-flex flex-wrap justify-content-center w-50">
-      <div class="col-md-6 d-flex flex-column">
-        <p-floatlabel class="m-3" variant="in">
-          <input pInputText id="username" [(ngModel)]="username"/>
-          <label for="username">Username</label>
-        </p-floatlabel>
-        <p-floatlabel class="m-3" variant="in">
-          <input pInputText id="firstName" [(ngModel)]="firstName"/>
-          <label for="firstName">First Name</label>
-        </p-floatlabel>
-        <p-floatlabel class="m-3" variant="in">
-          <input pInputText id="lastName" [(ngModel)]="lastName"/>
-          <label for="lastName">Last Name</label>
-        </p-floatlabel>
+  <div class="content">
+    <!-- Registration form -->
+    <div class="user-details row">
+      <!-- Input for Username -->
+      <div class="col-md-6 mb-3">
+        <div class="flex flex-col gap-1">
+          <label for="username" class="form-label fw-medium">Username</label>
+          <input
+            pInputText
+            id="username"
+            placeholder="Username"
+            [(ngModel)]="username"
+            [ngClass]="{'ng-invalid ng-dirty': usernameErrors}"
+            style="height: 45px; outline: none; font-size: 16px; border-radius: 5px; padding-left: 15px; border: 1px solid #ccc; border-bottom-width: 2px; transition: all 0.3s ease; width: 100%;"
+          >
+          @if (usernameErrors) {
+            <p-message severity="error" variant="simple" size="small">{{ usernameErrorMessage }}</p-message>
+          }
+        </div>
       </div>
-      <div class="col-md-6 d-flex flex-column">
-        <p-floatlabel class="m-3" variant="in">
-          <input pInputText id="email" [(ngModel)]="email"/>
-          <label for="email">Email</label>
-        </p-floatlabel>
-        <p-floatlabel class="m-3" variant="in">
-          <input pInputText id="password" type="password" [(ngModel)]="password"/>
-          <label for="password">Password</label>
-        </p-floatlabel>
-        <p-floatlabel class="m-3" variant="in">
-          <input pInputText id="passwordConfirmation" type="password" [(ngModel)]="confirmation"/>
-          <label for="passwordConfirmation">Password Confirmation</label>
-        </p-floatlabel>
+
+      <!-- Input for First Name -->
+      <div class="col-md-6 mb-3">
+        <div class="flex flex-col gap-1">
+          <label for="firstName" class="form-label fw-medium">First Name</label>
+          <input
+            pInputText
+            id="firstName"
+            placeholder="First Name"
+            [(ngModel)]="firstName"
+            [ngClass]="{'ng-invalid ng-dirty': firstNameErrors}"
+            style="height: 45px; outline: none; font-size: 16px; border-radius: 5px; padding-left: 15px; border: 1px solid #ccc; border-bottom-width: 2px; transition: all 0.3s ease; width: 100%;"
+          >
+          @if (firstNameErrors) {
+            <p-message severity="error" variant="simple" size="small">{{ firstNameErrorMessage }}</p-message>
+          }
+        </div>
+      </div>
+
+      <!-- Input for Last Name -->
+      <div class="col-md-6 mb-3">
+        <div class="flex flex-col gap-1">
+          <label for="lastName" class="form-label fw-medium">Last Name</label>
+          <input
+            pInputText
+            id="lastName"
+            placeholder="Last Name"
+            [(ngModel)]="lastName"
+            [ngClass]="{'ng-invalid ng-dirty': lastNameErrors}"
+            style="height: 45px; outline: none; font-size: 16px; border-radius: 5px; padding-left: 15px; border: 1px solid #ccc; border-bottom-width: 2px; transition: all 0.3s ease; width: 100%;"
+          >
+          @if (lastNameErrors) {
+            <p-message severity="error" variant="simple" size="small">{{ lastNameErrorMessage }}</p-message>
+          }
+        </div>
+      </div>
+
+      <!-- Input for Email -->
+      <div class="col-md-6 mb-3">
+        <div class="flex flex-col gap-1">
+          <label for="email" class="form-label fw-medium">Email</label>
+          <input
+            pInputText
+            id="email"
+            placeholder="Email"
+            [(ngModel)]="email"
+            [ngClass]="{'ng-invalid ng-dirty': emailErrors}"
+            style="height: 45px; outline: none; font-size: 16px; border-radius: 5px; padding-left: 15px; border: 1px solid #ccc; border-bottom-width: 2px; transition: all 0.3s ease; width: 100%;"
+          >
+          @if (emailErrors) {
+            <p-message severity="error" variant="simple" size="small">{{ emailErrorMessage }}</p-message>
+          }
+        </div>
+      </div>
+
+      <!-- Input for Password -->
+      <div class="col-md-6 mb-3">
+        <div class="flex flex-col gap-1">
+          <label for="password" class="form-label fw-medium">Password</label>
+          <input
+            pInputText
+            type="password"
+            id="password"
+            placeholder="Password"
+            [(ngModel)]="password"
+            [ngClass]="{'ng-invalid ng-dirty': passwordErrors}"
+            style="height: 45px; outline: none; font-size: 16px; border-radius: 5px; padding-left: 15px; border: 1px solid #ccc; border-bottom-width: 2px; transition: all 0.3s ease; width: 100%;"
+          >
+          @if (passwordErrors) {
+            <p-message severity="error" variant="simple" size="small">{{ passwordErrorMessage }}</p-message>
+          }
+        </div>
+      </div>
+
+      <!-- Input for Password Confirmation -->
+      <div class="col-md-6 mb-3">
+        <div class="flex flex-col gap-1">
+          <label for="passwordConfirmation" class="form-label fw-medium">Confirm Password</label>
+          <input
+            pInputText
+            type="password"
+            id="passwordConfirmation"
+            placeholder="Password Confirmation"
+            [(ngModel)]="confirmation"
+            [ngClass]="{'ng-invalid ng-dirty': confirmationErrors}"
+            style="height: 45px; outline: none; font-size: 16px; border-radius: 5px; padding-left: 15px; border: 1px solid #ccc; border-bottom-width: 2px; transition: all 0.3s ease; width: 100%;"
+          >
+          @if (confirmationErrors) {
+            <p-message severity="error" variant="simple" size="small">{{ confirmationErrorMessage }}</p-message>
+          }
+        </div>
       </div>
     </div>
 
-    <!-- Roles and Register Button -->
-    <div class="d-flex flex-column align-items-center mt-4">
-      <p-selectbutton [options]="roles" [(ngModel)]="pickedRole" optionLabel="label" optionValue="value" aria-labelledby="basic"/>
-      <button class="px-5 py-2 btn btn-lg btn-danger mt-3" (click)="register()">Register</button>
+    <!-- Role Selection Section -->
+    <div class="gender-details mt-3 mb-4 d-flex flex-column align-items-center">
+      <label class="gender-title fs-5 fw-medium mb-2">Select Role</label>
+      <p-selectbutton
+        [options]="roles"
+        [(ngModel)]="pickedRole"
+        optionLabel="label"
+        optionValue="value"
+        aria-labelledby="basic"
+        [ngClass]="{'ng-invalid ng-dirty': roleErrors}"
+      ></p-selectbutton>
+      @if (roleErrors) {
+        <p-message severity="error" variant="simple" size="small">{{ roleErrorMessage }}</p-message>
+      }
+    </div>
+
+    <!-- Submit button -->
+    <div class="button mt-4" style="height: 45px;">
+      <input
+        type="submit"
+        value="Register"
+        class="btn w-100 h-100"
+        (click)="register()"
+        style="border-radius: 5px; border: none; color: #fff; font-size: 18px; font-weight: 500; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, #1e3a8a, #3b82f6, #a7c9f5);"
+        onmouseover="this.style.background='linear-gradient(-135deg, #1e3a8a, #3b82f6, #a7c9f5)'"
+        onmouseout="this.style.background='linear-gradient(135deg, #1e3a8a, #3b82f6, #a7c9f5)'"
+      >
     </div>
   </div>
 </div>

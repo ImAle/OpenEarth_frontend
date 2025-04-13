@@ -1,5 +1,11 @@
 <app-header/>
 
+<!-- Display message if exists -->
+<div class="card flex justify-center">
+  <p-toast position="bottom-right" key="errorM"></p-toast>
+  <p-toast position="bottom-right" key="successM"></p-toast>
+</div>
+
 <div class="container mt-4">
   <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
     <div class="row">

@@ -9,9 +9,10 @@
 
 
       <!-- Display error message if exists -->
-      @if (errorMessage != null){
-        <div class="alert alert-danger mb-3">{{errorMessage}}</div>
-      }
+      <div class="card flex justify-center">
+        <p-toast position="bottom-right" key="err"></p-toast>
+      </div>
+
 
       <div class="justify-content-center align-items-center surface-card bg-white p-4 shadow-2 border-round w-full lg:w-6">
         <h1 class="text-center text-black">Login</h1>
