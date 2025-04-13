@@ -21,7 +21,6 @@ import {FilterComponent} from '../filter/filter.component';
 })
 export class HomeComponent implements OnInit {
   houses!: HousePreview[] | null;
-  selectedHouse: HousePreview | null = null;
 
   ngOnInit(): void {
     this.getHouses();
@@ -37,10 +36,6 @@ export class HomeComponent implements OnInit {
         console.log(err);
       }
     });
-  }
-
-  onHouseSelected(house: HousePreview) {
-    this.selectedHouse = house;
   }
 
 }

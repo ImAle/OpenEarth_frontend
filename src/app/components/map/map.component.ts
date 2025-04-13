@@ -1,9 +1,10 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {ApplicationRef, EnvironmentInjector, inject, createComponent, AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {GeolocationService} from '../../core/services/geolocation.service';
 import {HouseService} from '../../core/services/house.service';
 import {HousePreview} from '../../core/models/housePreview.model';
 import mapboxgl from 'mapbox-gl';
 import {environment} from '../../../environments/environment';
+import {HousePopupComponent} from '../house-popup/house-popup.component';
 
 @Component({
   selector: 'app-map',
@@ -14,10 +15,10 @@ import {environment} from '../../../environments/environment';
 export class MapComponent implements AfterViewInit, OnChanges {
   @Input() isInteractive: boolean = true;
   @Input() coordsByUser: { latitude: number; longitude: number } | null = null;
+  @Input() houses: HousePreview[] | null = null;
 
   @Output() coords = new EventEmitter<{ lat: number; lng: number }>();
   @Output() addressSelected = new EventEmitter<string>();
-  @Output() houseSelected = new EventEmitter<HousePreview>();
 
   private mapToken = environment.map;
   private map!: mapboxgl.Map;
@@ -25,7 +26,9 @@ export class MapComponent implements AfterViewInit, OnChanges {
 
   constructor(
     private geolocationService: GeolocationService,
-    private houseService: HouseService
+    private houseService: HouseService,
+    private environmentInjector: EnvironmentInjector,
+    private appRef: ApplicationRef
   ) {}
 
   ngAfterViewInit(): void {
@@ -54,7 +57,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
       if (this.isInteractive) {
         this.map.on('click', this.onMapClick.bind(this));
       } else {
-        this.loadAllHouses();
+        this.loadHouseMarkers();
       }
     });
   }
@@ -106,33 +109,31 @@ export class MapComponent implements AfterViewInit, OnChanges {
     });
   }
 
-  private loadAllHouses(): void {
-    this.houseService.getAll().subscribe({
-      next: (response) => {
-        const houses = response.houses;
-        houses.forEach((house: HousePreview) => this.addHouseMarker(house));
-      },
-      error: (err) => console.error(err),
-    });
+  private loadHouseMarkers(): void {
+    if (this.houses) {
+      this.houses.forEach((house: HousePreview) => this.addHouseMarker(house));
+    }
   }
 
   private addHouseMarker(house: HousePreview): void {
-    const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-      <div style="max-width: 200px">
-        <h3>${house.title}</h3>
-        <p>${house.price}</p>
-        <img src="${house.pictures?.[0] || ''}" style="width: 100%; margin-top: 5px;" />
-      </div>
-    `);
+    const componentRef = createComponent(HousePopupComponent, {
+      environmentInjector: this.environmentInjector,
+    });
+
+    // Here it passes the house to the @Input in the other component
+    componentRef.instance.house = house;
+    this.appRef.attachView(componentRef.hostView);
+
+    const div = document.createElement('div');
+    div.appendChild((componentRef.location.nativeElement));
+
+    const popup = new mapboxgl.Popup({ offset: 25, anchor: "bottom"}).setDOMContent(div);
 
     new mapboxgl.Marker()
       .setLngLat([house.longitude, house.latitude])
       .setPopup(popup)
       .addTo(this.map)
-      .getElement()
-      .addEventListener('click', () => {
-        this.houseSelected.emit(house);
-      });
+      .getElement();
   }
 
 }
