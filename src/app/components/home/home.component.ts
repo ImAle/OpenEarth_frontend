@@ -4,7 +4,6 @@ import {HouseService} from '../../core/services/house.service';
 import {CardComponent} from '../card/card.component';
 import {HousePreview} from '../../core/models/housePreview.model';
 import {MapComponent} from '../map/map.component';
-import {HouseSideModalComponent} from '../house-side-modal/house-side-modal.component';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
 import {FilterComponent} from '../filter/filter.component';
 
@@ -14,7 +13,6 @@ import {FilterComponent} from '../filter/filter.component';
     HeaderComponent,
     CardComponent,
     MapComponent,
-    HouseSideModalComponent,
     SearchBarComponent,
     FilterComponent
   ],

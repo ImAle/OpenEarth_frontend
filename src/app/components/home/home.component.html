@@ -13,7 +13,4 @@
 </div>
 
 <app-map (houseSelected)="onHouseSelected($event)" [isInteractive]="false"/>
-@if (selectedHouse) {
-  <app-house-side-modal [house]="selectedHouse" (close)="selectedHouse = null"/>
-}
 

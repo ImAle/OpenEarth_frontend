@@ -1,8 +1,9 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {GeolocationService} from '../../core/services/geolocation.service';
-import * as L from 'leaflet';
 import {HouseService} from '../../core/services/house.service';
 import {HousePreview} from '../../core/models/housePreview.model';
+import mapboxgl from 'mapbox-gl';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-map',
@@ -11,129 +12,127 @@ import {HousePreview} from '../../core/models/housePreview.model';
   styleUrl: './map.component.css'
 })
 export class MapComponent implements AfterViewInit, OnChanges {
-  @Input() isInteractive: boolean = true; // true by default
-  @Input() coordsByUser: {latitude: number, longitude: number} | null = null;
-  @Output() coords = new EventEmitter();
+  @Input() isInteractive: boolean = true;
+  @Input() coordsByUser: { latitude: number; longitude: number } | null = null;
+
+  @Output() coords = new EventEmitter<{ lat: number; lng: number }>();
   @Output() addressSelected = new EventEmitter<string>();
   @Output() houseSelected = new EventEmitter<HousePreview>();
 
-  private map!: L.Map;
-  private marker!: L.Marker;
-  private icon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+  private mapToken = environment.map;
+  private map!: mapboxgl.Map;
+  private currentMarker: mapboxgl.Marker | null = null;
 
-
-  constructor(private geolocationService: GeolocationService, private houseService: HouseService) {}
+  constructor(
+    private geolocationService: GeolocationService,
+    private houseService: HouseService
+  ) {}
 
   ngAfterViewInit(): void {
     this.initializeMap();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.coordsByUser){
-      let lat: number = this.coordsByUser.latitude;
-      let lng: number = this.coordsByUser.longitude;
-      this.setView(lat, lng);
-      this.updateMarker(lat, lng);
+    if (this.coordsByUser) {
+      const { latitude, longitude } = this.coordsByUser;
+      this.setView(latitude, longitude);
+      this.updateSingleMarker(latitude, longitude);
     }
   }
 
-  private initializeMap(){
-    // Initialize map on Madrid View
-    this.map = L.map('map').setView([40.4168, -3.7038], 13);
+  private initializeMap(): void {
+    (mapboxgl as any).accessToken = this.mapToken;
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {attribution: "© OpenStreetMap contributors"})
-      .addTo(this.map);
+    this.map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-3.7038, 40.4168],
+      zoom: 10,
+    });
 
-    if(this.isInteractive){
-      this.map.on('click', this.onMapClick.bind(this));
-    }else{
-      this.getHouses();
-    }
-
-  }
-
-  addMarker(lat: number, lng: number){
-    const icon = this.icon;
-    this.marker = new L.Marker([lat, lng], {icon}).addTo(this.map);
-  }
-
-  // only used in house creation form
-  updateMarker(lat: number, lng: number){
-    if(this.marker){
-      this.map.removeLayer(this.marker);
-    }
-
-    this.addMarker(lat, lng);
-  }
-
-  onMapClick(event: any){
-    const { lat, lng } = event.latlng;
-    this.setView(lat, lng);
-
-    this.updateMarker(lat, lng);
-    this.coords.emit({lat,lng});
-
-    this.getLocationByCoords(lat, lng);
-  }
-
-  setView(lat: number, lng: number, zoom:number=85){
-    if(this.map){
-      this.map.setView([lat, lng], zoom);
-    }
-  }
-
-   getLocationByCoords(lat: number, lng: number){
-     this.geolocationService.getLocationByCoords(lat, lng).subscribe({
-       next: (location) => {
-         const data = (location as any).address;
-         const addressMap = new Map<string, string>(Object.entries(data));
-
-         const addressParts = [
-           addressMap.get("state"),
-           addressMap.get("city"),
-           addressMap.get("city_district"),
-           addressMap.get("postcode"),
-           addressMap.get("suburb"),
-           addressMap.get("neighbourhood"),
-           addressMap.get("road"),
-         ];
-
-         const direction = addressParts.filter(Boolean).join(", ");
-         this.addressSelected.emit(direction);
-       },error: (err) => {
-         console.error("Error: " + err);
-       }
-     })
-   }
-
-  async getHouses() {
-    this.houseService.getAll().subscribe({
-      next: (response) => {
-        let houses = response.houses;
-        houses.forEach((house: HousePreview) => {
-          this.addHouseToMap(house);
-        });
-      }, error: (err: Error) => {
-        console.log(err);
+    this.map.on('load', () => {
+      if (this.isInteractive) {
+        this.map.on('click', this.onMapClick.bind(this));
+      } else {
+        this.loadAllHouses();
       }
     });
   }
 
-  async addHouseToMap(house: HousePreview){
+  private onMapClick(event: mapboxgl.MapMouseEvent): void {
+    const { lng, lat } = event.lngLat;
+    this.setView(lat, lng);
+    this.updateSingleMarker(lat, lng);
+    this.coords.emit({ lat, lng });
+    this.fetchAddress(lat, lng);
+  }
 
-      // const lat = parseFloat();
-      // const lng = parseFloat();
+  private setView(lat: number, lng: number, zoom: number = 15): void {
+    if (this.map) {
+      this.map.flyTo({ center: [lng, lat], zoom });
+    }
+  }
 
-      this.addMarker(house.latitude, house.longitude);
-      this.marker.on("click", () => {this.houseSelected.emit(house)});
+  private updateSingleMarker(lat: number, lng: number): void {
+    if (this.currentMarker) {
+      this.currentMarker.remove();
+    }
+
+    this.currentMarker = new mapboxgl.Marker()
+      .setLngLat([lng, lat])
+      .addTo(this.map);
+  }
+
+  private fetchAddress(lat: number, lng: number): void {
+    this.geolocationService.getLocationByCoords(lat, lng).subscribe({
+      next: (location) => {
+        const data = (location as any).address;
+        const addressMap = new Map<string, string>(Object.entries(data));
+
+        const addressParts = [
+          addressMap.get('state'),
+          addressMap.get('city'),
+          addressMap.get('city_district'),
+          addressMap.get('postcode'),
+          addressMap.get('suburb'),
+          addressMap.get('neighbourhood'),
+          addressMap.get('road'),
+        ];
+
+        const direction = addressParts.filter(Boolean).join(', ');
+        this.addressSelected.emit(direction);
+      },
+      error: (err) => console.error('Error: ' + err),
+    });
+  }
+
+  private loadAllHouses(): void {
+    this.houseService.getAll().subscribe({
+      next: (response) => {
+        const houses = response.houses;
+        houses.forEach((house: HousePreview) => this.addHouseMarker(house));
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  private addHouseMarker(house: HousePreview): void {
+    const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+      <div style="max-width: 200px">
+        <h3>${house.title}</h3>
+        <p>${house.price}</p>
+        <img src="${house.pictures?.[0] || ''}" style="width: 100%; margin-top: 5px;" />
+      </div>
+    `);
+
+    new mapboxgl.Marker()
+      .setLngLat([house.longitude, house.latitude])
+      .setPopup(popup)
+      .addTo(this.map)
+      .getElement()
+      .addEventListener('click', () => {
+        this.houseSelected.emit(house);
+      });
   }
 
 }
