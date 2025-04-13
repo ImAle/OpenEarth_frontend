@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {AuthService} from './auth.service';
 import {ReportCreation} from '../models/reportCreation.model';
+import {Observable, throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,57 +14,77 @@ export class ReportService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   // POST /api/report/create
-  create(report: ReportCreation){
-    const url = this.baseUrl + '/create';
-    const token: string = this.authService.getToken();
+  create(report: ReportCreation): Observable<any>{
+    try{
+      const url = this.baseUrl + '/create';
+      const token: string = this.authService.retrieveToken();
 
-    const formData = new FormData();
-    formData.append('report', new Blob([JSON.stringify(report)], { type: 'application/json' }));
+      const formData = new FormData();
+      formData.append('report', new Blob([JSON.stringify(report)], { type: 'application/json' }));
 
-    const headers = new HttpHeaders({
-      'Authorization': token,
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token,
+      });
 
-    return this.http.post(url, formData, {headers});
+      return this.http.post(url, formData, {headers});
+    }catch(error){
+      console.error(error);
+      return throwError(() => error);
+    }
   }
 
   // GET /api/report
-  getAll(){
-    const token: string = this.authService.getToken();
+  getAll(): Observable<any>{
+    try{
+      const token: string = this.authService.retrieveToken();
 
-    const headers = new HttpHeaders({
-      'Authorization': token,
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token,
+      });
 
-    return this.http.post(this.baseUrl, {headers});
+      return this.http.post(this.baseUrl, {headers});
+    }catch(error){
+      console.error(error);
+      return throwError(() => error);
+    }
   }
 
   // GET /api/report/get
-  getById(id: string){
-    const url = this.baseUrl + '/get';
-    const token: string = this.authService.getToken();
+  getById(id: string): Observable<any>{
+    try{
+      const url = this.baseUrl + '/get';
+      const token: string = this.authService.retrieveToken();
 
-    const headers = new HttpHeaders({
-      'Authorization': token
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token
+      });
 
-    const params = new HttpParams().append('id', id);
+      const params = new HttpParams().append('id', id);
 
-    return this.http.get(url, {headers, params});
+      return this.http.get(url, {headers, params});
+    }catch(error){
+      console.error(error);
+      return throwError(() => error);
+    }
   }
 
   // DELETE /api/report/delete
-  delete(id: string){
-    const url = this.baseUrl + '/delete';
-    const token: string = this.authService.getToken();
+  delete(id: string): Observable<any>{
+    try{
+      const url = this.baseUrl + '/delete';
+      const token: string = this.authService.retrieveToken();
 
-    const headers = new HttpHeaders({
-      'Authorization': token
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token
+      });
 
-    const params = new HttpParams().append('id', id);
+      const params = new HttpParams().append('id', id);
 
-    return this.http.delete(url, {headers, params});
+      return this.http.delete(url, {headers, params});
+    }catch(error){
+      console.error(error);
+      return throwError(() => error);
+    }
   }
 
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {House} from '../models/house.model';
-import {Observable} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {HouseCreation} from '../models/houseCreation.model';
 import {HousePreview} from '../models/housePreview.model';
@@ -19,19 +19,29 @@ export class HouseService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   //POST /api/house/create
-  create(house: HouseCreation, pictures: File[]): any {
-    const url = this.baseUrl + '/create';
-    const token = this.authService.getToken();
+  create(house: HouseCreation, pictures: File[]): Observable<any> {
+    try{
+      const url = this.baseUrl + '/create';
+      const token = this.authService.getToken();
 
-    const formData = new FormData();
-    formData.append('house', new Blob([JSON.stringify(house)], { type: 'application/json' }));
-    pictures.forEach(picture => {formData.append(`pictures`, picture);});
+      if(!token){
+        return throwError(() => new Error('You are not logged in'));
+      }
 
-    const headers = new HttpHeaders({
-      'Authorization': token,
-    });
+      const formData = new FormData();
+      formData.append('house', new Blob([JSON.stringify(house)], { type: 'application/json' }));
+      pictures.forEach(picture => {formData.append(`pictures`, picture);});
 
-    return this.http.post(url, formData, {headers});
+      const headers = new HttpHeaders({
+        'Authorization': token,
+      });
+
+      return this.http.post(url, formData, {headers});
+    }catch(error){
+      console.error(error);
+      return throwError(() => error);
+    }
+
   }
 
   // GET /api/house
@@ -76,33 +86,43 @@ export class HouseService {
 
   //PUT /api/house/update
   update(id: number, house: HouseUpdate, newPictures: File[]): Observable<any>{
-    const url = this.baseUrl + '/update';
-    const token = this.authService.getToken();
+    try{
+      const url = this.baseUrl + '/update';
+      const token = this.authService.retrieveToken();
 
-    const formData = new FormData();
-    formData.append('house', JSON.stringify(house));
-    newPictures.forEach(picture => {formData.append('pictures', picture, picture.name);});
-    formData.append('id', id.toString());
+      const formData = new FormData();
+      formData.append('house', JSON.stringify(house));
+      newPictures.forEach(picture => {formData.append('pictures', picture, picture.name);});
+      formData.append('id', id.toString());
 
-    const headers = new HttpHeaders({
-      'Authorization': token
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token
+      });
 
-    return this.http.put(url, formData, {headers});
+      return this.http.put(url, formData, {headers});
+    }catch(error){
+      console.error(error);
+      return throwError(() => error);
+    }
   }
 
   // DELETE /api/house/delete
   delete(id: number): Observable<any>{
-    const url = this.baseUrl + '/delete';
-    const token = this.authService.getToken();
+    try{
+      const url = this.baseUrl + '/delete';
+      const token = this.authService.retrieveToken();
 
-    const headers = new HttpHeaders({
-      'Authorization': token
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token
+      });
 
-    const params = new HttpParams().set('id', id.toString());
+      const params = new HttpParams().set('id', id.toString());
 
-    return this.http.delete(url, {headers, params});
+      return this.http.delete(url, {headers, params});
+    }catch (error){
+      console.error(error);
+      return throwError(() => error);
+    }
   }
 
 }

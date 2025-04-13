@@ -12,7 +12,6 @@ import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 @Component({
   selector: 'app-filter',
   imports: [
-    NgClass,
     FaIconComponent
   ],
   templateUrl: './filter.component.html',

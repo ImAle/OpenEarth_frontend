@@ -30,4 +30,8 @@ export class HeaderComponent implements OnInit{
       this.role = response.role;
     });
   }
+
+  logout(){
+    this.authService.logout();
+  }
 }

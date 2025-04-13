@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {ReviewCreation} from '../models/reviewCreation.model';
 import {AuthService} from './auth.service';
+import {Observable, throwError} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +14,23 @@ export class ReviewService {
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   // GET /api/review/create
-  create(review: ReviewCreation): any{
-    const url = this.baseUrl + "/create";
-    const token: string = this.authService.getToken();
+  create(review: ReviewCreation): Observable<any> {
+    try{
+      const url = this.baseUrl + "/create";
+      const token: string = this.authService.retrieveToken();
 
-    const headers = new HttpHeaders({
-      'Authorization': token
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token
+      });
 
-    const formData = new FormData();
-    formData.append('review', new Blob([JSON.stringify(review)], { type: 'application/json' }));
+      const formData = new FormData();
+      formData.append('review', new Blob([JSON.stringify(review)], { type: 'application/json' }));
 
-    return this.http.post<any>(url, formData, {headers: headers});
+      return this.http.post<any>(url, formData, {headers: headers});
+    }catch(error){
+      console.error(error);
+      return throwError(() => error);
+    }
   }
 
 }

@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {catchError, Observable, tap, throwError} from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 import {UserCreation} from '../models/userCreation.model';
-import {House} from '../models/house.model';
-import {HouseUpdateForm} from '../models/houseUpdateForm.model';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   baseUrl: string = environment.rootUrl + "/api/auth";
+  private readonly key = 'token';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   // POST /api/auth/login
   login(email: string, password: string): Observable<any> {
@@ -21,52 +21,57 @@ export class AuthService {
       .set('email', email)
       .set('password', password);
 
-    return this.http.post(url, {}, {params}).pipe(
-      catchError((error) => this.handleError(error, 'login'))
-    );
+    return this.http.post(url, {}, {params});
+  }
+
+  logout(): void{
+    this.removeToken();
+    this.router.navigate(['/login']);
   }
 
   // POST /api/auth/register
   register(user: UserCreation): Observable<any> {
     const url = this.baseUrl + '/register';
-    return this.http.post<any>(url, user).pipe(
-      catchError((error) => this.handleError(error, 'register'))
-    );
+    return this.http.post<any>(url, user);
   }
 
   getRole(){
-    const url = this.baseUrl + '/role';
-    const token = this.getToken();
+    try{
+      const url = this.baseUrl + '/role';
+      const token = this.retrieveToken();
 
-    const headers = new HttpHeaders({
-      'Authorization': token
-    });
+      const headers = new HttpHeaders({
+        'Authorization': token
+      });
 
-    return this.http.get<any>(url, {headers});
-  }
-
-  private handleError(error: any, method: string): Observable<never> {
-    let errorMessage = 'An unexpected error occurred. Please try again later.';
-
-    if (error.status === 400) {
-      if (error.error && Array.isArray(error.error)) {
-        errorMessage = error.error.map((e: any) => e.defaultMessage).join('\n');
-      } else if (error.error && error.error.error) {
-        errorMessage = error.error.error;
-      }
-    } else if (error.status === 401 && method === 'login') {
-      errorMessage = 'Invalid credentials.';
+      return this.http.get<any>(url, {headers});
+    }catch (error: any){
+      console.error(error);
+      return throwError(() => error);
     }
-
-    return throwError(() => new Error(errorMessage));
   }
 
-   getToken(): string {
-     return "Bearer " + sessionStorage.getItem('token');
+  saveToken(token: string){
+    localStorage.setItem(this.key, token);
+  }
+
+   getToken(): string | null{
+    const token = sessionStorage.getItem(this.key);
+     return token ? `Bearer ${token}` : null;
    }
 
    removeToken(): void {
-     sessionStorage.removeItem('token');
+     sessionStorage.removeItem(this.key);
+   }
+
+   retrieveToken(): string{
+     const token = this.getToken();
+
+     if(!token){
+       throw new Error('You are not logged in');
+     }
+
+     return token;
    }
 
 }
