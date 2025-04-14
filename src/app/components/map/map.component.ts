@@ -1,4 +1,5 @@
-import {ApplicationRef, EnvironmentInjector, inject, createComponent, AfterViewInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {ApplicationRef, EnvironmentInjector, createComponent, Component,
+  EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit} from '@angular/core';
 import {GeolocationService} from '../../core/services/geolocation.service';
 import {HouseService} from '../../core/services/house.service';
 import {HousePreview} from '../../core/models/housePreview.model';
@@ -12,7 +13,7 @@ import {HousePopupComponent} from '../house-popup/house-popup.component';
   templateUrl: './map.component.html',
   styleUrl: './map.component.css'
 })
-export class MapComponent implements AfterViewInit, OnChanges {
+export class MapComponent implements OnInit, OnChanges {
   @Input() isInteractive: boolean = true;
   @Input() coordsByUser: { latitude: number; longitude: number } | null = null;
   @Input() houses: HousePreview[] | null = null;
@@ -31,7 +32,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
     private appRef: ApplicationRef
   ) {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.initializeMap();
   }
 

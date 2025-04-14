@@ -7,8 +7,6 @@ import {CommonModule} from '@angular/common';
 import {HeaderComponent} from '../header/header.component';
 import {Router, RouterLink} from '@angular/router';
 import {Checkbox} from 'primeng/checkbox';
-import {ButtonDirective} from 'primeng/button';
-import {Ripple} from 'primeng/ripple';
 import {MessageService} from 'primeng/api';
 import {Toast} from 'primeng/toast';
 
@@ -21,8 +19,6 @@ import {Toast} from 'primeng/toast';
     FloatLabelModule,
     HeaderComponent,
     Checkbox,
-    ButtonDirective,
-    Ripple,
     RouterLink,
     Toast
   ],
