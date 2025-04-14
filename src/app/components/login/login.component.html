@@ -1,47 +1,68 @@
 <app-header/>
-<div class="d-flex flex-row justify-content-center bg-cover bg-center w-100 position-relative" style="height: 84vh; margin-top: 4.5vh;">
-  <div class="d-flex flex-row justify-content-between align-items-center w-75" style="min-width: 100%">
-    <div style="background: url('/login.png') no-repeat center center;
-                min-height: 100vh; min-width: 40%;">
-    </div>
-    <!-- Contenido -->
-    <div class="d-flex align-items-center justify-content-center position-relative card border-1" style="height: 75vh; min-width: 35%; margin-right: 12.5%; border: 1px black; box-shadow: 0 0 20px rgba(0,0,0,0.3)">
+  <div class="container-fluid">
+    <div class="row" style="height: 84vh;">
+      <!-- Left Side - Form -->
+      <div class="col-md-6" style="display: flex; flex-direction: column; padding: 50px 100px; background-color: #fff;">
+        <div class="my-auto" style="width: 100%; max-width: 400px; padding-top: 24px; padding-bottom: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.3);">
+          <div class="px-4 py-4">
+            <h1 style="font-size: 30px; color: #000; font-weight: bold; margin-bottom: 10px;">Login</h1>
+            <div class="text-center mb-4">
+              <div style="font-size: 22px; margin-bottom: 12px;">Welcome Back</div>
+              <span style="color: #666;">Don't have an account?</span>
+              <a routerLink="/register" style="color: #3B82F6; text-decoration: none; margin-left: 5px;">Create today!</a>
+            </div>
 
+            <!-- Toast for error messages -->
+            <div class="card flex justify-center">
+              <p-toast position="bottom-right" key="err"></p-toast>
+            </div>
 
-      <!-- Display error message if exists -->
-      <div class="card flex justify-center">
-        <p-toast position="bottom-right" key="err"></p-toast>
+            <form>
+              <div class="form-group mb-3">
+                <label for="email" style="font-size: 14px; font-weight: bold; color: #333;" class="mb-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  class="form-control"
+                  placeholder="Email address"
+                  #emailInput
+                  style="border: none; border-bottom: 1px solid #e7e7e7; border-radius: 0; padding: 9px 5px; min-height: 40px; font-size: 18px;">
+              </div>
+              <div class="form-group mb-4">
+                <label for="password" style="font-size: 14px; font-weight: bold; color: #333;" class="mb-2">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  #passwordInput
+                  style="border: none; border-bottom: 1px solid #e7e7e7; border-radius: 0; padding: 9px 5px; min-height: 40px; font-size: 18px;">
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                  <p-checkbox id="rememberme" [binary]="true" styleClass="mr-2"></p-checkbox>
+                  <label for="rememberme" class="text-900" style="cursor: pointer; margin-left: 8px;">Remember me</label>
+                </div>
+                <a href="#!" style="color: #3B82F6; text-decoration: none;">Forgot password?</a>
+              </div>
+
+              <button
+                (click)="login()"
+                class="btn w-100"
+                style="padding: 13px 20px; background-color: #3B82F6; border-radius: 0; font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 14px; border: none;">
+                Login
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
 
-
-      <div class="justify-content-center align-items-center surface-card bg-white p-4 shadow-2 border-round w-full lg:w-6">
-        <h1 class="text-center text-black">Login</h1>
-        <div class="text-center mb-5">
-          <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
-          <span class="text-600 font-medium line-height-3">Don't have an account?</span>
-          <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer" routerLink="/register">Create today!</a>
-        </div>
-
-        <div class="d-flex flex-column">
-          <label for="email1" class="block text-900 font-medium mb-2">Email</label>
-          <input id="email1" type="text" placeholder="Email address" pInputText class="w-full mb-3" #emailInput>
-
-          <label for="password1" class="block text-900 font-medium mb-2">Password</label>
-          <input id="password1" type="password" placeholder="Password" pInputText class="w-full mb-3" #passwordInput>
-
-
-          <div class="flex align-items-center justify-content-between mb-6">
-            <div class="flex align-items-center">
-              <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
-              <label for="rememberme1" class="text-900">Remember me</label>
-            </div>
-            <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
-          </div>
-
-          <button pButton pRipple class="w-full" (click)="login()">Log in</button>
-        </div>
+      <!-- Right Side - Image -->
+      <div class="col-md-6 px-0 d-none d-md-block">
+        <div style="background: url('/login.png') no-repeat center center; background-size: cover; height: 100%; width: 100%;"></div>
       </div>
     </div>
   </div>
-</div>
-

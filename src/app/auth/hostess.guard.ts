@@ -13,17 +13,17 @@ export class HostessGuard implements CanActivate {
   }
 
   canActivate(): any {
-    let role = null;
+    let myRole = null;
 
     this.authService.getRole().subscribe({
       next: (response: any) => {
-        role = response.role;
+        myRole = response.role;
       }, error: err => {
         console.log(err);
       }
     });
 
-    if (role === this.allowedRole) {
+    if (myRole === this.allowedRole) {
       return true;
     } else {
       alert('You cannot access here')
