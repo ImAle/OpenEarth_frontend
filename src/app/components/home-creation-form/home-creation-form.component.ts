@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgClass} from '@angular/common';
 import {HouseService} from '../../core/services/house.service';
@@ -41,6 +41,8 @@ export class HomeCreationFormComponent implements OnInit {
   formErrors: { [key: string]: string } = {};
   isSubmitted = false;
 
+  @ViewChild(MapComponent) mapComponent!: MapComponent;
+
   constructor(private fb: FormBuilder, private houseService: HouseService, private router: Router, private messageService: MessageService) {
     this.initForm();
   }
@@ -65,6 +67,10 @@ export class HomeCreationFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCountriesAndCategories();
+
+    setTimeout(() => {
+      this.mapComponent?.forceResize();
+    }, 300);
   }
 
   private loadCountriesAndCategories(): void {

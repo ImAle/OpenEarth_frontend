@@ -149,4 +149,10 @@ export class MapComponent implements OnInit, OnChanges {
       .getElement();
   }
 
+  forceResize() {
+    if (this.map) {
+      this.map.resize();
+    }
+  }
+
 }

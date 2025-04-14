@@ -1,16 +1,40 @@
-<app-header/>
-<app-search-bar/>
-<app-filter/>
+<app-header #header/>
+<app-search-bar #searchBar/>
+<app-filter #filter/>
 
-<div class="container row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-  @if(houses && houses.length > 0){
-    @for (house of houses; track house.id) {
-      <app-card [house]="house"/>
-    }
+<div style="padding-top: calc(8.5vh + 65px + 60px);"></div>
+
+<!-- Button map-list -->
+<div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #007bff; color: white; border-radius: 25px; padding: 10px 20px; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 1000; width: 150px; text-align: center;" (click)="toggleView()">
+  @if (showMap){
+    <span>Show List</span>
   } @else {
-    <p style="justify-content: center; align-content: center; width: 100%;">There are no available houses</p>
+    <span>Show Map</span>
   }
 </div>
 
-<app-map [houses]="houses" [isInteractive]="false"/>
+<!-- List view container -->
+<div [style.display]="showMap ? 'none' : 'block'">
+  <div class="container row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @if(houses && houses.length > 0){
+      @for (house of houses; track house.id) {
+        <app-card [house]="house"/>
+      }
+    } @else {
+      <p class="d-flex justify-content-center align-items-center w-100">There are no available houses</p>
+    }
+  </div>
+</div>
 
+<!-- Map view container -->
+<div [style.position]="'fixed'"
+     [style.top]="getTopOffset() + 'px'"
+     [style.left]="0"
+     [style.right]="0"
+     [style.bottom]="0"
+     [style.zIndex]="5"
+     [style.transition]="'transform 0.5s ease-in-out'"
+     [style.transform]="showMap ? 'translateY(0)' : 'translateY(100%)'"
+     [style.background]="'white'">
+  <app-map [houses]="houses" [isInteractive]="false" [style.height]="'100%'" [style.display]="'block'"/>
+</div>
