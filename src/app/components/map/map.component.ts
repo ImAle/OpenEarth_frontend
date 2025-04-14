@@ -127,7 +127,19 @@ export class MapComponent implements AfterViewInit, OnChanges {
     const div = document.createElement('div');
     div.appendChild((componentRef.location.nativeElement));
 
-    const popup = new mapboxgl.Popup({ offset: 25, anchor: "bottom"}).setDOMContent(div);
+    div.style.padding = '0';
+    div.style.margin = '0';
+    div.style.maxWidth = '300px';
+    div.style.width = '100%';
+    div.style.borderRadius = '12px';
+    div.style.overflow = 'hidden';
+    div.appendChild((componentRef.location.nativeElement));
+
+    const popup = new mapboxgl.Popup({
+      offset: 25,
+      anchor: "bottom",
+      closeButton: true,
+      className: 'custom-map-popup'}).setDOMContent(div);
 
     new mapboxgl.Marker()
       .setLngLat([house.longitude, house.latitude])
