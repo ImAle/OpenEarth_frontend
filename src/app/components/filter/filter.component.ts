@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HouseService } from '../../core/services/house.service';
@@ -35,6 +35,14 @@ export class FilterComponent implements OnInit {
   maxPriceLimit: number = 500;
   minThumbPercent: number = 0;
   maxThumbPercent: number = 50;
+
+  @Output() filtersChanged = new EventEmitter<{
+    minPrice: number | null;
+    maxPrice: number | null;
+    beds: number | null;
+    guests: number | null;
+    category: string | null;
+  }>();
 
   categoryIcons: { [key: string]: any } = {
     FARM: faTractor,
@@ -92,11 +100,10 @@ export class FilterComponent implements OnInit {
   toggleCategory(category: string) {
     if (this.selectedCategory === category) {
       this.selectedCategory = null;
-      this.fetchHouses();
     } else {
       this.selectedCategory = category;
-      this.fetchHouses();
     }
+    this.fetchHouses();
   }
 
   scrollRight() {
@@ -225,19 +232,18 @@ export class FilterComponent implements OnInit {
   }
 
   fetchHouses() {
-    const minPrice: number | undefined = this.minPrice !== null ? this.minPrice : undefined;
-    const maxPrice: number | undefined = this.maxPrice !== null ? this.maxPrice : undefined;
-    const beds: number | undefined = this.beds !== null ? this.beds : undefined;
-    const guests: number | undefined = this.guests !== null ? this.guests : undefined;
-    const category: string | undefined = this.selectedCategory || undefined;
+    // const minPrice: number | null = this.minPrice !== null ? this.minPrice : null;
+    // const maxPrice: number | null = this.maxPrice !== null ? this.maxPrice : null;
+    // const beds: number | null = this.beds !== null ? this.beds : null;
+    // const guests: number | null = this.guests !== null ? this.guests : null;
+    // const category: string | null = this.selectedCategory || null;
 
-    this.houseService.getAll(undefined, minPrice, maxPrice, beds, guests, category).subscribe({
-      next: (response) => {
-        //the house.service takes care
-      },
-      error: (err: Error) => {
-        console.log('Error fetching houses:', err);
-      }
+    this.filtersChanged.emit({
+      minPrice: this.minPrice,
+      maxPrice: this.maxPrice,
+      beds: this.beds,
+      guests: this.guests,
+      category: this.selectedCategory
     });
   }
 

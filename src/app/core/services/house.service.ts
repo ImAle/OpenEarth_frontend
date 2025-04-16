@@ -51,15 +51,18 @@ export class HouseService {
   }
 
   // GET /api/house
-  getAll(location?: string, minPrice?: number, maxPrice?: number, beds?: number, guests?: number, category?: string): Observable<any> {
+  getAll(location: string | null, minPrice: number | null,
+         maxPrice: number | null, beds: number | null,
+         guests: number | null, category: string | null): Observable<any> {
+
     let params = new HttpParams();
 
     if (location) params = params.append('location', location);
-    if (minPrice !== undefined) params = params.append('minPrice', minPrice.toString());
-    if (maxPrice !== undefined) params = params.append('maxPrice', maxPrice.toString());
-    if (beds !== undefined) params = params.append('beds', beds.toString());
-    if (guests !== undefined) params = params.append('guests', guests.toString());
-    if (category) params = params.append('category', category);
+    if (minPrice !== null) params = params.append('minPrice', minPrice.toString());
+    if (maxPrice !== null) params = params.append('maxPrice', maxPrice.toString());
+    if (beds !== null) params = params.append('beds', beds.toString());
+    if (guests !== null) params = params.append('guests', guests.toString());
+    if (category !== null) params = params.append('category', category);
 
     return this.http.get<any>(this.baseUrl, { params }).pipe(
       tap(response => {

@@ -28,7 +28,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   showMap: boolean = false;
   private housesSubscription!: Subscription;
 
+  currentFilters = {
+    location: '',
+    minPrice: null as number | null,
+    maxPrice: null as number | null,
+    beds: null as number | null,
+    guests: null as number | null,
+    category: null as string | null
+  };
+
   @ViewChild(MapComponent) mapComponent!: MapComponent;
+  @ViewChild(FilterComponent) filterComponent!: FilterComponent;
+  @ViewChild(SearchBarComponent) searchBarComponent!: SearchBarComponent;
 
   ngOnInit(): void {
     this.getHouses();
@@ -59,9 +70,37 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private houseService: HouseService) {}
 
   getHouses() {
-    this.houseService.getAll().subscribe({
+    this.fetchHousesWithFilters();
+  }
+
+  onLocationSearch(location: string) {
+    this.currentFilters.location = location;
+    this.fetchHousesWithFilters();
+  }
+
+  onFiltersChanged(filters: {
+    minPrice: number | null,
+    maxPrice: number | null,
+    beds: number | null,
+    guests: number | null,
+    category: string | null
+  }) {
+    this.currentFilters.minPrice = filters.minPrice;
+    this.currentFilters.maxPrice = filters.maxPrice;
+    this.currentFilters.beds = filters.beds;
+    this.currentFilters.guests = filters.guests;
+    this.currentFilters.category = filters.category;
+    this.fetchHousesWithFilters();
+  }
+
+  fetchHousesWithFilters() {
+    const { location, minPrice, maxPrice, beds, guests, category } = this.currentFilters;
+
+    this.houseService.getAll(location || null, minPrice, maxPrice, beds, guests, category || null).subscribe({
       next: (response) => {
-        //the house.service takes care
+        if(response && response.houses)
+          this.houses = response.houses;
+        else this.houses = null;
       }, error: (err: Error) => {
         console.log(err);
       }

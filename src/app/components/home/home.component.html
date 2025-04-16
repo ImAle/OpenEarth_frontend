@@ -1,6 +1,6 @@
 <app-header #header/>
-<app-search-bar #searchBar/>
-<app-filter #filter/>
+<app-search-bar #searchBar (location)="onLocationSearch($event)"/>
+<app-filter #filter (filtersChanged)="onFiltersChanged($event)"/>
 
 <div style="padding-top: calc(8.5vh + 65px + 60px);"></div>
 
@@ -21,7 +21,8 @@
         <app-card [house]="house"/>
       }
     } @else {
-      <p class="d-flex justify-content-center align-items-center w-100">There are no available houses</p>
+      <p class="d-flex justify-content-center align-items-center w-100" style="padding-top: 40px;">There are no available houses</p>
+      <p class="d-flex justify-content-center align-items-center w-100">This may be becouse it's too generic, try being more specific</p>
     }
   </div>
 </div>

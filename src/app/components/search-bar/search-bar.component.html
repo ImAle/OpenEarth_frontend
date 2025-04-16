@@ -9,8 +9,8 @@
           6.98 0 0 0 16 9h-1.5Zm-1.61 3.89A5.48 5.48 0 0 1 9 14.5V16a6.98 6.98 0 0 0 4.95-2.05l-1.06-1.06Z"></path>
         </svg>
       </div>
-      <input type="text" class="form-control fw-semibold" style="width: 70vw; min-width: 40%; border-radius: 0;" placeholder="Where">
-      <input type="button" value="Search" class="btn btn-primary fw-semibold rounded-end" style="border-top-left-radius: 0; border-bottom-left-radius: 0; background-color: #007bff;">
+      <input type="text" class="form-control fw-semibold" [(ngModel)]="locationSearch" style="width: 70vw; min-width: 40%; border-radius: 0;" placeholder="Where">
+      <input type="button" value="Search" class="btn btn-primary fw-semibold rounded-end" (click)="onSearch()" style="border-top-left-radius: 0; border-bottom-left-radius: 0; background-color: #007bff;">
     </div>
   </div>
 </div>
