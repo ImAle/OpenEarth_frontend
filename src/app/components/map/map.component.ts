@@ -1,7 +1,6 @@
 import {ApplicationRef, EnvironmentInjector, createComponent, Component,
   EventEmitter, Input, OnChanges, Output, SimpleChanges, OnInit} from '@angular/core';
 import {GeolocationService} from '../../core/services/geolocation.service';
-import {HouseService} from '../../core/services/house.service';
 import {HousePreview} from '../../core/models/housePreview.model';
 import mapboxgl from 'mapbox-gl';
 import {environment} from '../../../environments/environment';
@@ -24,6 +23,7 @@ export class MapComponent implements OnInit, OnChanges {
   private mapToken = environment.map;
   private map!: mapboxgl.Map;
   private currentMarker: mapboxgl.Marker | null = null;
+  private houseMarkers: mapboxgl.Marker[] = [];
 
   constructor(
     private geolocationService: GeolocationService,
@@ -40,6 +40,13 @@ export class MapComponent implements OnInit, OnChanges {
       const { latitude, longitude } = this.coordsByUser;
       this.setView(latitude, longitude);
       this.updateSingleMarker(latitude, longitude);
+    }
+
+    if (changes['houses'] && this.houses) {
+      if (this.map) {
+        this.clearHouseMarkers();
+        this.loadHouseMarkers();
+      }
     }
   }
 
@@ -111,8 +118,12 @@ export class MapComponent implements OnInit, OnChanges {
   }
 
   private loadHouseMarkers(): void {
-    if (this.houses) {
-      this.houses.forEach((house: HousePreview) => this.addHouseMarker(house));
+    if (!this.map || !this.houses) return;
+
+    this.houses.forEach((house: HousePreview) => this.addHouseMarker(house));
+
+    if (this.houses.length > 0) {
+      this.fitMapToMarkers();
     }
   }
 
@@ -121,7 +132,6 @@ export class MapComponent implements OnInit, OnChanges {
       environmentInjector: this.environmentInjector,
     });
 
-    // Here it passes the house to the @Input in the other component
     componentRef.instance.house = house;
     this.appRef.attachView(componentRef.hostView);
 
@@ -142,17 +152,38 @@ export class MapComponent implements OnInit, OnChanges {
       closeButton: true,
       className: 'custom-map-popup'}).setDOMContent(div);
 
-    new mapboxgl.Marker()
+    const marker = new mapboxgl.Marker()
       .setLngLat([house.longitude, house.latitude])
       .setPopup(popup)
-      .addTo(this.map)
-      .getElement();
+      .addTo(this.map);
+
+    this.houseMarkers.push(marker);
   }
 
   forceResize() {
     if (this.map) {
       this.map.resize();
     }
+  }
+
+  private clearHouseMarkers(): void {
+    this.houseMarkers.forEach(marker => marker.remove());
+    this.houseMarkers = [];
+  }
+
+  private fitMapToMarkers(): void {
+    if (!this.houses || this.houses.length === 0) return;
+
+    const bounds = new mapboxgl.LngLatBounds();
+
+    this.houses.forEach(house => {
+      bounds.extend([house.longitude, house.latitude]);
+    });
+
+    this.map.fitBounds(bounds, {
+      padding: 50, // padding around markers
+      maxZoom: 15
+    });
   }
 
 }
