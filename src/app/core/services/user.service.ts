@@ -69,9 +69,12 @@ export class UserService {
   }
 
   // GET /api/user/details
-  getUser(id: string): any{
+  getUser(id: number): Observable<any>{
     const url: string = this.baseUrl + '/details';
-    return this.http.get<any>(url);
+
+    const params = new HttpParams().set('id', id);
+
+    return this.http.get<any>(url, {params});
   }
 
   // PUT /api/user/update

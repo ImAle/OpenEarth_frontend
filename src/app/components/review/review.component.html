@@ -1,0 +1,13 @@
+<p-card [ngClass]="'card mb-3'" [style]="{'border-radius': '8px', 'overflow': 'hidden'}">
+  <ng-template pTemplate="header">
+    <div class="d-flex p-2" style="padding: 10px 0">
+      <h3 class="m-0" style="color: #0066cc; font-size: 16px;">
+        Reseña para: <a [routerLink]="['/houses', review.houseId]" style="color: #0066cc; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{houseName}}</a>
+      </h3>
+    </div>
+  </ng-template>
+
+  <div class="p-0">
+    <p class="m-0" style="line-height: 1.5;">{{review.comment}}</p>
+  </div>
+</p-card>

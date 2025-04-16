@@ -34,8 +34,10 @@ export class LoginComponent {
   constructor(private router: Router, private authService: AuthService, private messageService: MessageService) {}
 
   login(): void{
-    this.authService.login(this.emailInput.nativeElement.value, this.passwordInput.nativeElement.value).subscribe({next: (response) => {
+    this.authService.login(this.emailInput.nativeElement.value, this.passwordInput.nativeElement.value).subscribe({
+      next: (response) => {
         sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('id', response.id);
         this.router.navigate(['/home']);
       },
       error: (err: Error) => {

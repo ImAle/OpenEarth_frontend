@@ -2,70 +2,64 @@
 
 <div style="padding-top: 6.4vh;"></div>
 
-  <div class="container-fluid">
-    <div class="row" style="height: 80vh;">
-      <!-- Left Side - Form -->
-      <div class="col-md-6" style="display: flex; flex-direction: column; padding: 50px 100px; background-color: #fff;">
-        <div class="my-auto" style="width: 100%; max-width: 400px; padding-top: 24px; padding-bottom: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.3);">
-          <div class="px-4 py-4">
-            <h1 style="font-size: 30px; color: #000; font-weight: bold; margin-bottom: 10px;">Login</h1>
-            <div class="text-center mb-4">
-              <div style="font-size: 22px; margin-bottom: 12px;">Welcome Back</div>
-              <span style="color: #666;">Don't have an account?</span>
-              <a routerLink="/register" style="color: #3B82F6; text-decoration: none; margin-left: 5px;">Create today!</a>
-            </div>
+<div class="position-relative" style="height: calc(100vh - 6.4vh);">
+  <!-- Background Image (full screen) -->
+  <div class="position-absolute w-100 h-100" style="background: url('/login.png') no-repeat center center; background-size: cover; z-index: 0;"></div>
 
-            <!-- Toast for error messages -->
-            <div class="card flex justify-center">
-              <p-toast position="bottom-right" key="err"></p-toast>
-            </div>
-
-            <form>
-              <div class="form-group mb-3">
-                <label for="email" style="font-size: 14px; font-weight: bold; color: #333;" class="mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  class="form-control"
-                  placeholder="Email address"
-                  #emailInput
-                  style="border: none; border-bottom: 1px solid #e7e7e7; border-radius: 0; padding: 9px 5px; min-height: 40px; font-size: 18px;">
-              </div>
-              <div class="form-group mb-4">
-                <label for="password" style="font-size: 14px; font-weight: bold; color: #333;" class="mb-2">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  class="form-control"
-                  placeholder="Enter your password"
-                  #passwordInput
-                  style="border: none; border-bottom: 1px solid #e7e7e7; border-radius: 0; padding: 9px 5px; min-height: 40px; font-size: 18px;">
-              </div>
-
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="form-check">
-                  <p-checkbox id="rememberme" [binary]="true" styleClass="mr-2"></p-checkbox>
-                  <label for="rememberme" class="text-900" style="cursor: pointer; margin-left: 8px;">Remember me</label>
-                </div>
-                <a href="#!" style="color: #3B82F6; text-decoration: none;">Forgot password?</a>
-              </div>
-
-              <button
-                (click)="login()"
-                class="btn w-100"
-                style="padding: 13px 20px; background-color: #3B82F6; border-radius: 0; font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 14px; border: none;">
-                Login
-              </button>
-            </form>
-          </div>
+  <!-- Login Card (centered) -->
+  <div class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center" style="z-index: 1;">
+    <div class="login-card" style="width: 450px; background-color: rgba(255, 255, 255, 0.95); border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);">
+      <div class="px-5 py-4">
+        <h1 class="text-center mb-3" style="font-size: 32px; color: #000; font-weight: bold;">Login</h1>
+        <div class="text-center mb-4">
+          <div style="font-size: 22px; margin-bottom: 12px;">Welcome Back</div>
+          <span style="color: #666;">Don't have an account?</span>
+          <a routerLink="/register" style="color: #3B82F6; text-decoration: none; margin-left: 5px;">Create today!</a>
         </div>
-      </div>
 
-      <!-- Right Side - Image -->
-      <div class="col-md-6 px-0 d-none d-md-block">
-        <div style="background: url('/login.png') no-repeat center center; background-size: cover; height: 100%; width: 100%;"></div>
+        <!-- Toast for error messages -->
+        <p-toast position="bottom-right" key="err"></p-toast>
+
+        <form>
+          <div class="form-group mb-3">
+            <label for="email" style="font-size: 14px; font-weight: bold; color: #333;" class="mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              class="form-control"
+              placeholder="Email address"
+              #emailInput
+              style="border: none; border-bottom: 1px solid #e7e7e7; border-radius: 0; padding: 9px 5px; min-height: 40px; font-size: 18px;">
+          </div>
+          <div class="form-group mb-4">
+            <label for="password" style="font-size: 14px; font-weight: bold; color: #333;" class="mb-2">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              class="form-control"
+              placeholder="Enter your password"
+              #passwordInput
+              style="border: none; border-bottom: 1px solid #e7e7e7; border-radius: 0; padding: 9px 5px; min-height: 40px; font-size: 18px;">
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+              <p-checkbox id="rememberme" [binary]="true" styleClass="mr-2"></p-checkbox>
+              <label for="rememberme" class="text-900" style="cursor: pointer; margin-left: 8px;">Remember me</label>
+            </div>
+            <a href="#!" style="color: #3B82F6; text-decoration: none;">Forgot password?</a>
+          </div>
+
+          <button
+            (click)="login()"
+            class="btn btn-primary w-100"
+            style="padding: 13px 20px; border-radius: 8px; font-size: 20px; font-weight: bold; color: #fff; margin-bottom: 14px; border: none;">
+            Login
+          </button>
+        </form>
       </div>
     </div>
   </div>
+</div>

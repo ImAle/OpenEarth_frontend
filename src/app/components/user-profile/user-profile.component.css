@@ -1,0 +1,17 @@
+/* Additional styles for scrollbars */
+
+/* Hide scrollbar but keep functionality */
+.houses-scroll-container::-webkit-scrollbar,
+.reviews-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hover effect for buttons */
+.scroll-arrow:hover {
+  background-color: #f5f5f5 !important;
+}
+
+/* User card buttons hover effects */
+button:hover {
+  opacity: 0.9;
+}

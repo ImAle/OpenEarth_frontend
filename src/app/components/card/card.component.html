@@ -14,13 +14,12 @@
       </ng-template>
     </p-galleria>
 
-  <!-- También hace clic aquí para ir al detalle -->
+
   <a [routerLink]="['/house', house.id]" style="text-decoration: none;">
     <div class="card-body">
       <h5 class="card-title text-dark">{{house.title}}</h5>
-      <p class="card-text text-muted">{{house.country}}</p>
-      <p class="card-text text-muted">{{house.location}}</p>
-      <p class="card-text text-muted">{{house.price | currency:house.currency:'symbol'}}</p>
+      <p class="card-text text-muted">{{capitalize(house.country)}}, {{house.location}}</p>
+      <p class="card-text text-muted"><span class="text-dark fw-bold">{{house.price | currency:house.currency:'symbol'}}</span> / night </p>
     </div>
   </a>
 

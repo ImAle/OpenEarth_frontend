@@ -14,9 +14,11 @@ export class User {
   houses: House[];
   rents: Rent[];
   reviews: Review[];
+  creationDate : Date;
 
   constructor(id: number, username: string, firstName: string, lastName: string, email: string,
-              role: string, enabled: boolean, picture: string, houses: House[], rents: Rent[], reviews: Review[]) {
+              role: string, enabled: boolean, picture: string, houses: House[], rents: Rent[], reviews: Review[],
+              creationDate: Date) {
     this.id = id;
     this.username = username;
     this.firstName = firstName;
@@ -28,5 +30,7 @@ export class User {
     this.houses = houses;
     this.rents = rents;
     this.reviews = reviews;
+    this.creationDate = creationDate;
+
   }
 }

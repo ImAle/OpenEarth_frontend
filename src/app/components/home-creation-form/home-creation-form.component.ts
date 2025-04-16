@@ -230,6 +230,9 @@ export class HomeCreationFormComponent implements OnInit {
       this.formErrors['images'] = 'At least one image is required';
     }
 
+    console.log("Valid: " + this.houseForm.valid);
+    console.log("Length: " + Object.keys(this.formErrors).length);
+
     return this.houseForm.valid && Object.keys(this.formErrors).length === 0;
   }
 
@@ -248,7 +251,6 @@ export class HomeCreationFormComponent implements OnInit {
         this.validateControl(key);
       });
 
-      return;
     }
 
     const houseData = new HouseCreation(
