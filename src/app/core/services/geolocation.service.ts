@@ -16,8 +16,8 @@ export class GeolocationService {
     return this.http.get(url);
   }
 
-  getCoords(country: string, location: string){
-    const url = `${this.baseUrl}/search?country=${country}&location=${location}`;
+  getCoords(location: string){
+    const url = `${this.baseUrl}/search?location=${location}¡`;
     return this.http.get(url);
   }
 

@@ -57,7 +57,6 @@ export class HomeCreationFormComponent implements OnInit {
       bathrooms: [1, [Validators.required, Validators.min(1)]],
       price: [0, [Validators.required, Validators.min(1)]],
       currency: ['', Validators.required],
-      country: ['', Validators.required],
       location: ['', [Validators.required, Validators.minLength(6)]],
       category: ['', Validators.required],
       latitude: ['', [Validators.required]],
@@ -115,12 +114,6 @@ export class HomeCreationFormComponent implements OnInit {
     this.filteredCurrencies = this.currencies.filter(c =>
       c.toLowerCase().includes(event.query.toLowerCase())
     );
-  }
-
-  // Selection methods
-  onCountrySelect(event: any): void {
-    this.houseForm.controls['country'].setValue(event.value);
-    this.validateControl('country');
   }
 
   onCategorySelect(event: any): void {
@@ -262,7 +255,6 @@ export class HomeCreationFormComponent implements OnInit {
       this.houseForm.value.bathrooms,
       this.houseForm.value.price,
       this.houseForm.value.currency,
-      this.houseForm.value.country,
       this.houseForm.value.location,
       this.houseForm.value.category,
       this.houseForm.value.latitude,

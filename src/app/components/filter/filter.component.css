@@ -1,33 +1,84 @@
-.category-scroll {
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  flex: 1;
-}
+/* Ocultar scrollbar pero mantener la funcionalidad */
 .category-scroll::-webkit-scrollbar {
   display: none;
 }
 
-.category-item {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-right: 1rem;
-  cursor: pointer;
+.category-scroll {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
-.scroll-btn {
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  font-weight: bold;
-  line-height: 1;
-  padding: 0;
+/* Estilos para el texto de las categorías */
+.category-text {
+  white-space: pre-line; /* Permite saltos de línea en el texto */
+  height: auto;
+  min-height: 1.8rem; /* Altura mínima para asegurar espacio para 2 líneas */
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Estilos para los sliders de precio */
+.form-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 18px;
+  height: 18px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+.form-range::-moz-range-thumb {
+  -moz-appearance: none;
+  pointer-events: all;
+  width: 18px;
+  height: 18px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #C6C6C6;
+  cursor: pointer;
+}
+
+.form-range::-webkit-slider-thumb {
+  position: relative;
+  z-index: 3;
+  pointer-events: all;
+}
+
+/* Estilo para la categoría seleccionada */
+.selected-category {
+  font-weight: bold;
+}
+
+/* Mejora para la navegación de categorías */
+#scrollLeft:hover, #scrollRight:hover {
+  background-color: #e9ecef;
+}
+
+/* Ajusta la altura del contenedor de iconos */
+.icon-container {
+  transition: all 0.2s ease;
+}
+
+.category-item:hover .icon-container {
+  transform: scale(1.1);
+}
+
+/* Asegurar que cada categoría tiene espacio adecuado */
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-bottom: 5px; /* Espacio adicional para el indicador */
 }

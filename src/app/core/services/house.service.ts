@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {House} from '../models/house.model';
-import {Observable, throwError} from 'rxjs';
+import {BehaviorSubject, Observable, tap, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {HouseCreation} from '../models/houseCreation.model';
 import {HousePreview} from '../models/housePreview.model';
@@ -15,6 +15,8 @@ import {AuthService} from './auth.service';
 export class HouseService {
 
   baseUrl: string = environment.rootUrl + "/api/house";
+  private filteredHousesSubject = new BehaviorSubject<HousePreview[] | null>(null);
+  public filteredHouses$ = this.filteredHousesSubject.asObservable();
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -44,19 +46,31 @@ export class HouseService {
 
   }
 
+  updateFilteredHouses(houses: HousePreview[] | null) {
+    this.filteredHousesSubject.next(houses);
+  }
+
   // GET /api/house
-  getAll(country?: string, minPrice?: number, maxPrice?: number, beds?: number, guests?: number, category?: string): Observable<any> {
+  getAll(location?: string, minPrice?: number, maxPrice?: number, beds?: number, guests?: number, category?: string): Observable<any> {
     let params = new HttpParams();
 
-    if (country) params.set('country', country);
-    if (minPrice) params.set('minPrice', minPrice);
-    if (maxPrice) params.set('maxPrice', maxPrice);
-    if (beds) params.set('beds', beds);
-    if (guests) params.set('guests', guests);
-    if (category) params.set('category', category);
+    if (location) params = params.append('location', location);
+    if (minPrice !== undefined) params = params.append('minPrice', minPrice.toString());
+    if (maxPrice !== undefined) params = params.append('maxPrice', maxPrice.toString());
+    if (beds !== undefined) params = params.append('beds', beds.toString());
+    if (guests !== undefined) params = params.append('guests', guests.toString());
+    if (category) params = params.append('category', category);
 
-    return this.http.get<HousePreview[]>(this.baseUrl, {params});
+    return this.http.get<any>(this.baseUrl, { params }).pipe(
+      tap(response => {
+        // Updating BehaviorSubject
+        if (response && response.houses) {
+          this.updateFilteredHouses(response.houses);
+        }
+      })
+    );
   }
+
 
   // GET /api/house/details
   getById(id: number): Observable<any> {

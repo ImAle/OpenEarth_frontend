@@ -230,28 +230,6 @@
             <div class="row g-4 mb-4">
               <div class="col-md-6">
                 <div class="form-floating mb-1">
-                  <p-autoComplete
-                    (onSelect)="onCountrySelect($event)"
-                    [dropdown]="true"
-                    [suggestions]="filteredCountries"
-                    (completeMethod)="searchCountries($event)"
-                    formControlName="country"
-                    styleClass="w-100 p-autocomplete-input"
-                    [ngClass]="{'ng-invalid ng-dirty': formErrors['country']}"
-                    inputStyleClass="form-control bg-white"
-                    placeholder="Country"
-                    [style]="{'width':'100%'}"
-                    [inputStyle]="{'width':'100%', 'height':'58px', 'padding-top':'1.625rem', 'padding-bottom':'0.625rem'}" required>
-                  </p-autoComplete>
-                  <label style="pointer-events: none; position: absolute; top: 0; left: 12px; height: 100%; font-size: 12px; padding: 1rem 0.75rem; transform: translateY(-0.5rem); opacity: 0.65;">Country</label>
-                </div>
-                @if (formErrors['country']) {
-                  <div class="text-danger small mb-3">{{ formErrors['country'] }}</div>
-                }
-              </div>
-
-              <div class="col-md-6">
-                <div class="form-floating mb-1">
                   <input formControlName="location" type="text" class="form-control bg-white"
                          [ngClass]="{'is-invalid': formErrors['location']}"
                          id="location" placeholder="Location" readonly>

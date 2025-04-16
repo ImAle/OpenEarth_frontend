@@ -1,16 +1,91 @@
-<div class="fixed-top d-flex align-items-center border-bottom px-3 py-2 bg-white" style="top: calc(8.5vh + 65px); z-index: 1030; margin-bottom: 0.5rem;">
-  <button id="scrollLeft" class="scroll-btn me-2" (click)="scrollLeft()"><</button>
+<div class="fixed-top d-flex align-items-center border-bottom px-3 py-1 bg-white" style="top: calc(8.5vh + 65px); z-index: 1030; height: 70px;">
+  <button id="scrollLeft" class="btn btn-sm btn-light rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" (click)="scrollLeft()">
+    <
+  </button>
 
-  <div id="categoryScroll" class="category-scroll d-flex align-items-center">
+  <div id="categoryScroll" class="category-scroll d-flex align-items-center" style="overflow-x: auto; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none;">
     @for (category of categories; track category) {
-      <div class="category-item d-flex flex-column align-items-center justify-content-center" style="margin-right: 15px; margin-left: 15px;" (click)="onCategorySelected($event)">
-        <fa-icon style="width: 30px; height: 30px;" [icon]="getCategoryIcon(category)"></fa-icon>
-        <div class="text-center" style="font-size: 0.675rem;">{{ category.replace("_"," ") }}</div>
+      <div
+        class="category-item d-flex flex-column align-items-center justify-content-center mx-2 py-1"
+        style="cursor: pointer; min-width: 50px; position: relative;"
+        [class.selected-category]="category === selectedCategory"
+        (click)="toggleCategory(category)">
+        <div class="icon-container d-flex align-items-center justify-content-center" style="width: 34px; height: 34px;">
+          <fa-icon [icon]="getCategoryIcon(category)" size="sm"></fa-icon>
+        </div>
+        <div class="category-text text-center mt-1" style="font-size: 0.7rem; line-height: 0.9rem; max-width: 56px; overflow-wrap: break-word; hyphens: auto;">{{ formatCategoryName(category) }}</div>
+        @if (category === selectedCategory) {
+          <div class="category-indicator" style="position: absolute; bottom: -2px; width: 24px; height: 2px; background-color: #000;"></div>
+        }
       </div>
     }
   </div>
 
-  <button id="scrollRight" class="scroll-btn ms-2" (click)="scrollRight()">&gt;</button>
+  <button id="scrollRight" class="btn btn-sm btn-light rounded-circle ms-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" (click)="scrollRight()">
+    >
+  </button>
 
-  <button class="btn btn-outline-primary ms-3">Filters</button>
+  <div class="position-relative ms-3">
+    <button class="btn btn-outline-primary" (click)="toggleFiltersMenu()">
+      Filters
+      @if (isAnyFilterActive()) {
+        <span class="ms-1 badge rounded-pill bg-primary">{{ getActiveFiltersCount() }}</span>
+      }
+    </button>
+
+    @if (showFiltersMenu) {
+      <div class="filters-menu position-absolute bg-white p-3 rounded-3 shadow-lg" style="top: 45px; right: 0; width: 300px; z-index: 1031;">
+        <h6 class="mb-3">Price Range</h6>
+        <div class="price-range mb-4">
+          <div class="d-flex justify-content-between mb-2">
+            <div class="input-group" style="width: 45%;">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" placeholder="Min" [(ngModel)]="minPrice" (input)="updatePriceInputs()">
+            </div>
+            <div class="input-group" style="width: 45%;">
+              <span class="input-group-text">$</span>
+              <input type="number" class="form-control" placeholder="Max" [(ngModel)]="maxPrice" (input)="updatePriceInputs()">
+            </div>
+          </div>
+          <div class="position-relative">
+            <div class="price-slider-track w-100" style="height: 4px; background-color: #dee2e6; border-radius: 4px; position: absolute; top: 8px;"></div>
+            <div class="price-slider-range" style="height: 4px; background-color: #0d6efd; border-radius: 4px; position: absolute; top: 8px;" [style.left]="minThumbPercent + '%'" [style.width]="(maxThumbPercent - minThumbPercent) + '%'"></div>
+            <input type="range" class="form-range position-absolute start-0 w-100"
+                   style="pointer-events: none; opacity: 0.5; z-index: 1;"
+                   [min]="0" [max]="maxPriceLimit" [(ngModel)]="minSliderValue" (input)="updateFromMinSlider()">
+            <input type="range" class="form-range position-absolute start-0 w-100"
+                   style="pointer-events: none; opacity: 0.5; z-index: 2;"
+                   [min]="0" [max]="maxPriceLimit" [(ngModel)]="maxSliderValue" (input)="updateFromMaxSlider()">
+          </div>
+          <div class="mt-4 pt-1 d-flex justify-content-between">
+            <small>$0</small>
+            <small>${{maxPriceLimit}}+</small>
+          </div>
+        </div>
+
+        <h6 class="mb-2">Beds</h6>
+        <div class="beds-selector mb-3">
+          <div class="input-group">
+            <button class="btn btn-outline-secondary" type="button" (click)="decrementBeds()" [disabled]="beds === 1">-</button>
+            <input type="number" class="form-control text-center" [(ngModel)]="beds" (blur)="validateBeds()" min="1">
+            <button class="btn btn-outline-secondary" type="button" (click)="incrementBeds()">+</button>
+          </div>
+        </div>
+
+        <h6 class="mb-2">Guests</h6>
+        <div class="guests-selector mb-4">
+          <div class="input-group">
+            <button class="btn btn-outline-secondary" type="button" (click)="decrementGuests()" [disabled]="guests === 1">-</button>
+            <input type="number" class="form-control text-center" [(ngModel)]="guests" (blur)="validateGuests()" min="1">
+            <button class="btn btn-outline-secondary" type="button" (click)="incrementGuests()">+</button>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-link" (click)="clearAllFilters()">Clear all</button>
+          <button class="btn btn-dark" (click)="applyFilters()">Show results</button>
+        </div>
+      </div>
+    }
+  </div>
 </div>

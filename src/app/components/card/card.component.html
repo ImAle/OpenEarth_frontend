@@ -18,7 +18,7 @@
   <a [routerLink]="['/house', house.id]" style="text-decoration: none;">
     <div class="card-body">
       <h5 class="card-title text-dark">{{house.title}}</h5>
-      <p class="card-text text-muted">{{capitalize(house.country)}}, {{house.location}}</p>
+      <p class="card-text text-muted">{{house.location}}</p>
       <p class="card-text text-muted"><span class="text-dark fw-bold">{{house.price | currency:house.currency:'symbol'}}</span> / night </p>
     </div>
   </a>

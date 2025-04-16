@@ -27,7 +27,6 @@ export class MapComponent implements OnInit, OnChanges {
 
   constructor(
     private geolocationService: GeolocationService,
-    private houseService: HouseService,
     private environmentInjector: EnvironmentInjector,
     private appRef: ApplicationRef
   ) {}
@@ -94,6 +93,7 @@ export class MapComponent implements OnInit, OnChanges {
         const addressMap = new Map<string, string>(Object.entries(data));
 
         const addressParts = [
+          addressMap.get('country'),
           addressMap.get('state'),
           addressMap.get('city'),
           addressMap.get('city_district'),

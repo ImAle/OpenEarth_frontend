@@ -10,7 +10,6 @@ export class House{
   bathrooms: number;
   price: number;
   currency: string;
-  country: string;
   location: string;
   latitude: number;
   longitude: number;
@@ -22,7 +21,7 @@ export class House{
   reviews: Review[];
 
   constructor(id: number, title: string, description: string, guests: number, beds: number,
-              bathrooms: number, price: number, currency: string, country: string, location: string, latitude: number, longitude: number,
+              bathrooms: number, price: number, currency: string, location: string, latitude: number, longitude: number,
               category: string, status: string, creationDate: string, pictures: string[], owner: UserInfoModel, reviews: Review[]) {
     this.id = id;
     this.title = title;
@@ -32,7 +31,6 @@ export class House{
     this.bathrooms = bathrooms;
     this.price = price;
     this.currency = currency;
-    this.country = country;
     this.location = location;
     this.latitude = latitude;
     this.longitude = longitude;
