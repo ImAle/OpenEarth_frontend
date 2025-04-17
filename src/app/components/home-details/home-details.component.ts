@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {House} from '../../core/models/house.model';
 import {HouseService} from '../../core/services/house.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, RouterOutlet} from '@angular/router';
 import {HeaderComponent} from '../header/header.component';
 import {CommonModule, CurrencyPipe, DatePipe} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -28,14 +28,15 @@ import {response} from 'express';
     CommonModule,
     MapComponent,
     CardComponent,
-    ReviewComponent
+    ReviewComponent,
+    RouterOutlet
   ],
   templateUrl: './home-details.component.html',
   styleUrl: './home-details.component.css',
   standalone: true
 })
 export class HomeDetailsComponent implements OnInit, AfterViewInit {
-  private km: number = 25.0;
+  private km: number = 5.0;
   coords: {latitude: number, longitude: number} = {latitude: 0, longitude: 0};
   house!: House;
   startDate: Date = new Date();
@@ -85,11 +86,10 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     this.minEndDate = new Date(this.startDate);
     this.minEndDate.setDate(this.minEndDate.getDate() + 1);
 
-    const id = this.route.snapshot.paramMap.get('id');
-
-    if (id) {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
       this.getHouseDetails(Number(id));
-    }
+    });
   }
 
   ngAfterViewInit(): void {

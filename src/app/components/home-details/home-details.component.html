@@ -3,12 +3,12 @@
 <div style="padding-top: 8.5vh;"></div>
 
 <!-- Picture Gallery -->
-<div class="container-fluid mt-3">
+<div class="container-fluid mt-3" style="padding-left: 90px; padding-right: 90px;">
   <div class="row">
     <div class="col-12">
       <p-galleria [value]="pictures"
                   [responsiveOptions]="responsiveOptions"
-                  [containerStyle]="{ 'max-width': '100%', 'border-radius': '12px', 'overflow': 'hidden'}"
+                  [containerStyle]="{ 'max-width': '100%', 'border': '0px', 'overflow': 'hidden'}"
                   [numVisible]="5"
                   [showItemNavigators]="true"
                   [showThumbnails]="true"
@@ -123,29 +123,38 @@
         </p>
         <p class="text-muted mb-3">{{startDate | date:'dd MMM yyyy'}} - {{endDate | date:'dd MMM yyyy'}}</p>
 
-        <div class="row">
-          <div class="col-md-6 mb-3 mb-md-0">
-            <p-calendar [(ngModel)]="startDate"
-                        [minDate]="tomorrow"
-                        [showIcon]="true"
-                        dateFormat="dd/mm/yy"
-                        [readonlyInput]="true"
-                        (onSelect)="updateDates()"
-                        styleClass="w-100"></p-calendar>
+        <div class="row calendars-row">
+          <div class="col-md-6 mb-4">
+            <div class="calendar-container" style="margin-bottom: 35vh;">
+              <div class="text-center mb-2">
+                <h5>Check-in</h5>
+              </div>
+              <p-calendar [(ngModel)]="startDate"
+                          [minDate]="tomorrow"
+                          [inline]="true"
+                          [showIcon]="false"
+                          dateFormat="dd/mm/yy"
+                          (onSelect)="updateDates()"
+                          styleClass="w-100"></p-calendar>
+            </div>
           </div>
-          <div class="col-md-6">
-            <p-calendar [(ngModel)]="endDate"
-                        [minDate]="minEndDate"
-                        [showIcon]="true"
-                        dateFormat="dd/mm/yy"
-                        [readonlyInput]="true"
-                        (onSelect)="updateDates()"
-                        styleClass="w-100"></p-calendar>
+          <div class="col-md-6 mb-4">
+            <div class="calendar-container" style="margin-bottom: 35vh;">
+              <div class="text-center mb-2">
+                <h5>Check-out</h5>
+              </div>
+              <p-calendar [(ngModel)]="endDate"
+                          [minDate]="minEndDate"
+                          [inline]="true"
+                          [showIcon]="false"
+                          dateFormat="dd/mm/yy"
+                          (onSelect)="updateDates()"
+                          styleClass="w-100"></p-calendar>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
     <!-- Right Column - Rent Card -->
     <div class="col-lg-4 col-md-5">
       <div class="booking-card p-4 rounded-4 shadow position-sticky" style="top: 100px">
@@ -193,43 +202,45 @@
       </div>
     </div>
   </div>
+  <!-- Back to one column -->
+  <div>
+    <!-- Reviews -->
+    @if (house.reviews && house.reviews.length > 0) {
+      <div class="row mt-5">
+        <div class="col-12">
+          <h3 class="mb-4">
+            <i class="bi bi-star-fill text-warning me-2"></i>
+            Reviews ({{house.reviews.length}})
+          </h3>
 
-  <!-- Reviews -->
-  @if (house.reviews && house.reviews.length > 0) {
-    <div class="row mt-5">
-      <div class="col-12">
-        <h3 class="mb-4">
-          <i class="bi bi-star-fill text-warning me-2"></i>
-          Reviews ({{house.reviews.length}})
-        </h3>
-
-        <div class="position-relative">
-          <div class="d-flex overflow-auto pb-2" #reviewsScroll>
-            @for (review of house.reviews; track review.id) {
-              <div class="me-3" style="min-width: 300px; max-width: 350px;">
-                <app-review [review]="review"></app-review>
-              </div>
+          <div class="position-relative">
+            <div class="d-flex overflow-auto pb-2" #reviewsScroll>
+              @for (review of house.reviews; track review.id) {
+                <div class="me-3" style="min-width: 300px; max-width: 350px;">
+                  <app-review [review]="review"></app-review>
+                </div>
+              }
+            </div>
+            @if (house.reviews.length > 3) {
+              <button class="btn btn-light rounded-circle position-absolute start-0 top-50 translate-middle-y scroll-button" (click)="scrollReviews('left')">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button class="btn btn-light rounded-circle position-absolute end-0 top-50 translate-middle-y scroll-button" (click)="scrollReviews('right')">
+                <i class="bi bi-chevron-right"></i>
+              </button>
             }
           </div>
-          @if (house.reviews.length > 3) {
-            <button class="btn btn-light rounded-circle position-absolute start-0 top-50 translate-middle-y scroll-button" (click)="scrollReviews('left')">
-              <i class="bi bi-chevron-left"></i>
-            </button>
-            <button class="btn btn-light rounded-circle position-absolute end-0 top-50 translate-middle-y scroll-button" (click)="scrollReviews('right')">
-              <i class="bi bi-chevron-right"></i>
-            </button>
-          }
         </div>
       </div>
-    </div>
-  }
+    }
 
-  <!-- Map -->
-  <div class="row mt-5 mb-5">
-    <div class="col-12">
-      <h3 class="mb-3">Where you'll be</h3>
-      <p class="mb-3">{{house.location}}</p>
-      <app-map [coordsByUser]="coords" [title]="house.title"></app-map>
+    <!-- Map -->
+    <div class="row mt-5 mb-5">
+      <div class="col-12">
+        <h3 class="mb-3">Where you'll be</h3>
+        <p class="mb-3">{{house.location}}</p>
+        <app-map [coordsByUser]="coords" [isInteractive]="false" [title]="house.title"></app-map>
+      </div>
     </div>
   </div>
 </div>
