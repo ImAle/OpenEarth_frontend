@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {House} from '../../core/models/house.model';
 import {HouseService} from '../../core/services/house.service';
 import {ActivatedRoute} from '@angular/router';
@@ -13,6 +13,7 @@ import {CardComponent} from '../card/card.component';
 import {ReviewComponent} from '../review/review.component';
 import {HousePreview} from '../../core/models/housePreview.model';
 import {environment} from '../../../environments/environment';
+import {response} from 'express';
 
 @Component({
   selector: 'app-home-details',
@@ -33,7 +34,7 @@ import {environment} from '../../../environments/environment';
   styleUrl: './home-details.component.css',
   standalone: true
 })
-export class HomeDetailsComponent implements OnInit {
+export class HomeDetailsComponent implements OnInit, AfterViewInit {
   private km: number = 25.0;
   coords: {latitude: number, longitude: number} = {latitude: 0, longitude: 0};
   house!: House;
@@ -91,6 +92,13 @@ export class HomeDetailsComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit(): void {
+    this.coords = {
+      latitude: this.house.latitude,
+      longitude: this.house.longitude
+    };
+  }
+
   getHouseDetails(id: number) {
     this.houseService.getById(id).subscribe({
       next: (response: any) => {
@@ -98,10 +106,6 @@ export class HomeDetailsComponent implements OnInit {
         this.setupPictures();
         this.getNearbyHouses();
 
-        this.coords = {
-          latitude: this.house.latitude,
-          longitude: this.house.longitude
-        };
       },
       error: (err: Error) => {
         console.log(err);
