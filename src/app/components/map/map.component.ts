@@ -32,6 +32,7 @@ export class MapComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    console.log("llego: " + this.coordsByUser);
     this.initializeMap();
   }
 

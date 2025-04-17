@@ -1,6 +1,6 @@
-import {House} from './house.model';
 import {Review} from './review.model';
 import {Rent} from './rent.model';
+import {HousePreview} from './housePreview.model';
 
 export class User {
   id: number;
@@ -11,13 +11,13 @@ export class User {
   role: string;
   enabled: boolean;
   picture: string;
-  houses: House[];
+  houses: HousePreview[];
   rents: Rent[];
   reviews: Review[];
   creationDate : Date;
 
   constructor(id: number, username: string, firstName: string, lastName: string, email: string,
-              role: string, enabled: boolean, picture: string, houses: House[], rents: Rent[], reviews: Review[],
+              role: string, enabled: boolean, picture: string, houses: HousePreview[], rents: Rent[], reviews: Review[],
               creationDate: Date) {
     this.id = id;
     this.username = username;

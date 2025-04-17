@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../core/models/user.model';
@@ -14,6 +14,8 @@ import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { HeaderComponent } from '../header/header.component';
 import {Review} from '../../core/models/review.model';
+import {HouseService} from '../../core/services/house.service';
+import {House} from '../../core/models/house.model';
 
 @Component({
   selector: 'app-user-profile',
@@ -52,6 +54,7 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
+    private houseService: HouseService,
     private messageService: MessageService,
   ) {}
 
@@ -169,7 +172,17 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
       this.reviews = this.user.reviews;
 
       if (this.isHostess()) {
-        this.reviews = this.user.houses.flatMap(h => h.reviews);
+        let houses: House[] = [];
+
+        this.user.houses.forEach((house) => {
+          this.houseService.getById(house.id).subscribe(response => {
+            houses.push(response.house);
+          }, err => {
+            console.log(err);
+          })
+        })
+
+        this.reviews = houses.flatMap(h => h.reviews);
       }
 
     }

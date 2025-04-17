@@ -74,6 +74,13 @@ export class HouseService {
     );
   }
 
+  getHousesNearTo(id: number, km: number){
+    const url = this.baseUrl + '/nearTo';
+    const params = new HttpParams().set('id', id).set('km', km);
+
+    return this.http.get(url, {params: params});
+  }
+
 
   // GET /api/house/details
   getById(id: number): Observable<any> {
