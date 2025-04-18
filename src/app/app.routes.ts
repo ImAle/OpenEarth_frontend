@@ -8,6 +8,8 @@ import {HostessGuard} from './auth/hostess.guard';
 import {UserProfileComponent} from './components/user-profile/user-profile.component';
 import {AdminPanelComponent} from './components/admin-panel/admin-panel.component';
 import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
+import {ErrorComponent} from './components/error/error.component';
+import {AdminGuard} from './auth/admin.guard';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -17,6 +19,8 @@ export const routes: Routes = [
   {path: 'house/:id', component: HomeDetailsComponent},
   {path: 'registerHouse', component: HomeCreationFormComponent, canActivate: [HostessGuard]},
   {path: 'user/:id', component: UserProfileComponent},
-  {path: 'admin/panel', component: AdminPanelComponent},
+  {path: 'admin/panel', component: AdminPanelComponent, canActivate: [AdminGuard]},
   {path: 'forgot-password', component: ForgotPasswordComponent},
+  {path: 'error/:code', component: ErrorComponent},
+  {path: '**', component: ErrorComponent} // Error 404 for unknown paths
 ];

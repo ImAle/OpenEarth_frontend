@@ -6,8 +6,8 @@ import {catchError, map, of} from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class HostessGuard implements CanActivate {
-  private allowedRole = "HOSTESS";
+export class AdminGuard implements CanActivate {
+  private allowedRole = "ADMIN";
 
   constructor(private authService: AuthService, private router: Router) {
   }
