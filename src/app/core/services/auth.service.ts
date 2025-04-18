@@ -35,6 +35,7 @@ export class AuthService {
     return this.http.post<any>(url, user);
   }
 
+  // GET /api/auth/role
   getRole(){
     try{
       const url = this.baseUrl + '/role';
@@ -45,6 +46,50 @@ export class AuthService {
       });
 
       return this.http.get<any>(url, {headers});
+    }catch (error: any){
+      console.error(error);
+      return throwError(() => error);
+    }
+  }
+
+  validateResetToken(token: string){
+    try{
+      const url = this.baseUrl + '/validateToken';
+
+      const headers = new HttpHeaders({
+        'Authorization': token
+      })
+
+      return this.http.post(url, null, {headers: headers});
+    }catch (error: any){
+      console.error(error);
+      return throwError(() => error);
+    }
+  }
+
+  requestPasswordReset(email: string){
+    try{
+      const url = this.baseUrl + '/requestReset';
+      const params = new HttpParams().set('email', email);
+
+      return this.http.post(url, null, {params: params});
+    }catch (error: any){
+      console.error(error);
+      return throwError(() => error);
+    }
+  }
+
+  resetPassword(token: string, newPassword: string){
+    try{
+      const url = this.baseUrl + '/resetPassword';
+
+      const headers = new HttpHeaders({
+        'Authorization': token
+      })
+
+      const params = new HttpParams().set('newPassword', newPassword);
+
+      return this.http.post(url, null, {headers: headers, params: params});
     }catch (error: any){
       console.error(error);
       return throwError(() => error);
