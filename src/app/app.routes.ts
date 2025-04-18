@@ -10,6 +10,7 @@ import {AdminPanelComponent} from './components/admin-panel/admin-panel.componen
 import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
 import {ErrorComponent} from './components/error/error.component';
 import {AdminGuard} from './auth/admin.guard';
+import {UserConfigComponent} from './components/user-config/user-config.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -21,6 +22,7 @@ export const routes: Routes = [
   {path: 'user/:id', component: UserProfileComponent},
   {path: 'admin/panel', component: AdminPanelComponent, canActivate: [AdminGuard]},
   {path: 'forgot-password', component: ForgotPasswordComponent},
+  {path: 'configuration', component: UserConfigComponent},
   {path: 'error/:code', component: ErrorComponent},
   {path: '**', component: ErrorComponent} // Error 404 for unknown paths
 ];

@@ -1,49 +1,53 @@
-<header class="fixed-top bg-light">
-<nav class="navbar navbar-expand-lg" style="height: 8.5vh">
-  <div class="container">
-    <!-- Link to main view -->
-    <a class="navbar-brand" [routerLink]="['/home']"><img src="/logo.svg" alt="OpenEarth" style="width: 25px; height: 25px; vertical-align: middle"/> OpenEarth</a>
-    <!-- Button to collapse navbar -->
-    <button class="navbar-toggler" type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarCollapse"
-            aria-controls="navbarCollapse"
-            aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <!-- Navbar elements-->
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav ms-auto">
-        @if(!isLoggedIn){
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/login">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/register">Register</a>
-          </li>
-        }
-        @else{
-          @if (role == "ADMIN") {
+<header class="fixed-top bg-light shadow-sm">
+  <nav class="navbar navbar-expand-lg" style="height: 8.5vh">
+    <div class="container">
+      <!-- logo and title -->
+      <a class="navbar-brand d-flex align-items-center" [routerLink]="['/home']">
+        <img src="/logo.svg" alt="OpenEarth" style="width: 25px; height: 25px; margin-right: 6px"/>
+        <span class="fw-semibold text-primary">OpenEarth</span>
+      </a>
+
+      <!-- Button to collapse navbar -->
+      <button class="navbar-toggler border-0" type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarCollapse"
+              aria-controls="navbarCollapse"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar elements -->
+      <div class="collapse navbar-collapse bg-light p-2 rounded" id="navbarCollapse">
+        <ul class="navbar-nav ms-auto">
+          @if (!isLoggedIn) {
             <li class="nav-item">
-              <a class="nav-link" routerLink="/admin/panel">Panel</a>
+              <a class="nav-link px-2 mx-1 rounded-pill hover-bg-light-subtle" routerLink="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-2 mx-1 btn btn-outline-primary rounded-pill" routerLink="/register">Register</a>
+            </li>
+          } @else {
+            @if (role === "ADMIN") {
+              <li class="nav-item">
+                <a class="nav-link px-2 mx-1 rounded-pill hover-bg-light-subtle" routerLink="/admin/panel">Panel</a>
+              </li>
+            }
+            @if (role === "HOSTESS" || role === "GUEST") {
+              <li class="nav-item">
+                <a class="nav-link px-2 mx-1 rounded-pill hover-bg-light-subtle" routerLink="/configuration">Profile</a>
+              </li>
+            }
+            @if (role === "HOSTESS") {
+              <li class="nav-item">
+                <a class="nav-link px-2 mx-1 rounded-pill hover-bg-light-subtle" routerLink="/registerHouse">Add house</a>
+              </li>
+            }
+            <li class="nav-item">
+              <a class="nav-link px-2 mx-1 text-danger rounded-pill hover-bg-light-subtle" style="cursor: pointer;" (click)="logout()">Log out</a>
             </li>
           }
-          @if(role == "HOSTESS" || role == "GUEST"){
-            <li class="nav-item">
-              <a class="nav-link">Profile</a>
-            </li>
-          }
-          @if(role == "HOSTESS"){
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/registerHouse">Add house</a>
-            </li>
-          }
-          <li class="nav-item">
-            <a class="nav-link" style="cursor: pointer;" (click)="logout()">Log out</a>
-          </li>
-        }
-      </ul>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 </header>
