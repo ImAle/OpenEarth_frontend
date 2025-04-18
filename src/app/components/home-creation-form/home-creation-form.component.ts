@@ -65,18 +65,14 @@ export class HomeCreationFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCountriesAndCategories();
+    this.loadCategories();
 
     setTimeout(() => {
       this.mapComponent?.forceResize();
     }, 300);
   }
 
-  private loadCountriesAndCategories(): void {
-    this.houseService.getCountries().subscribe((data: any) => {
-      this.countries = data.countries;
-    });
-
+  private loadCategories(): void {
     this.houseService.getCategories().subscribe((data: any) => {
       this.categories = data.categories;
     });
@@ -98,11 +94,6 @@ export class HomeCreationFormComponent implements OnInit {
   }
 
   // Autocomplete methods
-  searchCountries(event: any): void {
-    this.filteredCountries = this.countries.filter(c =>
-      c.toLowerCase().includes(event.query.toLowerCase())
-    );
-  }
 
   searchCategories(event: any): void {
     this.filteredCategories = this.categories.filter(c =>

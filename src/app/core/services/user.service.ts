@@ -31,7 +31,7 @@ export class UserService {
   }
 
   // POST /api/user/activate
-  activate(id: string): any {
+  activate(id: number): any {
     try{
       const url: string = this.baseUrl + '/activate';
       const token: string = this.authService.retrieveToken();
@@ -42,15 +42,14 @@ export class UserService {
 
       const params = new HttpParams().set('id', id);
 
-      return this.http.post<any>(url, {headers: headers, params: params});
+      return this.http.post<any>(url,null, {headers: headers, params: params});
     }catch(error){
-      console.error(error);
       return throwError(() => error);
     }
   }
 
   // POST /api/user/deactivate
-  deactivate(id: string) : any {
+  deactivate(id: number) : any {
     try{
       const url: string = this.baseUrl + '/deactivate';
       const token: string = this.authService.retrieveToken();
@@ -58,11 +57,11 @@ export class UserService {
       const headers = new HttpHeaders({
         'Authorization': token
       });
+
       const params = new HttpParams().set('id', id);
 
-      return this.http.post<any>(url, {headers: headers, params: params});
+      return this.http.post<any>(url, null, {headers: headers, params: params});
     }catch (error){
-      console.error(error);
       return throwError(() => error);
     }
 
@@ -74,7 +73,7 @@ export class UserService {
 
     const params = new HttpParams().set('id', id);
 
-    return this.http.get<any>(url, {params});
+    return this.http.get<any>(url, {params: params});
   }
 
   // PUT /api/user/update

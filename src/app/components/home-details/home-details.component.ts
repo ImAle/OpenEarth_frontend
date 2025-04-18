@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {House} from '../../core/models/house.model';
 import {HouseService} from '../../core/services/house.service';
-import {ActivatedRoute, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {HeaderComponent} from '../header/header.component';
 import {CommonModule, CurrencyPipe, DatePipe} from '@angular/common';
 import {FormsModule} from '@angular/forms';
@@ -13,7 +13,6 @@ import {CardComponent} from '../card/card.component';
 import {ReviewComponent} from '../review/review.component';
 import {HousePreview} from '../../core/models/housePreview.model';
 import {environment} from '../../../environments/environment';
-import {response} from 'express';
 
 @Component({
   selector: 'app-home-details',
@@ -29,7 +28,7 @@ import {response} from 'express';
     MapComponent,
     CardComponent,
     ReviewComponent,
-    RouterOutlet
+    RouterLink
   ],
   templateUrl: './home-details.component.html',
   styleUrl: './home-details.component.css',

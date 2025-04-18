@@ -42,7 +42,7 @@ export class ReportService {
         'Authorization': token,
       });
 
-      return this.http.post(this.baseUrl, {headers});
+      return this.http.get(this.baseUrl, {headers});
     }catch(error){
       console.error(error);
       return throwError(() => error);
@@ -69,7 +69,7 @@ export class ReportService {
   }
 
   // DELETE /api/report/delete
-  delete(id: string): Observable<any>{
+  delete(id: number): Observable<any>{
     try{
       const url = this.baseUrl + '/delete';
       const token: string = this.authService.retrieveToken();

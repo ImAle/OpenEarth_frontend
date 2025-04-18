@@ -1,0 +1,322 @@
+<app-header/>
+
+<div style="padding-top: 8.5vh;"></div>
+
+<div class="container my-4">
+  <h2 class="mb-4">Admin Panel</h2>
+
+  <!-- Error alert -->
+  @if (error()) {
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ error() }}
+      <button type="button" class="btn-close" (click)="dismissError()" aria-label="Close"></button>
+    </div>
+  }
+
+  <!-- Users Section -->
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">User Management</h3>
+      <div class="d-flex align-items-center">
+        <div class="input-group me-3" style="width: 300px;">
+          <span class="input-group-text">
+            <i class="bi bi-search"></i>
+          </span>
+          @if(allUsers().length > 0){
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Filter by username"
+              [(ngModel)]="usernameFilter"
+              (input)="applyUserFilter()"
+            >
+          } @else {
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Loading users..."
+              disabled
+            >
+          }
+        </div>
+        <select class="form-select" style="width: 200px;" [(ngModel)]="usersPerPage" (change)="resetUserPagination()">
+          <option [value]="10">10 per page</option>
+          <option [value]="20">20 per page</option>
+          <option [value]="50">50 per page</option>
+          <option [value]="100">100 per page</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-body">
+      @if (loading()) {
+        <div class="loading-spinner">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+              <th>Username</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (user of displayedUsers(); track user.id) {
+                <tr>
+                  <td>
+                    <a [routerLink]="['/user', user.id]">{{ user.username }}</a>
+                  </td>
+                  <td>{{ user.firstName }}</td>
+                  <td>{{ user.lastName }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="user.role === 'admin' ? 'bg-danger' : 'bg-primary'">
+                      {{ user.role }}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-sm"
+                      [ngClass]="user.enabled ? 'btn-danger' : 'btn-success'"
+                      (click)="toggleUserStatus(user)"
+                      [disabled]="processingUser() === user.id"
+                    >
+                      @if (processingUser() === user.id) {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                      } @else {
+                        {{ user.enabled ? 'Disable' : 'Enable' }}
+                      }
+                    </button>
+                  </td>
+                </tr>
+              }
+              @empty {
+                <tr>
+                  <td colspan="6" class="text-center py-3">No users found</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- User Pagination -->
+        @if (totalUserPages() > 1) {
+          <nav>
+            <ul class="pagination justify-content-center">
+              <li class="page-item" [class.disabled]="currentUserPage() === 1">
+                <button class="page-link" (click)="goToUserPage(currentUserPage() - 1)">Previous</button>
+              </li>
+              @for (page of userPagesArray(); track page) {
+                @if (page === '...') {
+                  <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                } @else {
+                  <li class="page-item" [class.active]="page === currentUserPage()">
+                    <button class="page-link" (click)="goToUserPage(page)">{{ page }}</button>
+                  </li>
+                }
+              }
+              <li class="page-item" [class.disabled]="currentUserPage() === totalUserPages()">
+                <button class="page-link" (click)="goToUserPage(currentUserPage() + 1)">Next</button>
+              </li>
+            </ul>
+          </nav>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Reports Section -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">User Reports</h3>
+      <div class="d-flex align-items-center">
+        <select class="form-select" style="width: 200px;" [(ngModel)]="reportsPerPage" (change)="resetReportPagination()">
+          <option [value]="10">10 per page</option>
+          <option [value]="20">20 per page</option>
+          <option [value]="50">50 per page</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-body">
+      @if (loadingReports()) {
+        <div class="loading-spinner">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+              <th>From User</th>
+              <th>To User</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (report of displayedReports(); track report.id) {
+                <tr>
+                  <td>{{ findUserById(report.reporterId)?.username || 'Unknown user' }}</td>
+                  <td>{{ findUserById(report.reportedId)?.username || 'Unknown user' }}</td>
+                  <td style="white-space: nowrap;">
+                    <button
+                      class="btn btn-sm btn-info me-2"
+                      (click)="openReportModal(report)"
+                    >
+                      View Report
+                    </button>
+                    <button
+                      class="btn btn-sm btn-danger"
+                      (click)="deleteReport(report)"
+                      [disabled]="processingReport() === report.id"
+                    >
+                      @if (processingReport() === report.id) {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                      } @else {
+                        Delete
+                      }
+                    </button>
+                  </td>
+                </tr>
+              }
+              @empty {
+                <tr>
+                  <td colspan="3" class="text-center py-3">No reports found</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Report Pagination -->
+        @if (totalReportPages() > 1) {
+          <nav>
+            <ul class="pagination justify-content-center">
+              <li class="page-item" [class.disabled]="currentReportPage() === 1">
+                <button class="page-link" (click)="goToReportPage(currentReportPage() - 1)">Previous</button>
+              </li>
+              @for (page of reportPagesArray(); track page) {
+                @if (page === '...') {
+                  <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                } @else {
+                  <li class="page-item" [class.active]="page === currentReportPage()">
+                    <button class="page-link" (click)="goToReportPage(page)">{{ page }}</button>
+                  </li>
+                }
+              }
+              <li class="page-item" [class.disabled]="currentReportPage() === totalReportPages()">
+                <button class="page-link" (click)="goToReportPage(currentReportPage() + 1)">Next</button>
+              </li>
+            </ul>
+          </nav>
+        }
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Custom Modal -->
+@if (showModal()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4 style="margin: 0; font-weight: 600;">Report Details</h4>
+        <button type="button" class="close-button" aria-label="Close" (click)="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        @if (selectedReport()) {
+          <div class="card" style="box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+            <div class="card-body">
+              <div class="mb-3">
+                <strong style="color: #495057;">Reporter:</strong>
+                @if (findUserById(selectedReport()!.reporterId)) {
+                  <div class="d-flex align-items-center mt-1">
+                    @if (findUserById(selectedReport()!.reporterId)?.picture) {
+                      <img
+                        [src]="findUserById(selectedReport()!.reporterId)?.picture"
+                        alt="Reporter"
+                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;"
+                      >
+                    } @else {
+                      <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                        <span style="font-weight: bold; color: #6c757d;">{{ getUserInitial(selectedReport()!.reporterId) }}</span>
+                      </div>
+                    }
+                    <div>
+                      <div style="font-weight: 500;">{{ findUserById(selectedReport()!.reporterId)?.username }}</div>
+                      <div style="font-size: 0.875rem; color: #6c757d;">{{ findUserById(selectedReport()!.reporterId)?.email }}</div>
+                    </div>
+                  </div>
+                } @else {
+                  <div style="color: #6c757d;">Unknown user</div>
+                }
+              </div>
+
+              <div class="mb-3">
+                <strong style="color: #495057;">Reported User:</strong>
+                @if (findUserById(selectedReport()!.reportedId)) {
+                  <div class="d-flex align-items-center mt-1">
+                    @if (findUserById(selectedReport()!.reportedId)?.picture) {
+                      <img
+                        [src]="findUserById(selectedReport()!.reportedId)?.picture"
+                        alt="Reported User"
+                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;"
+                      >
+                    } @else {
+                      <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
+                        <span style="font-weight: bold; color: #6c757d;">{{ getUserInitial(selectedReport()!.reportedId) }}</span>
+                      </div>
+                    }
+                    <div>
+                      <div style="font-weight: 500;">{{ findUserById(selectedReport()!.reportedId)?.username }}</div>
+                      <div style="font-size: 0.875rem; color: #6c757d;">{{ findUserById(selectedReport()!.reportedId)?.email }}</div>
+                    </div>
+                  </div>
+                } @else {
+                  <div style="color: #6c757d;">Unknown user</div>
+                }
+              </div>
+
+              <div>
+                <strong style="color: #495057;">Report Description:</strong>
+                <p style="margin-top: 10px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; border-left: 4px solid #007bff;">
+                  {{ selectedReport()!.comment || 'No description provided.' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-danger me-2"
+          (click)="deleteReport(selectedReport()!)"
+          [disabled]="processingReport() === selectedReport()?.id"
+        >
+          @if (processingReport() === selectedReport()?.id) {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading...</span>
+          } @else {
+            Delete Report
+          }
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+}

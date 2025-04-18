@@ -102,12 +102,6 @@ export class HouseService {
     return this.http.get<string[]>(url);
   }
 
-  // GET /api/house/countries
-  getCountries(): Observable<any>{
-    const url = this.baseUrl + '/countries';
-    return this.http.get<string[]>(url);
-  }
-
   //PUT /api/house/update
   update(id: number, house: HouseUpdate, newPictures: File[]): Observable<any>{
     try{

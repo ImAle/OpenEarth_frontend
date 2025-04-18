@@ -6,6 +6,7 @@ import {HomeDetailsComponent} from './components/home-details/home-details.compo
 import {HomeCreationFormComponent} from './components/home-creation-form/home-creation-form.component';
 import {HostessGuard} from './auth/hostess.guard';
 import {UserProfileComponent} from './components/user-profile/user-profile.component';
+import {AdminPanelComponent} from './components/admin-panel/admin-panel.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -14,5 +15,6 @@ export const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'house/:id', component: HomeDetailsComponent},
   {path: 'registerHouse', component: HomeCreationFormComponent, canActivate: [HostessGuard]},
-  {path: 'user/:id', component: UserProfileComponent}
+  {path: 'user/:id', component: UserProfileComponent},
+  {path: 'admin/panel', component: AdminPanelComponent},
 ];
