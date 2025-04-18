@@ -6,35 +6,59 @@
 <p-toast position="bottom-right" key="errorM"></p-toast>
 <p-toast position="bottom-right" key="successM"></p-toast>
 
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-10">
-      <h3 class="mb-4 fw-bold text-primary">Register New Property</h3>
+<div class="registration-container vh-100">
+  <!-- Progress indicator -->
+  <div class="progress-container container mt-4">
+    <div class="d-flex justify-content-between position-relative mb-4">
+      <div class="progress position-absolute" style="width: 100%; height: 2px; top: 50%; transform: translateY(-50%); z-index: 1;">
+        <div class="progress-bar bg-primary" [style.width]="(currentStep / 4 * 100) + '%'"></div>
+      </div>
 
-      <div class="card shadow border-0" style="border-radius: 12px; background-color: #f8f9fa;">
-        <div class="card-body p-4">
-          <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
-            <!-- Form sections with visual dividers -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <h5 class="text-primary mb-3 fw-bold border-bottom pb-2">Basic Information</h5>
-              </div>
-            </div>
+      @for (step of [1, 2, 3, 4]; track step) {
+        <div class="step-indicator position-relative z-index-2 d-flex flex-column align-items-center"
+             [class.active]="currentStep >= step"
+             [class.completed]="currentStep > step">
+          <div class="step-circle rounded-circle d-flex align-items-center justify-content-center"
+               [class.bg-primary]="currentStep >= step"
+               [class.bg-light]="currentStep < step"
+              style="width: 25px;">
+            @if (currentStep > step) {
+              <i class="bi bi-check-lg text-white"></i>
+            } @else {
+              <span [class.text-white]="currentStep >= step">{{step}}</span>
+            }
+          </div>
+          <span class="step-text small mt-2" [class.text-primary]="currentStep >= step">
+            {{ getStepName(step) }}
+          </span>
+        </div>
+      }
+    </div>
+  </div>
 
-            <div class="row g-4">
-              <div class="col-md-6">
+  <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
+    <!-- Step 1: Basic Information -->
+    @if (currentStep === 1) {
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-md-6 p-4 p-md-5">
+            <div class="step-content">
+              <h3 class="text-primary fw-bold mb-4">Basic Information</h3>
+              <p class="text-muted mb-4">Let's start with some basic details about your property.</p>
+
+              <div class="mb-4">
                 <div class="form-floating mb-1">
-                  <input formControlName="title" type="text" class="form-control bg-white"
+                  <input formControlName="title" type="text" class="form-control"
                          [ngClass]="{'is-invalid': formErrors['title']}"
                          id="title" placeholder="Title" required>
                   <label for="title">Title</label>
                 </div>
                 @if (formErrors['title']) {
-                  <div class="text-danger small mb-3">{{ formErrors['title'] }}</div>
+                  <div class="text-danger small">{{ formErrors['title'] }}</div>
                 }
               </div>
 
-              <div class="col-md-6">
+              <div class="mb-4">
                 <div class="form-floating mb-1">
                   <p-autoComplete
                     (onSelect)="onCategorySelect($event)"
@@ -44,7 +68,7 @@
                     formControlName="category"
                     styleClass="w-100 p-autocomplete-input"
                     [ngClass]="{'ng-invalid ng-dirty': formErrors['category']}"
-                    inputStyleClass="form-control bg-white"
+                    inputStyleClass="form-control"
                     placeholder="Category"
                     [style]="{'width':'100%'}"
                     [inputStyle]="{'width':'100%', 'height':'58px', 'padding-top':'1.625rem', 'padding-bottom':'0.625rem'}" required>
@@ -52,223 +76,285 @@
                   <label style="pointer-events: none; position: absolute; top: 0; left: 12px; height: 100%; font-size: 12px; padding: 1rem 0.75rem; transform: translateY(-0.5rem); opacity: 0.65;">Category</label>
                 </div>
                 @if (formErrors['category']) {
-                  <div class="text-danger small mb-3">{{ formErrors['category'] }}</div>
+                  <div class="text-danger small">{{ formErrors['category'] }}</div>
                 }
               </div>
 
-              <div class="col-12">
+              <div class="mb-4">
                 <div class="form-floating mb-1">
-                  <textarea formControlName="description" class="form-control bg-white"
+                  <textarea formControlName="description" class="form-control"
                             [ngClass]="{'is-invalid': formErrors['description']}"
                             id="description" placeholder="Description" style="height: 120px" required></textarea>
                   <label for="description">Description</label>
                 </div>
                 @if (formErrors['description']) {
-                  <div class="text-danger small mb-3">{{ formErrors['description'] }}</div>
+                  <div class="text-danger small">{{ formErrors['description'] }}</div>
                 }
+              </div>
+
+              <div class="d-flex justify-content-end mt-5">
+                <button type="button" class="btn btn-primary px-4 py-2" (click)="goToNextStep()">
+                  Next <i class="bi bi-arrow-right ms-2"></i>
+                </button>
               </div>
             </div>
-
-            <!-- Capacity Section -->
-            <div class="row mt-5 mb-4">
-              <div class="col-12">
-                <h5 class="text-primary mb-3 fw-bold border-bottom pb-2">Capacity & Amenities</h5>
-              </div>
+          </div>
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+            <div class="text-center">
+              <!--<video autoplay style="height: 650px; width: 1500px;">
+                <source src="https://stream.media.muscache.com/H0101WTUG2qWbyFhy02jlOggSkpsM9H02VOWN52g02oxhDVM.mp4?v_q=high">
+              </video>-->
+              <img src="/houseCreation1.jpg" alt="Basic Information" class="img-fluid" style="max-height: 400px;">
+              <h4 class="mt-4 text-primary">Start your journey</h4>
+              <p class="text-muted px-4">Begin by sharing the essential details of your property</p>
             </div>
+          </div>
+        </div>
+      </div>
+    }
 
-            <div class="row g-4">
-              <div class="col-md-3">
-                <div class="form-floating mb-1">
-                  <input formControlName="guests" type="number" class="form-control bg-white"
-                         [ngClass]="{'is-invalid': formErrors['guests']}"
-                         id="guests" placeholder="Guests" required>
-                  <label for="guests">Guests</label>
-                </div>
-                @if (formErrors['guests']) {
-                  <div class="text-danger small mb-3">{{ formErrors['guests'] }}</div>
-                }
-              </div>
-
-              <div class="col-md-3">
-                <div class="form-floating mb-1">
-                  <input formControlName="bedrooms" type="number" class="form-control bg-white"
-                         [ngClass]="{'is-invalid': formErrors['bedrooms']}"
-                         id="bedrooms" placeholder="Bedrooms" required>
-                  <label for="bedrooms">Bedrooms</label>
-                </div>
-                @if (formErrors['bedrooms']) {
-                  <div class="text-danger small mb-3">{{ formErrors['bedrooms'] }}</div>
-                }
-              </div>
-
-              <div class="col-md-3">
-                <div class="form-floating mb-1">
-                  <input formControlName="beds" type="number" class="form-control bg-white"
-                         [ngClass]="{'is-invalid': formErrors['beds']}"
-                         id="beds" placeholder="Beds" required>
-                  <label for="beds">Beds</label>
-                </div>
-                @if (formErrors['beds']) {
-                  <div class="text-danger small mb-3">{{ formErrors['beds'] }}</div>
-                }
-              </div>
-
-              <div class="col-md-3">
-                <div class="form-floating mb-1">
-                  <input formControlName="bathrooms" type="number" class="form-control bg-white"
-                         [ngClass]="{'is-invalid': formErrors['bathrooms']}"
-                         id="bathrooms" placeholder="Bathrooms" required>
-                  <label for="bathrooms">Bathrooms</label>
-                </div>
-                @if (formErrors['bathrooms']) {
-                  <div class="text-danger small mb-3">{{ formErrors['bathrooms'] }}</div>
-                }
-              </div>
+    <!-- Step 2: Capacity & Amenities -->
+    @if (currentStep === 2) {
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+            <div class="text-center">
+              <img src="/houseCreation2.jpg" alt="Capacity & Amenities" class="img-fluid" style="max-height: 400px;">
+              <h4 class="mt-4 text-primary">Comfort Details</h4>
+              <p class="text-muted px-4">Tell us about the capacity and features of your property</p>
             </div>
+          </div>
+          <div class="col-md-6 p-4 p-md-5">
+            <div class="step-content">
+              <h3 class="text-primary fw-bold mb-4">Capacity & Amenities</h3>
+              <p class="text-muted mb-4">How many people can stay comfortably at your property?</p>
 
-            <!-- Price Section -->
-            <div class="row mt-5 mb-4">
-              <div class="col-12">
-                <h5 class="text-primary mb-3 fw-bold border-bottom pb-2">Pricing</h5>
-              </div>
-            </div>
-
-            <div class="row g-4">
-              <div class="col-md-6">
-                <div class="form-floating mb-1">
-                  <input formControlName="price" type="number" class="form-control bg-white"
-                         [ngClass]="{'is-invalid': formErrors['price']}"
-                         id="price" placeholder="Price" required>
-                  <label for="price">Price</label>
-                </div>
-                @if (formErrors['price']) {
-                  <div class="text-danger small mb-3">{{ formErrors['price'] }}</div>
-                }
-              </div>
-
-              <div class="col-md-6">
-                <div class="form-floating mb-1">
-                  <p-autoComplete
-                    (onSelect)="onCurrencySelect($event)"
-                    [dropdown]="true"
-                    [suggestions]="filteredCurrencies"
-                    (completeMethod)="searchCurrency($event)"
-                    formControlName="currency"
-                    styleClass="w-100 p-autocomplete-input"
-                    [ngClass]="{'ng-invalid ng-dirty': formErrors['currency']}"
-                    inputStyleClass="form-control bg-white"
-                    placeholder="Currency"
-                    [style]="{'width':'100%'}"
-                    [inputStyle]="{'width':'100%', 'height':'58px', 'padding-top':'1.625rem', 'padding-bottom':'0.625rem'}" required>
-                  </p-autoComplete>
-                  <label style="pointer-events: none; position: absolute; top: 0; left: 12px; height: 100%; font-size: 12px; padding: 1rem 0.75rem; transform: translateY(-0.5rem); opacity: 0.65;">Currency</label>
-                </div>
-                @if (formErrors['currency']) {
-                  <div class="text-danger small mb-3">{{ formErrors['currency'] }}</div>
-                }
-              </div>
-            </div>
-
-            <!-- Photos Section -->
-            <div class="row mt-5 mb-4">
-              <div class="col-12">
-                <h5 class="text-primary mb-3 fw-bold border-bottom pb-2">Property Photos</h5>
-              </div>
-            </div>
-
-            <!-- Image upload area -->
-            <div class="row">
-              <div class="col-12">
-                <div class="image-upload border border-2 border-dashed rounded-3 p-5 text-center mt-3 mb-3 position-relative"
-                     [class.dragging]="isDragging"
-                     [ngClass]="{
-                       'bg-white border-primary': isDragging,
-                       'bg-white border-secondary': !isDragging && !formErrors['images'],
-                       'bg-white border-danger': formErrors['images']
-                     }"
-                     (dragover)="onDragOver($event)"
-                     (dragleave)="onDragLeave($event)"
-                     (drop)="onDrop($event)"
-                     style="transition: all 0.3s ease-in-out;">
-                  <div class="py-3">
-                    <i class="bi bi-cloud-upload" style="font-size: 48px; color: #6c757d;"></i>
-                    <h5 class="mt-3">Drag & Drop Images Here</h5>
-                    <p class="text-muted">or click below to browse from your device</p>
-                    <button type="button" class="btn btn-outline-secondary mt-2" onclick="document.getElementById('fileInput').click()">Select Images</button>
-                    <input type="file" id="fileInput" (change)="onFileSelect($event)" multiple accept="image/*" class="form-control d-none" />
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="guests" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['guests']}"
+                           id="guests" placeholder="Guests" required>
+                    <label for="guests">Guests</label>
                   </div>
+                  @if (formErrors['guests']) {
+                    <div class="text-danger small">{{ formErrors['guests'] }}</div>
+                  }
                 </div>
-                @if (formErrors['images']) {
-                  <div class="text-danger small mb-3">{{ formErrors['images'] }}</div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="bedrooms" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['bedrooms']}"
+                           id="bedrooms" placeholder="Bedrooms" required>
+                    <label for="bedrooms">Bedrooms</label>
+                  </div>
+                  @if (formErrors['bedrooms']) {
+                    <div class="text-danger small">{{ formErrors['bedrooms'] }}</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="beds" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['beds']}"
+                           id="beds" placeholder="Beds" required>
+                    <label for="beds">Beds</label>
+                  </div>
+                  @if (formErrors['beds']) {
+                    <div class="text-danger small">{{ formErrors['beds'] }}</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="bathrooms" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['bathrooms']}"
+                           id="bathrooms" placeholder="Bathrooms" required>
+                    <label for="bathrooms">Bathrooms</label>
+                  </div>
+                  @if (formErrors['bathrooms']) {
+                    <div class="text-danger small">{{ formErrors['bathrooms'] }}</div>
+                  }
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-5">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2" (click)="goToPreviousStep()">
+                  <i class="bi bi-arrow-left me-2"></i> Back
+                </button>
+                <button type="button" class="btn btn-primary px-4 py-2" (click)="goToNextStep()">
+                  Next <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Step 3: Pricing and Photos -->
+    @if (currentStep === 3) {
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-md-6 p-4 p-md-5">
+            <div class="step-content">
+              <h3 class="text-primary fw-bold mb-4">Pricing & Photos</h3>
+              <p class="text-muted mb-4">Set your price and upload attractive photos of your property.</p>
+
+              <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="price" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['price']}"
+                           id="price" placeholder="Price" required>
+                    <label for="price">Price</label>
+                  </div>
+                  @if (formErrors['price']) {
+                    <div class="text-danger small">{{ formErrors['price'] }}</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <p-autoComplete
+                      (onSelect)="onCurrencySelect($event)"
+                      [dropdown]="true"
+                      [suggestions]="filteredCurrencies"
+                      (completeMethod)="searchCurrency($event)"
+                      formControlName="currency"
+                      styleClass="w-100 p-autocomplete-input"
+                      [ngClass]="{'ng-invalid ng-dirty': formErrors['currency']}"
+                      inputStyleClass="form-control"
+                      placeholder="Currency"
+                      [style]="{'width':'100%'}"
+                      [inputStyle]="{'width':'100%', 'height':'58px', 'padding-top':'1.625rem', 'padding-bottom':'0.625rem'}" required>
+                    </p-autoComplete>
+                    <label style="pointer-events: none; position: absolute; top: 0; left: 12px; height: 100%; font-size: 12px; padding: 1rem 0.75rem; transform: translateY(-0.5rem); opacity: 0.65;">Currency</label>
+                  </div>
+                  @if (formErrors['currency']) {
+                    <div class="text-danger small">{{ formErrors['currency'] }}</div>
+                  }
+                </div>
+              </div>
+
+              <!-- Image upload area -->
+              <div class="image-upload border border-2 border-dashed rounded-3 p-4 text-center mt-4 mb-3 position-relative"
+                   [class.dragging]="isDragging"
+                   [ngClass]="{
+                     'bg-white border-primary': isDragging,
+                     'bg-white border-secondary': !isDragging && !formErrors['images'],
+                     'bg-white border-danger': formErrors['images']
+                   }"
+                   (dragover)="onDragOver($event)"
+                   (dragleave)="onDragLeave($event)"
+                   (drop)="onDrop($event)"
+                   style="transition: all 0.3s ease-in-out;">
+                <div class="py-3">
+                  <i class="bi bi-cloud-upload" style="font-size: 36px; color: #6c757d;"></i>
+                  <h5 class="mt-2">Drag & Drop Images Here</h5>
+                  <p class="text-muted small">or click below to browse from your device</p>
+                  <button type="button" class="btn btn-outline-secondary mt-1" onclick="document.getElementById('fileInput').click()">Select Images</button>
+                  <input type="file" id="fileInput" (change)="onFileSelect($event)" multiple accept="image/*" class="form-control d-none" />
+                </div>
+              </div>
+              @if (formErrors['images']) {
+                <div class="text-danger small mb-3">{{ formErrors['images'] }}</div>
+              }
+
+              <div class="preview d-flex flex-wrap mt-3 mb-4 gap-2">
+                @for (image of imagePreviews; track image; let i = $index) {
+                  <div class="image-container position-relative"
+                       (mouseover)="showDeleteButton[i] = true"
+                       (mouseleave)="showDeleteButton[i] = false">
+                    <img [src]="image" alt="property image" class="rounded shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                            (click)="removeImage(i)"
+                            [style.opacity]="showDeleteButton[i] ? '1' : '0'"
+                            style="transition: opacity 0.2s; width: 20px; height: 20px; font-size: 14px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                      &times;
+                    </button>
+                  </div>
                 }
               </div>
-            </div>
 
-            <div class="preview d-flex flex-wrap mt-3 mb-4 gap-2">
-              @for (image of imagePreviews; track image; let i = $index) {
-                <div class="image-container position-relative"
-                     (mouseover)="showDeleteButton[i] = true"
-                     (mouseleave)="showDeleteButton[i] = false">
-                  <img [src]="image" alt="image" class="rounded shadow-sm" style="width: 120px; height: 120px; object-fit: cover;">
-                  <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle"
-                          (click)="removeImage(i)"
-                          [style.opacity]="showDeleteButton[i] ? '1' : '0'"
-                          style="transition: opacity 0.2s; width: 24px; height: 24px; font-size: 18px; display: flex; align-items: center; justify-content: center; padding: 0;">
-                    &times;
-                  </button>
-                </div>
-              }
-            </div>
-
-            <!-- Location Section -->
-            <div class="row mt-5 mb-4">
-              <div class="col-12">
-                <h5 class="text-primary mb-3 fw-bold border-bottom pb-2">Location Information</h5>
+              <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2" (click)="goToPreviousStep()">
+                  <i class="bi bi-arrow-left me-2"></i> Back
+                </button>
+                <button type="button" class="btn btn-primary px-4 py-2" (click)="goToNextStep()">
+                  Next <i class="bi bi-arrow-right ms-2"></i>
+                </button>
               </div>
             </div>
+          </div>
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+            <div class="text-center">
+              <img src="/houseCreation3.jpg" alt="Pricing & Photos" class="img-fluid" style="max-height: 400px;">
+              <h4 class="mt-4 text-primary">Show it off</h4>
+              <p class="text-muted px-4">Set the right price and upload great photos to attract guests</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
 
-            <div class="row g-4 mb-4">
-              <div class="col-md-6">
-                <div class="form-floating mb-1">
-                  <input formControlName="location" type="text" class="form-control bg-white"
+    <!-- Step 4: Location Information -->
+    @if (currentStep === 4) {
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+            <div class="text-center">
+              <img src="/houseCreation4.jpg" alt="Location Information" class="img-fluid" style="max-height: 400px;">
+              <h4 class="mt-4 text-primary">Perfect Location</h4>
+              <p class="text-muted px-4">Help guests find your property by setting its exact location</p>
+            </div>
+          </div>
+          <div class="col-md-6 p-4 p-md-5">
+            <div class="step-content">
+              <h3 class="text-primary fw-bold mb-4">Location Information</h3>
+              <p class="text-muted mb-4">Select your property's location on the map.</p>
+
+              <div class="mb-4">
+                <div class="form-floating mb-2">
+                  <input formControlName="location" type="text" class="form-control"
                          [ngClass]="{'is-invalid': formErrors['location']}"
                          id="location" placeholder="Location" readonly>
                   <label for="location">Location</label>
                 </div>
                 @if (formErrors['location']) {
-                  <div class="text-danger small mb-3">{{ formErrors['location'] }}</div>
+                  <div class="text-danger small">{{ formErrors['location'] }}</div>
                 }
               </div>
 
-              <div class="col-12">
-                <div class="card shadow-sm border-0 rounded-3 overflow-hidden"
-                     [ngClass]="{'border border-danger': formErrors['latitude'] || formErrors['longitude']}">
-                  <div class="card-body p-0">
-                    <app-map [isInteractive]="true"
-                             (addressSelected)="onAddressReceived($event)"
-                             [coordsByUser]="coords"
-                             (coords)="setCoords($event)"
-                             style="height: 400px; width: 100%;"/>
-                  </div>
+              <div class="card shadow-sm border rounded-3 overflow-hidden mb-4"
+                   [ngClass]="{'border-danger': formErrors['latitude'] || formErrors['longitude']}">
+                <div class="card-body p-0">
+                  <app-map [isInteractive]="true"
+                           (addressSelected)="onAddressReceived($event)"
+                           [coordsByUser]="coords"
+                           (coords)="setCoords($event)"
+                           style="height: 320px; width: 100%;"/>
                 </div>
-                @if (formErrors['latitude'] || formErrors['longitude']) {
-                  <div class="text-danger small mt-2">
-                    Please select a location on the map
-                  </div>
-                }
               </div>
-            </div>
+              @if (formErrors['latitude'] || formErrors['longitude']) {
+                <div class="text-danger small mb-3">
+                  Please select a location on the map
+                </div>
+              }
 
-            <div class="row mt-5">
-              <div class="col-12">
-                <button type="submit" class="btn btn-primary py-3 fw-bold w-100" style="font-size: 18px; border-radius: 8px;">
-                  <i class="bi bi-house-add me-2"></i>Register Property
+              <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2" (click)="goToPreviousStep()">
+                  <i class="bi bi-arrow-left me-2"></i> Back
+                </button>
+                <button type="submit" class="btn btn-success px-4 py-2">
+                  <i class="bi bi-house-add me-2"></i> Register Property
                 </button>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    }
+  </form>
 </div>

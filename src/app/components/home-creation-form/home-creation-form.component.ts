@@ -41,6 +41,10 @@ export class HomeCreationFormComponent implements OnInit {
   formErrors: { [key: string]: string } = {};
   isSubmitted = false;
 
+  // Step management properties
+  currentStep: number = 1;
+  totalSteps: number = 4;
+
   @ViewChild(MapComponent) mapComponent!: MapComponent;
 
   constructor(private fb: FormBuilder, private houseService: HouseService, private router: Router, private messageService: MessageService) {
@@ -68,8 +72,79 @@ export class HomeCreationFormComponent implements OnInit {
     this.loadCategories();
 
     setTimeout(() => {
-      this.mapComponent?.forceResize();
+      if (this.currentStep === 4) {
+        this.mapComponent?.forceResize();
+      }
     }, 300);
+  }
+
+  // Step management methods
+  getStepName(step: number): string {
+    switch(step) {
+      case 1: return 'Basic Info';
+      case 2: return 'Capacity';
+      case 3: return 'Pricing & Photos';
+      case 4: return 'Location';
+      default: return '';
+    }
+  }
+
+  validateCurrentStep(): boolean {
+    const controls = {
+      1: ['title', 'description', 'category'],
+      2: ['guests', 'bedrooms', 'beds', 'bathrooms'],
+      3: ['price', 'currency'],
+      4: ['location', 'latitude', 'longitude']
+    };
+
+    let isValid = true;
+    const currentControls = controls[this.currentStep as keyof typeof controls];
+
+    currentControls.forEach(controlName => {
+      const control = this.houseForm.get(controlName);
+      if (control && !control.valid) {
+        control.markAsTouched();
+        this.validateControl(controlName);
+        isValid = false;
+      }
+    });
+
+    // Special case for step 3 - check images
+    if (this.currentStep === 3 && this.selectedFiles.length === 0) {
+      this.formErrors['images'] = 'At least one image is required';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please complete all required fields',
+        key: "errorM"
+      });
+    }
+
+    return isValid;
+  }
+
+  goToNextStep(): void {
+    if (this.validateCurrentStep() && this.currentStep < this.totalSteps) {
+      this.currentStep++;
+      // If moving to map step, trigger resize after a short delay
+      if (this.currentStep === 4) {
+        setTimeout(() => {
+          this.mapComponent?.forceResize();
+        }, 300);
+      }
+      window.scrollTo(0, 0);
+    }
+  }
+
+  goToPreviousStep(): void {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+      window.scrollTo(0, 0);
+    }
   }
 
   private loadCategories(): void {
@@ -94,7 +169,6 @@ export class HomeCreationFormComponent implements OnInit {
   }
 
   // Autocomplete methods
-
   searchCategories(event: any): void {
     this.filteredCategories = this.categories.filter(c =>
       c.toLowerCase().includes(event.query.toLowerCase())
@@ -203,25 +277,34 @@ export class HomeCreationFormComponent implements OnInit {
   private validateForm(): boolean {
     this.isSubmitted = true;
     this.formErrors = {};
+    let formIsValid = true;
 
     // Validate all form controls
     Object.keys(this.houseForm.controls).forEach(key => {
-      this.validateControl(key);
+      const control = this.houseForm.get(key);
+      if (control && control.invalid) {
+        formIsValid = false;
+        this.validateControl(key);
+      }
     });
 
     // Validate images
     if (this.selectedFiles.length === 0) {
       this.formErrors['images'] = 'At least one image is required';
+      formIsValid = false;
     }
 
-    console.log("Valid: " + this.houseForm.valid);
-    console.log("Length: " + Object.keys(this.formErrors).length);
+    console.log('Form Valid: ', formIsValid);
+    console.log('Form Errors: ', this.formErrors);
 
-    return this.houseForm.valid && Object.keys(this.formErrors).length === 0;
+    return formIsValid && this.houseForm.valid;
   }
 
   onSubmit(): void {
+    // Final validation of the entire form before submission
     if (!this.validateForm()) {
+      console.log(this.validateForm());
+      console.log(this.formErrors);
       this.messageService.add({
         severity: 'error',
         summary: 'Validation Error',
@@ -234,7 +317,7 @@ export class HomeCreationFormComponent implements OnInit {
         control?.markAsTouched();
         this.validateControl(key);
       });
-
+      return;
     }
 
     const houseData = new HouseCreation(
@@ -267,6 +350,7 @@ export class HomeCreationFormComponent implements OnInit {
         this.router.navigate(["/home"]);
       },
       error: (err: any) => {
+        console.log(err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
