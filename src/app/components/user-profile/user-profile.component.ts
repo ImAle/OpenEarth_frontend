@@ -16,7 +16,6 @@ import { HeaderComponent } from '../header/header.component';
 import {Review} from '../../core/models/review.model';
 import {HouseService} from '../../core/services/house.service';
 import {House} from '../../core/models/house.model';
-import {AuthService} from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-user-profile',

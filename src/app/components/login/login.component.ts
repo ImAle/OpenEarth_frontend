@@ -40,16 +40,34 @@ export class LoginComponent {
         sessionStorage.setItem('id', response.id);
         this.router.navigate(['/home']);
       },
-      error: (err: Error) => {
-        console.log(err.message);
-        this.messageService.add({
-          severity: "error",
-          summary: "Error",
-          detail: "Email or password wrong.",
-          key: 'err',
-          life: 5000
-        });
+      error: (err) => {
+        console.log(err);
+        if(err.status == 403){
+          this.sendEnabledError();
+        }else{
+          this.sendStandardError();
+        }
       }
+    });
+  }
+
+  sendEnabledError(){
+    this.messageService.add({
+      severity: "error",
+      summary: "Access denied",
+      detail: "Your account has been disabled.",
+      key: 'err',
+      life: 5000
+    })
+  }
+
+  sendStandardError(){
+    this.messageService.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Email or password wrong.",
+      key: 'err',
+      life: 5000
     });
   }
 }
