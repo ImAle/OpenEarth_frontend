@@ -16,6 +16,7 @@ import { HeaderComponent } from '../header/header.component';
 import {Review} from '../../core/models/review.model';
 import {HouseService} from '../../core/services/house.service';
 import {House} from '../../core/models/house.model';
+import {AuthService} from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -70,7 +71,6 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
 
       this.userService.getUser(userId).subscribe(response => {
         this.user = response.user;
-        console.log(response.user);
         // Check scroll status after data is loaded
         setTimeout(() => {
           this.checkHousesScroll();
@@ -127,6 +127,10 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
 
   isGuest(): boolean {
     return this.user.role.toLowerCase() === 'guest';
+  }
+
+  isItMe(){
+    return this.currentUserId === this.user.id;
   }
 
   // Scroll functions for houses container

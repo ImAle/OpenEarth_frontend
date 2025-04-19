@@ -31,24 +31,32 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;">
-              <div>
-                <div style="font-weight: 500;">Properties</div>
-                <div>{{user.houses.length || 0}}</div>
-              </div>
+              @if (isHostess()){
+                <div>
+                  <div style="font-weight: 500;">Properties</div>
+                  <div>{{user.houses.length || 0}}</div>
+                </div>
+              }@else{
+                <div>
+                  <div style="font-weight: 500;">Reviews</div>
+                  <div>{{user.reviews.length || 0}}</div>
+                </div>
+              }
               <div>
                 <div style="font-weight: 500;">Joined</div>
                 <div>{{user.creationDate | date: 'MMM yyyy'}}</div>
               </div>
             </div>
-
-            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-              <button style="padding: 8px 16px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; background-color: #0066cc; color: white; display: flex; align-items: center; gap: 5px;" (click)="openChat()">
-                <i class="pi pi-comments"></i> Chat
-              </button>
-              <button style="padding: 8px 16px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; background-color: #dc3545; color: white; display: flex; align-items: center; gap: 5px;" (click)="openReportDialog()">
-                <i class="pi pi-flag"></i> Report
-              </button>
-            </div>
+            @if (!isItMe()){
+              <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button style="padding: 8px 16px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; background-color: #0066cc; color: white; display: flex; align-items: center; gap: 5px;" (click)="openChat()">
+                  Chat
+                </button>
+                <button style="padding: 8px 16px; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; background-color: #dc3545; color: white; display: flex; align-items: center; gap: 5px;" (click)="openReportDialog()">
+                  Report
+                </button>
+              </div>
+            }
           </div>
         </div>
       </div>
@@ -142,7 +150,6 @@
   <app-report
     [visible]="showReportDialog"
     [reportedUserId]="user.id"
-    [reporterUserId]="currentUserId"
     (onClose)="showReportDialog = false"
     (onSubmit)="onReportSubmitted()">
   </app-report>

@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {environment} from '../../../environments/environment';
-import {House} from '../models/house.model';
 import {BehaviorSubject, Observable, tap, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {HouseCreation} from '../models/houseCreation.model';
 import {HousePreview} from '../models/housePreview.model';
-import {HouseUpdateForm} from '../models/houseUpdateForm.model';
 import {HouseUpdate} from '../models/houseUpdate.model';
 import {AuthService} from './auth.service';
 

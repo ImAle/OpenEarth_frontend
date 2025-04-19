@@ -102,7 +102,12 @@ export class AuthService {
 
    getToken(): string | null{
     const token = sessionStorage.getItem(this.key);
-     return token ? `Bearer ${token}` : null;
+    return token ? `Bearer ${token}` : null;
+   }
+
+   getMyId(): number | null{
+    const id = sessionStorage.getItem("id");
+    return Number(id);
    }
 
    removeToken(): void {

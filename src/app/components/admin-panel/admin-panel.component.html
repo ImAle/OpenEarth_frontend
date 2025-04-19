@@ -167,8 +167,8 @@
             <tbody>
               @for (report of displayedReports(); track report.id) {
                 <tr>
-                  <td>{{ findUserById(report.reporterId)?.username || 'Unknown user' }}</td>
-                  <td>{{ findUserById(report.reportedId)?.username || 'Unknown user' }}</td>
+                  <td><a [routerLink]="['/user', report.reporterId]">{{ findUserById(report.reporterId)?.username || 'Unknown user' }}</a></td>
+                  <td><a [routerLink]="['/user', report.reportedId]">{{ findUserById(report.reportedId)?.username || 'Unknown user' }}</a></td>
                   <td style="white-space: nowrap;">
                     <button
                       class="btn btn-sm btn-info me-2"
@@ -257,7 +257,7 @@
                       </div>
                     }
                     <div>
-                      <div style="font-weight: 500;">{{ findUserById(selectedReport()!.reporterId)?.username }}</div>
+                      <div style="font-weight: 500;"><a [routerLink]="['/user', selectedReport()!.reporterId]">{{ findUserById(selectedReport()!.reporterId)?.username }}</a></div>
                       <div style="font-size: 0.875rem; color: #6c757d;">{{ findUserById(selectedReport()!.reporterId)?.email }}</div>
                     </div>
                   </div>
@@ -282,7 +282,7 @@
                       </div>
                     }
                     <div>
-                      <div style="font-weight: 500;">{{ findUserById(selectedReport()!.reportedId)?.username }}</div>
+                      <div style="font-weight: 500;"><a [routerLink]="['/user', selectedReport()!.reporterId]">{{ findUserById(selectedReport()!.reportedId)?.username }}</a></div>
                       <div style="font-size: 0.875rem; color: #6c757d;">{{ findUserById(selectedReport()!.reportedId)?.email }}</div>
                     </div>
                   </div>

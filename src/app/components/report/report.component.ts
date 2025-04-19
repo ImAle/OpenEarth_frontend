@@ -20,7 +20,6 @@ import {ReportCreation} from '../../core/models/reportCreation.model';
 export class ReportComponent {
   @Input() visible: boolean = false;
   @Input() reportedUserId!: number;
-  @Input() reporterUserId!: number;
   @Output() onClose = new EventEmitter<void>();
   @Output() onSubmit = new EventEmitter<void>();
 
@@ -42,18 +41,19 @@ export class ReportComponent {
     this.submitting = true;
     const report = new ReportCreation(
       this.reportComment,
-      this.reportedUserId,
-      this.reporterUserId
+      this.reportedUserId
     );
 
     this.reportService.create(report).subscribe({
       next: () => {
+        console.log("Exito")
         this.submitting = false;
         this.reportComment = '';
         this.onSubmit.emit();
       },
       error: (error) => {
         console.error('Error:', error);
+        console.log(error);
         this.submitting = false;
       }
     });

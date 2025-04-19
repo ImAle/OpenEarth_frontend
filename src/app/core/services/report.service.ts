@@ -19,14 +19,11 @@ export class ReportService {
       const url = this.baseUrl + '/create';
       const token: string = this.authService.retrieveToken();
 
-      const formData = new FormData();
-      formData.append('report', new Blob([JSON.stringify(report)], { type: 'application/json' }));
-
       const headers = new HttpHeaders({
         'Authorization': token,
       });
 
-      return this.http.post(url, formData, {headers});
+      return this.http.post(url, report, {headers: headers});
     }catch(error){
       console.error(error);
       return throwError(() => error);
