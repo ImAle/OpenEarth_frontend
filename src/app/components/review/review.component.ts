@@ -18,13 +18,14 @@ import { CardModule } from 'primeng/card';
 })
 export class ReviewComponent implements OnInit {
   @Input() review!: Review;
+  @Input() currency!: string;
   houseName: string = '';
 
   constructor(private houseService: HouseService) {}
 
   ngOnInit(): void {
     if (this.review && this.review.houseId) {
-      this.houseService.getById(this.review.houseId).subscribe(house => {
+      this.houseService.getById(this.review.houseId, this.currency).subscribe(house => {
         this.houseName = house.title;
       });
     }

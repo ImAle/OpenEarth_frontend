@@ -51,7 +51,7 @@ export class HouseService {
   // GET /api/house
   getAll(location: string | null, minPrice: number | null,
          maxPrice: number | null, beds: number | null,
-         guests: number | null, category: string | null): Observable<any> {
+         guests: number | null, category: string | null, currency: string | null): Observable<any> {
 
     let params = new HttpParams();
 
@@ -61,6 +61,7 @@ export class HouseService {
     if (beds !== null) params = params.append('beds', beds.toString());
     if (guests !== null) params = params.append('guests', guests.toString());
     if (category !== null) params = params.append('category', category);
+    if (currency !== null) params = params.append('currency', currency.toString());
 
     return this.http.get<any>(this.baseUrl, { params }).pipe(
       tap(response => {
@@ -72,18 +73,24 @@ export class HouseService {
     );
   }
 
-  getHousesNearTo(id: number, km: number){
+  getHousesNearTo(id: number, km: number, currency: string){
     const url = this.baseUrl + '/nearTo';
-    const params = new HttpParams().set('id', id).set('km', km);
+    const params = new HttpParams().set('id', id).set('km', km).set('currency', currency);
 
+    return this.http.get(url, {params: params});
+  }
+
+  getHousesByOwner(id: number, currency: string){
+    const url = this.baseUrl + '/owner';
+    const params = new HttpParams().set('owner', id).set('currency', currency);
     return this.http.get(url, {params: params});
   }
 
 
   // GET /api/house/details
-  getById(id: number): Observable<any> {
+  getById(id: number, currency: string): Observable<any> {
     const url = this.baseUrl + '/details';
-    const params = new HttpParams().set('id', id.toString());
+    const params = new HttpParams().set('id', id.toString()).set('currency', currency);
 
     return this.http.get<any>(url, {params});
   }

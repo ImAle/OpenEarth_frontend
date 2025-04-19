@@ -46,7 +46,6 @@ export class ReportComponent {
 
     this.reportService.create(report).subscribe({
       next: () => {
-        console.log("Exito")
         this.submitting = false;
         this.reportComment = '';
         this.onSubmit.emit();

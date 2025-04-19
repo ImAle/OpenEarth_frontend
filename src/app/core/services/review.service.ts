@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {ReviewCreation} from '../models/reviewCreation.model';
 import {AuthService} from './auth.service';
@@ -31,6 +31,12 @@ export class ReviewService {
       console.error(error);
       return throwError(() => error);
     }
+  }
+
+  getFromHouseId(houseId: string): Observable<any> {
+    const url = this.baseUrl + "/house";
+    const params = new HttpParams().set("id", houseId);
+    return this.http.get<any>(url, {params: params})
   }
 
 }

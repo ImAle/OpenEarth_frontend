@@ -1,4 +1,3 @@
-/* Ocultar scrollbar pero mantener la funcionalidad */
 .category-scroll::-webkit-scrollbar {
   display: none;
 }
@@ -8,17 +7,15 @@
   scrollbar-width: none;     /* Firefox */
 }
 
-/* Estilos para el texto de las categorías */
 .category-text {
-  white-space: pre-line; /* Permite saltos de línea en el texto */
+  white-space: pre-line;
   height: auto;
-  min-height: 1.8rem; /* Altura mínima para asegurar espacio para 2 líneas */
+  min-height: 1.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Estilos para los sliders de precio */
 .form-range {
   -webkit-appearance: none;
   width: 100%;
@@ -55,17 +52,14 @@
   pointer-events: all;
 }
 
-/* Estilo para la categoría seleccionada */
 .selected-category {
   font-weight: bold;
 }
 
-/* Mejora para la navegación de categorías */
 #scrollLeft:hover, #scrollRight:hover {
   background-color: #e9ecef;
 }
 
-/* Ajusta la altura del contenedor de iconos */
 .icon-container {
   transition: all 0.2s ease;
 }
@@ -74,11 +68,10 @@
   transform: scale(1.1);
 }
 
-/* Asegurar que cada categoría tiene espacio adecuado */
 .category-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
-  padding-bottom: 5px; /* Espacio adicional para el indicador */
+  padding-bottom: 5px;
 }

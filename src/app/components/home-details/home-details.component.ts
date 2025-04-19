@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, effect, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {House} from '../../core/models/house.model';
 import {HouseService} from '../../core/services/house.service';
 import {ActivatedRoute, RouterLink} from '@angular/router';
@@ -13,6 +13,7 @@ import {CardComponent} from '../card/card.component';
 import {ReviewComponent} from '../review/review.component';
 import {HousePreview} from '../../core/models/housePreview.model';
 import {environment} from '../../../environments/environment';
+import {CurrencyService} from '../../core/services/currency.service';
 
 @Component({
   selector: 'app-home-details',
@@ -36,6 +37,8 @@ import {environment} from '../../../environments/environment';
 })
 export class HomeDetailsComponent implements OnInit, AfterViewInit {
   private km: number = 5.0;
+  private idHouse!: number;
+  currency!: string;
   coords: {latitude: number, longitude: number} = {latitude: 0, longitude: 0};
   house!: House;
   startDate: Date = new Date();
@@ -69,10 +72,17 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     }
   ];
 
-  constructor(
-    private route: ActivatedRoute,
-    private houseService: HouseService
-  ) {}
+  constructor(private route: ActivatedRoute, private houseService: HouseService, private currencyService: CurrencyService) {
+    effect(() => {
+      // Get the current currency from the store signal
+      const currency = this.currencyService.current().code;
+      // Refetch houses with the new currency
+      if (currency) {
+        this.currency = currency;
+        this.getHouseDetails(this.idHouse, currency);
+      }
+    });
+  }
 
   ngOnInit(): void {
     // Date initialization
@@ -85,9 +95,10 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     this.minEndDate = new Date(this.startDate);
     this.minEndDate.setDate(this.minEndDate.getDate() + 1);
 
+    this.currency = this.currencyService.current().code;
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      this.getHouseDetails(Number(id));
+      this.idHouse = Number(params.get('id'));
+      this.getHouseDetails(this.idHouse, this.currency);
     });
   }
 
@@ -98,13 +109,12 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     };
   }
 
-  getHouseDetails(id: number) {
-    this.houseService.getById(id).subscribe({
+  getHouseDetails(id: number, currency: string) {
+    this.houseService.getById(id, currency).subscribe({
       next: (response: any) => {
         this.house = response.house;
         this.setupPictures();
         this.getNearbyHouses();
-
       },
       error: (err: Error) => {
         console.log(err);
@@ -121,7 +131,7 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
 
   getNearbyHouses() {
     if (this.house) {
-      this.houseService.getHousesNearTo(this.house.id, this.km).subscribe({
+      this.houseService.getHousesNearTo(this.house.id, this.km, this.currency).subscribe({
         next: (response: any) => {
           this.nearbyHouses = response.houses;
         },

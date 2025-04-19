@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import {Component, OnInit, AfterViewInit, ViewChild, OnDestroy, effect} from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { HouseService } from '../../core/services/house.service';
 import { CardComponent } from '../card/card.component';
@@ -8,6 +8,8 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { FilterComponent } from '../filter/filter.component';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import {CurrencyComponent} from '../currency/currency.component';
+import {CurrencyService} from '../../core/services/currency.service';
 
 @Component({
   selector: 'app-home',
@@ -40,6 +42,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MapComponent) mapComponent!: MapComponent;
   @ViewChild(FilterComponent) filterComponent!: FilterComponent;
   @ViewChild(SearchBarComponent) searchBarComponent!: SearchBarComponent;
+  @ViewChild(CurrencyComponent) currencyComponent!: CurrencyComponent;
 
   ngOnInit(): void {
     this.getHouses();
@@ -67,7 +70,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     window.removeEventListener('resize', () => this.getTopOffset());
   }
 
-  constructor(private houseService: HouseService) {}
+  constructor(private houseService: HouseService, private currencyService: CurrencyService) {
+    effect(() => {
+      // Get the current currency from the store signal
+      const currency = this.currencyService.current();
+      // Refetch houses with the new currency
+      if (currency) {
+        this.fetchHousesWithFilters();
+      }
+    });
+  }
 
   getHouses() {
     this.fetchHousesWithFilters();
@@ -83,7 +95,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     maxPrice: number | null,
     beds: number | null,
     guests: number | null,
-    category: string | null
+    category: string | null,
   }) {
     this.currentFilters.minPrice = filters.minPrice;
     this.currentFilters.maxPrice = filters.maxPrice;
@@ -96,7 +108,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   fetchHousesWithFilters() {
     const { location, minPrice, maxPrice, beds, guests, category } = this.currentFilters;
 
-    this.houseService.getAll(location || null, minPrice, maxPrice, beds, guests, category || null).subscribe({
+    const currency = this.currencyService.current().code;
+
+    this.houseService.getAll(location || null, minPrice, maxPrice, beds, guests, category || null, currency).subscribe({
       next: (response) => {
         if(response && response.houses)
           this.houses = response.houses;

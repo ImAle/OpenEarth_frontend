@@ -1,0 +1,45 @@
+<div class="currency-selector">
+  <button
+    class="currency-button"
+    (click)="toggleDropdown()"
+    aria-label="Select currency"
+    style="background-color: transparent; border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; display: flex; align-items: center; cursor: pointer; transition: all 0.3s ease;">
+    <span style="margin-right: 4px;">{{ selectedCurrency().symbol }}</span>
+    <span>{{ selectedCurrency().code }}</span>
+  </button>
+
+  @if (isDropdownOpen) {
+    <div class="currency-dropdown">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h5 style="margin: 0; font-size: 18px; font-weight: 600; color: #333;">Select Currency</h5>
+        <button
+          (click)="closeDropdown()"
+          style="background: transparent; border: none; font-size: 22px; cursor: pointer; padding: 4px; color: #666; transition: color 0.2s ease;">
+          &times;
+        </button>
+      </div>
+
+      <div class="currency-grid">
+        @for (continent of continentOrder; track continent) {
+          @if (currenciesByContinent.get(continent)?.length) {
+            <div class="continent-section" style="margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 12px;">
+              <h6 style="color: #0066cc; margin-bottom: 10px; font-size: 15px; font-weight: 600;">{{ continent }}</h6>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                @for (currency of currenciesByContinent.get(continent); track currency.code) {
+                  <button
+                    (click)="selectCurrency(currency)"
+                    [class.selected]="selectedCurrency().code === currency.code"
+                    class="currency-card"
+                    style="min-width: 90px; padding: 10px 6px; border-radius: 6px; background-color: #f8f9fa; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease;">
+                    <span style="font-size: 18px; font-weight: 500; margin-bottom: 2px;">{{ currency.symbol }}</span>
+                    <span style="font-size: 13px; color: #555;">{{ currency.code }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

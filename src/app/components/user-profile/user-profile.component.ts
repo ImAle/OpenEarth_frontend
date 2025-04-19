@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, AfterViewInit, effect} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,8 @@ import { HeaderComponent } from '../header/header.component';
 import {Review} from '../../core/models/review.model';
 import {HouseService} from '../../core/services/house.service';
 import {House} from '../../core/models/house.model';
+import {CurrencyService} from '../../core/services/currency.service';
+import {HousePreview} from '../../core/models/housePreview.model';
 
 @Component({
   selector: 'app-user-profile',
@@ -37,9 +39,11 @@ import {House} from '../../core/models/house.model';
 })
 export class UserProfileComponent implements OnInit, AfterViewInit {
   user!: User;
+  houses!: HousePreview[];
   reviews!: Review[];
   showReportDialog = false;
   currentUserId!: number;
+  currency!: string;
 
   // Scroll state variables
   canScrollHousesLeft = false;
@@ -56,7 +60,20 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     private houseService: HouseService,
     private messageService: MessageService,
-  ) {}
+    private currencyService: CurrencyService,
+  ) {
+    effect(() => {
+      // Get the current currency from the store signal
+      const currency = this.currencyService.current().code;
+      // Refetch houses with the new currency
+      if (currency) {
+        this.currency = currency;
+
+        if(this.user)
+          this.getHouses(this.user.id, currency);
+      }
+    });
+  }
 
   ngOnInit(): void {
     const id = sessionStorage.getItem("id");
@@ -70,6 +87,7 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
 
       this.userService.getUser(userId).subscribe(response => {
         this.user = response.user;
+        this.getHouses(this.user.id, this.currency);
         // Check scroll status after data is loaded
         setTimeout(() => {
           this.checkHousesScroll();
@@ -77,7 +95,6 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
         }, 100);
       });
     });
-
     this.getReviews();
   }
 
@@ -97,6 +114,16 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
 
   getProfilePicUrl(): string {
     return this.user.picture ? environment.rootUrl + this.user.picture : '/defaultUser.jpg';
+  }
+
+  getHouses(id: number, currency: string){
+    this.houseService.getHousesByOwner(id, currency).subscribe({
+      next: (response: any) => {
+        this.houses = response.houses;
+      }, error: (err) =>{
+        console.log(err);
+      }
+    });
   }
 
   openChat(): void {
@@ -178,7 +205,7 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
         let houses: House[] = [];
 
         this.user.houses.forEach((house) => {
-          this.houseService.getById(house.id).subscribe(response => {
+          this.houseService.getById(house.id, this.currency).subscribe(response => {
             houses.push(response.house);
           }, err => {
             console.log(err);

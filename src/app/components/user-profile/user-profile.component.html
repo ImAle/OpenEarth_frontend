@@ -63,7 +63,7 @@
 
       <!-- Properties Listing - Right side -->
       <div class="col-md-9">
-        @if (isHostess() && user.houses && user.houses.length > 0) {
+        @if (isHostess() && houses && houses.length > 0) {
           <div style="margin-bottom: 30px;">
             <h2 style="color: #0066cc; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; font-size: 20px;">
               {{user.firstName}}'s Listings
@@ -83,7 +83,7 @@
               <div #housesContainer class="houses-scroll-container"
                    style="display: flex; overflow-x: auto; scroll-behavior: smooth; padding: 10px 5px; gap: 15px; scrollbar-width: none; -ms-overflow-style: none;"
                    (scroll)="checkHousesScroll()">
-                @for (house of user.houses; track house.id) {
+                @for (house of houses; track house.id) {
                   <div style="min-width: 280px; flex: 0 0 auto;">
                     <app-card [house]="house"></app-card>
                   </div>

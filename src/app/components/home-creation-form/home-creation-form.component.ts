@@ -9,6 +9,7 @@ import {HeaderComponent} from '../header/header.component';
 import {Router} from '@angular/router';
 import {MessageService} from 'primeng/api';
 import {Toast} from 'primeng/toast';
+import {CurrencyService} from '../../core/services/currency.service';
 
 @Component({
   selector: 'app-home-creation-form',
@@ -31,12 +32,10 @@ export class HomeCreationFormComponent implements OnInit {
   selectedFiles: File[] = [];
   isDragging: boolean = false;
   showDeleteButton: boolean[] = [];
-  countries: string[] = [];
   categories: string[] = [];
-  filteredCountries: string[] = [];
   filteredCategories: string[] = [];
   filteredCurrencies: string[] = [];
-  currencies: string[] = ['EUR', 'USD', 'GBP'];
+  currencies!: string[];
   coords: {latitude: number, longitude: number} | null = null;
   formErrors: { [key: string]: string } = {};
   isSubmitted = false;
@@ -47,8 +46,9 @@ export class HomeCreationFormComponent implements OnInit {
 
   @ViewChild(MapComponent) mapComponent!: MapComponent;
 
-  constructor(private fb: FormBuilder, private houseService: HouseService, private router: Router, private messageService: MessageService) {
+  constructor(private fb: FormBuilder, private houseService: HouseService, private currencyService: CurrencyService, private router: Router, private messageService: MessageService) {
     this.initForm();
+    this.currencies = this.currencyService.getAllCurrenciesCode();
   }
 
   private initForm(): void {
@@ -150,6 +150,7 @@ export class HomeCreationFormComponent implements OnInit {
   private loadCategories(): void {
     this.houseService.getCategories().subscribe((data: any) => {
       this.categories = data.categories;
+      this.categories = this.categories.map(category => category.replace("_", " "));
     });
   }
 
@@ -294,17 +295,12 @@ export class HomeCreationFormComponent implements OnInit {
       formIsValid = false;
     }
 
-    console.log('Form Valid: ', formIsValid);
-    console.log('Form Errors: ', this.formErrors);
-
     return formIsValid && this.houseForm.valid;
   }
 
   onSubmit(): void {
     // Final validation of the entire form before submission
     if (!this.validateForm()) {
-      console.log(this.validateForm());
-      console.log(this.formErrors);
       this.messageService.add({
         severity: 'error',
         summary: 'Validation Error',
@@ -337,7 +333,6 @@ export class HomeCreationFormComponent implements OnInit {
 
     this.houseService.create(houseData, this.selectedFiles).subscribe({
       next: (response: any) => {
-        console.log('House created:', response);
         this.messageService.add({
           severity: 'success',
           summary: 'Success',

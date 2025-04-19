@@ -1,0 +1,100 @@
+.currency-selector {
+  position: relative;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+.currency-button {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.currency-button:hover {
+  background-color: #f0f7ff;
+  border-color: #0066cc;
+}
+
+.currency-dropdown {
+  animation: dropdownFadeIn 0.3s ease-in-out;
+  z-index: 2000 !important;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  padding: 16px;
+}
+
+.currency-grid button {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.currency-grid button:hover {
+  transform: translateY(-3px);
+  background-color: #f0f7ff;
+  border-color: #0066cc;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.currency-grid button.selected {
+  background-color: #e6f0ff;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.currency-grid button::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, transparent, #0066cc);
+  transition: width 0.5s ease;
+}
+
+.currency-grid button:hover::after {
+  width: 100%;
+  left: 0;
+  right: auto;
+}
+
+.continent-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.currency-card::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, #0066cc);
+  transition: height 0.5s ease 0.2s;
+}
+
+.currency-card:hover::before {
+  height: 100%;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}

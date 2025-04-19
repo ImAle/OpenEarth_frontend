@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../core/services/auth.service';
 import {RouterLink} from '@angular/router';
+import {CurrencyComponent} from '../currency/currency.component';
 
 @Component({
   selector: 'app-header',
   imports: [
-    RouterLink
+    RouterLink,
+    CurrencyComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
