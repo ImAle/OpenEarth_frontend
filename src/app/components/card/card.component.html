@@ -1,19 +1,17 @@
-<div class="card rounded-3 border-0" style="width: 15vw; min-width: 17.5rem; margin: 2vw;">
-
-    <p-galleria [value]="galleryImages"
-                [numVisible]="5"
-                [circular]="true"
-                [showItemNavigators]="true"
-                [showThumbnails]="false"
-                [containerStyle]="{ 'max-width': '100%', 'height': '12.5rem'}"
-                class="card-img-top shadow-sm rounded-3 overflow-hidden">
-      <ng-template #item let-item>
-        <a [routerLink]="['/house', house.id]" style="display: block; width: 100%; height: 100%;">
-          <img [src]="getImageUrl(item.itemImageSrc)" style="width: 100%; height: 12.5rem; object-fit: cover;" />
-        </a>
-      </ng-template>
-    </p-galleria>
-
+<div class="card rounded-3 border-0 h-100" style="max-width: 17.5rem; margin: 0 auto;">
+  <p-galleria [value]="galleryImages"
+              [numVisible]="5"
+              [circular]="true"
+              [showItemNavigators]="true"
+              [showThumbnails]="false"
+              [containerStyle]="{ 'max-width': '100%', 'height': '12.5rem'}"
+              class="card-img-top shadow-sm rounded-3 overflow-hidden">
+    <ng-template #item let-item>
+      <a [routerLink]="['/house', house.id]" style="display: block; width: 100%; height: 100%;">
+        <img [src]="getImageUrl(item.itemImageSrc)" style="width: 100%; height: 12.5rem; object-fit: cover;" />
+      </a>
+    </ng-template>
+  </p-galleria>
 
   <a [routerLink]="['/house', house.id]" style="text-decoration: none;">
     <div class="card-body">
@@ -22,5 +20,4 @@
       <p class="card-text text-muted"><span class="text-dark fw-bold">{{house.price | currency:house.currency:'symbol'}}</span> / night </p>
     </div>
   </a>
-
 </div>

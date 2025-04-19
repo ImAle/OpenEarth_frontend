@@ -2,7 +2,7 @@
 <app-search-bar #searchBar (location)="onLocationSearch($event)"/>
 <app-filter #filter (filtersChanged)="onFiltersChanged($event)"/>
 
-<div style="padding-top: calc(8.5vh + 65px + 60px);"></div>
+<div style="padding-top: calc(8.5vh + 2.5vw + 65px + 60px);"></div>
 
 <!-- Button map-list -->
 <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #007bff; color: white; border-radius: 25px; padding: 10px 20px; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 1000; width: 150px; text-align: center;" (click)="toggleView()">
@@ -15,15 +15,21 @@
 
 <!-- List view container -->
 <div [style.display]="showMap ? 'none' : 'block'">
-  <div class="d-flex flex-wrap justify-content-center">
-    @if(houses && houses.length > 0){
-      @for (house of houses; track house.id) {
-        <app-card [house]="house"/>
+  <div class="container">
+    <div class="row">
+      @if(houses && houses.length > 0){
+        @for (house of houses; track house.id) {
+          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-4">
+            <app-card [house]="house"/>
+          </div>
+        }
+      } @else {
+        <div class="col-12">
+          <p class="text-center" style="padding-top: 40px;">No exact matches</p>
+          <p class="text-center">Try changing or removing some of your filters or adjusting your search area.</p>
+        </div>
       }
-    } @else {
-      <p class="d-flex justify-content-center align-items-center w-100" style="padding-top: 40px;">No exact matches</p>
-      <p class="d-flex justify-content-center align-items-center w-100">Try changing or removing some of your filters or adjusting your search area.</p>
-    }
+    </div>
   </div>
 </div>
 
