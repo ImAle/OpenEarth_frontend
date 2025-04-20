@@ -114,8 +114,8 @@ export class HouseService {
       const token = this.authService.retrieveToken();
 
       const formData = new FormData();
-      formData.append('house', JSON.stringify(house));
-      newPictures.forEach(picture => {formData.append('pictures', picture, picture.name);});
+      formData.append('house', new Blob([JSON.stringify(house)], { type: 'application/json' }));
+      newPictures.forEach(picture => {formData.append('pictures', picture);});
       formData.append('id', id.toString());
 
       const headers = new HttpHeaders({

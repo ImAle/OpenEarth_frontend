@@ -1,0 +1,317 @@
+<app-header/>
+
+<div style="padding-top: 8.5vh;"></div>
+
+<!-- Display message if exists -->
+<p-toast position="bottom-right" key="errorM"></p-toast>
+<p-toast position="bottom-right" key="successM"></p-toast>
+
+<div class="update-container vh-100">
+  <!-- Progress indicator -->
+  <div class="progress-container container mt-4">
+    <div class="d-flex justify-content-between position-relative mb-4">
+      <div class="progress position-absolute" style="width: 100%; height: 2px; top: 50%; transform: translateY(-50%); z-index: 1;">
+        <div class="progress-bar bg-primary" [style.width]="(currentStep / 3 * 100) + '%'"></div>
+      </div>
+
+      @for (step of [1, 2, 3]; track step) {
+        <div class="step-indicator position-relative z-index-2 d-flex flex-column align-items-center"
+             [class.active]="currentStep >= step"
+             [class.completed]="currentStep > step">
+          <div class="step-circle rounded-circle d-flex align-items-center justify-content-center"
+               [class.bg-primary]="currentStep >= step"
+               [class.bg-light]="currentStep < step"
+               style="width: 25px;">
+            @if (currentStep > step) {
+              <i class="bi bi-check-lg text-white"></i>
+            } @else {
+              <span [class.text-white]="currentStep >= step">{{step}}</span>
+            }
+          </div>
+          <span class="step-text small mt-2" [class.text-primary]="currentStep >= step">
+            {{ getStepName(step) }}
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="houseForm" (ngSubmit)="onSubmit()">
+    <!-- Step 1: Basic Information -->
+    @if (currentStep === 1) {
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-md-6 p-4 p-md-5">
+            <div class="step-content">
+              <h3 class="text-primary fw-bold mb-4">Basic Information</h3>
+              <p class="text-muted mb-4">Update the basic details about your property.</p>
+
+              <div class="mb-4">
+                <div class="form-floating mb-1">
+                  <input formControlName="title" type="text" class="form-control"
+                         [ngClass]="{'is-invalid': formErrors['title']}"
+                         id="title" placeholder="Title" required>
+                  <label for="title">Title</label>
+                </div>
+                @if (formErrors['title']) {
+                  <div class="text-danger small">{{ formErrors['title'] }}</div>
+                }
+              </div>
+
+              <div class="mb-4">
+                <div class="form-floating mb-1">
+                  <p-autoComplete
+                    (onSelect)="onCategorySelect($event)"
+                    [dropdown]="true"
+                    [suggestions]="filteredCategories"
+                    (completeMethod)="searchCategories($event)"
+                    formControlName="category"
+                    styleClass="w-100 p-autocomplete-input"
+                    [ngClass]="{'ng-invalid ng-dirty': formErrors['category']}"
+                    inputStyleClass="form-control"
+                    placeholder="Category"
+                    [style]="{'width':'100%'}"
+                    [inputStyle]="{'width':'100%', 'height':'58px', 'padding-top':'1.625rem', 'padding-bottom':'0.625rem'}" required>
+                  </p-autoComplete>
+                  <label style="pointer-events: none; position: absolute; top: 0; left: 12px; height: 100%; font-size: 12px; padding: 1rem 0.75rem; transform: translateY(-0.5rem); opacity: 0.65;">Category</label>
+                </div>
+                @if (formErrors['category']) {
+                  <div class="text-danger small">{{ formErrors['category'] }}</div>
+                }
+              </div>
+
+              <div class="mb-4">
+                <div class="form-floating mb-1">
+                  <p-autoComplete
+                    (onSelect)="onStatusSelect($event)"
+                    [dropdown]="true"
+                    [suggestions]="filteredStatuses"
+                    (completeMethod)="searchStatuses($event)"
+                    formControlName="status"
+                    styleClass="w-100 p-autocomplete-input"
+                    [ngClass]="{'ng-invalid ng-dirty': formErrors['status']}"
+                    inputStyleClass="form-control"
+                    placeholder="Status"
+                    [style]="{'width':'100%'}"
+                    [inputStyle]="{'width':'100%', 'height':'58px', 'padding-top':'1.625rem', 'padding-bottom':'0.625rem'}" required>
+                  </p-autoComplete>
+                  <label style="pointer-events: none; position: absolute; top: 0; left: 12px; height: 100%; font-size: 12px; padding: 1rem 0.75rem; transform: translateY(-0.5rem); opacity: 0.65;">Status</label>
+                </div>
+                @if (formErrors['status']) {
+                  <div class="text-danger small">{{ formErrors['status'] }}</div>
+                }
+              </div>
+
+              <div class="mb-4">
+                <div class="form-floating mb-1">
+                  <textarea formControlName="description" class="form-control"
+                            [ngClass]="{'is-invalid': formErrors['description']}"
+                            id="description" placeholder="Description" style="height: 120px" required></textarea>
+                  <label for="description">Description</label>
+                </div>
+                @if (formErrors['description']) {
+                  <div class="text-danger small">{{ formErrors['description'] }}</div>
+                }
+              </div>
+
+              <div class="d-flex justify-content-end mt-5">
+                <button type="button" class="btn btn-primary px-4 py-2" (click)="goToNextStep()">
+                  Next <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+            <div class="text-center">
+              <img src="/houseCreation1.jpg" alt="Basic Information" class="img-fluid" style="max-height: 400px;">
+              <h4 class="mt-4 text-primary">Update your property</h4>
+              <p class="text-muted px-4">Make changes to your property information</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Step 2: Capacity & Amenities -->
+    @if (currentStep === 2) {
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+            <div class="text-center">
+              <img src="/houseCreation2.jpg" alt="Capacity & Amenities" class="img-fluid" style="max-height: 400px;">
+              <h4 class="mt-4 text-primary">Update Comfort Details</h4>
+              <p class="text-muted px-4">Modify the capacity and features of your property</p>
+            </div>
+          </div>
+          <div class="col-md-6 p-4 p-md-5">
+            <div class="step-content">
+              <h3 class="text-primary fw-bold mb-4">Capacity & Amenities</h3>
+              <p class="text-muted mb-4">Update how many people can stay at your property.</p>
+
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="guests" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['guests']}"
+                           id="guests" placeholder="Guests" required>
+                    <label for="guests">Guests</label>
+                  </div>
+                  @if (formErrors['guests']) {
+                    <div class="text-danger small">{{ formErrors['guests'] }}</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="bedrooms" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['bedrooms']}"
+                           id="bedrooms" placeholder="Bedrooms" required>
+                    <label for="bedrooms">Bedrooms</label>
+                  </div>
+                  @if (formErrors['bedrooms']) {
+                    <div class="text-danger small">{{ formErrors['bedrooms'] }}</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="beds" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['beds']}"
+                           id="beds" placeholder="Beds" required>
+                    <label for="beds">Beds</label>
+                  </div>
+                  @if (formErrors['beds']) {
+                    <div class="text-danger small">{{ formErrors['beds'] }}</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="bathrooms" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['bathrooms']}"
+                           id="bathrooms" placeholder="Bathrooms" required>
+                    <label for="bathrooms">Bathrooms</label>
+                  </div>
+                  @if (formErrors['bathrooms']) {
+                    <div class="text-danger small">{{ formErrors['bathrooms'] }}</div>
+                  }
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-5">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2" (click)="goToPreviousStep()">
+                  <i class="bi bi-arrow-left me-2"></i> Back
+                </button>
+                <button type="button" class="btn btn-primary px-4 py-2" (click)="goToNextStep()">
+                  Next <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Step 3: Pricing and Photos -->
+    @if (currentStep === 3) {
+      <div class="container-fluid p-0">
+        <div class="row g-0">
+          <div class="col-md-6 p-4 p-md-5">
+            <div class="step-content">
+              <h3 class="text-primary fw-bold mb-4">Pricing & Photos</h3>
+              <p class="text-muted mb-4">Update your price and add new photos to your property.</p>
+
+              <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <input formControlName="price" type="number" class="form-control"
+                           [ngClass]="{'is-invalid': formErrors['price']}"
+                           id="price" placeholder="Price" required>
+                    <label for="price">Price</label>
+                  </div>
+                  @if (formErrors['price']) {
+                    <div class="text-danger small">{{ formErrors['price'] }}</div>
+                  }
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating mb-1">
+                    <p-autoComplete
+                      (onSelect)="onCurrencySelect($event)"
+                      [dropdown]="true"
+                      [suggestions]="filteredCurrencies"
+                      (completeMethod)="searchCurrency($event)"
+                      formControlName="currency"
+                      styleClass="w-100 p-autocomplete-input"
+                      [ngClass]="{'ng-invalid ng-dirty': formErrors['currency']}"
+                      inputStyleClass="form-control"
+                      placeholder="Currency"
+                      [style]="{'width':'100%'}"
+                      [inputStyle]="{'width':'100%', 'height':'58px', 'padding-top':'1.625rem', 'padding-bottom':'0.625rem'}" required>
+                    </p-autoComplete>
+                    <label style="pointer-events: none; position: absolute; top: 0; left: 12px; height: 100%; font-size: 12px; padding: 1rem 0.75rem; transform: translateY(-0.5rem); opacity: 0.65;">Currency</label>
+                  </div>
+                  @if (formErrors['currency']) {
+                    <div class="text-danger small">{{ formErrors['currency'] }}</div>
+                  }
+                </div>
+              </div>
+
+              <!-- Image upload area -->
+              <div class="image-upload border border-2 border-dashed rounded-3 p-4 text-center mt-4 mb-3 position-relative"
+                   [class.dragging]="isDragging"
+                   [ngClass]="{
+                     'bg-white border-primary': isDragging,
+                     'bg-white border-secondary': !isDragging
+                   }"
+                   (dragover)="onDragOver($event)"
+                   (dragleave)="onDragLeave($event)"
+                   (drop)="onDrop($event)"
+                   style="transition: all 0.3s ease-in-out;">
+                <div class="py-3">
+                  <i class="bi bi-cloud-upload" style="font-size: 36px; color: #6c757d;"></i>
+                  <h5 class="mt-2">Add New Photos</h5>
+                  <p class="text-muted small">Drag & Drop Images Here or click below to browse from your device</p>
+                  <button type="button" class="btn btn-outline-secondary mt-1" onclick="document.getElementById('fileInput').click()">Select Images</button>
+                  <input type="file" id="fileInput" (change)="onFileSelect($event)" multiple accept="image/*" class="form-control d-none" />
+                </div>
+              </div>
+
+              <div class="preview d-flex flex-wrap mt-3 mb-4 gap-2">
+                @for (image of imagePreviews; track image; let i = $index) {
+                  <div class="image-container position-relative"
+                       (mouseover)="showDeleteButton[i] = true"
+                       (mouseleave)="showDeleteButton[i] = false">
+                    <img [src]="image" alt="property image" class="rounded shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                            (click)="removeImage(i)"
+                            [style.opacity]="showDeleteButton[i] ? '1' : '0'"
+                            style="transition: opacity 0.2s; width: 20px; height: 20px; font-size: 14px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                      &times;
+                    </button>
+                  </div>
+                }
+              </div>
+
+              <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-outline-secondary px-4 py-2" (click)="goToPreviousStep()">
+                  <i class="bi bi-arrow-left me-2"></i> Back
+                </button>
+                <button type="submit" class="btn btn-success px-4 py-2">
+                  <i class="bi bi-house-check me-2"></i> Update Property
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+            <div class="text-center">
+              <img src="/houseCreation3.jpg" alt="Pricing & Photos" class="img-fluid" style="max-height: 400px;">
+              <h4 class="mt-4 text-primary">Refresh your listing</h4>
+              <p class="text-muted px-4">Update pricing and add new photos to keep your listing attractive</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </form>
+</div>

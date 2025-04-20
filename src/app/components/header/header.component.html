@@ -37,11 +37,6 @@
                 <a class="nav-link px-2 mx-1 rounded-pill hover-bg-light-subtle" routerLink="/configuration">Profile</a>
               </li>
             }
-            @if (role === "HOSTESS") {
-              <li class="nav-item">
-                <a class="nav-link px-2 mx-1 rounded-pill hover-bg-light-subtle" routerLink="/registerHouse">Add house</a>
-              </li>
-            }
             <li class="nav-item">
               <a class="nav-link px-2 mx-1 text-danger rounded-pill hover-bg-light-subtle" style="cursor: pointer;" (click)="logout()">Log out</a>
             </li>

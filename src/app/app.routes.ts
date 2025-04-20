@@ -11,6 +11,7 @@ import {ForgotPasswordComponent} from './components/forgot-password/forgot-passw
 import {ErrorComponent} from './components/error/error.component';
 import {AdminGuard} from './auth/admin.guard';
 import {UserConfigComponent} from './components/user-config/user-config.component';
+import {HouseUpdateFormComponent} from './components/house-update-form/house-update-form.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -19,6 +20,7 @@ export const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'house/:id', component: HomeDetailsComponent},
   {path: 'registerHouse', component: HomeCreationFormComponent, canActivate: [HostessGuard]},
+  {path: 'updateHouse/:id', component: HouseUpdateFormComponent, canActivate: [HostessGuard]},
   {path: 'user/:id', component: UserProfileComponent},
   {path: 'admin/panel', component: AdminPanelComponent, canActivate: [AdminGuard]},
   {path: 'forgot-password', component: ForgotPasswordComponent},

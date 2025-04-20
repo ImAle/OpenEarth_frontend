@@ -5,6 +5,8 @@ import {CurrencyPipe} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {GalleriaModule} from 'primeng/galleria';
 import {environment} from '../../../environments/environment';
+import {faUsers, faBed, faHome, faBath} from '@fortawesome/free-solid-svg-icons';
+import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-card',
@@ -12,7 +14,8 @@ import {environment} from '../../../environments/environment';
     FormsModule,
     CurrencyPipe,
     GalleriaModule,
-    RouterLink
+    RouterLink,
+    FaIconComponent,
   ],
   templateUrl: './card.component.html',
   styleUrl: './card.component.css'
@@ -20,6 +23,12 @@ import {environment} from '../../../environments/environment';
 export class CardComponent implements OnInit {
   @Input() house!: HousePreview;
   galleryImages: any[] = [];
+
+  // Icons
+  faUsers = faUsers;
+  faHome = faHome;
+  faBed = faBed;
+  faBath = faBath;
 
   constructor() {}
 
@@ -35,4 +44,10 @@ export class CardComponent implements OnInit {
     return environment.rootUrl + url;
   }
 
+  truncateText(text: string, maxLength: number): string {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + '...';
+  }
 }
