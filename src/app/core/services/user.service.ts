@@ -76,27 +76,20 @@ export class UserService {
     return this.http.get<any>(url, {params: params});
   }
 
-  // PUT /api/user/update
-  update(id: string, user: UserUpdate, picture: File): Observable<any> {
+  // PUT /api/user/picture
+  update(picture: File): Observable<any> {
     try{
-      const url: string = this.baseUrl + '/update';
+      const url: string = this.baseUrl + '/picture';
       const token: string = this.authService.retrieveToken();
 
       const headers = new HttpHeaders({
         'Authorization': token
       });
 
-      let params = new HttpParams();
-      params.set('id', id);
-
       const formData = new FormData();
-      formData.append('user', new Blob([JSON.stringify(user)], { type: 'application/json' }));
-
-      if(picture != null){
         formData.append('picture', picture);
-      }
 
-      return this.http.put<any>(url, formData, {headers: headers, params: params});
+      return this.http.put<any>(url, formData, {headers: headers});
     }catch (error){
       console.error(error);
       return throwError(() => error);

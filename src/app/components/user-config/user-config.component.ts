@@ -11,14 +11,19 @@ import {CardComponent} from '../card/card.component';
 import {UserService} from '../../core/services/user.service';
 import {User} from '../../core/models/user.model';
 import {CurrencyService} from '../../core/services/currency.service';
+import {MessageService} from 'primeng/api';
+import {Toast} from 'primeng/toast';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-config',
   imports: [
     HeaderComponent,
     DatePipe,
-    CardComponent
+    CardComponent,
+    Toast
   ],
+  providers: [MessageService],
   templateUrl: './user-config.component.html',
   styleUrl: './user-config.component.css'
 })
@@ -29,6 +34,7 @@ export class UserConfigComponent implements OnInit{
   rents: Rent[] = [];
   userId: number | null = null;
   userProfile: User | null = null;
+  userProfilePicUrl: string = '/defaultUser.jpg';
   isLoading = true;
   selectedHouse: HousePreview | null = null;
   showModal = false;
@@ -40,6 +46,7 @@ export class UserConfigComponent implements OnInit{
     private rentService: RentService,
     private userService: UserService,
     private currencyService: CurrencyService,
+    private messageService: MessageService,
     private router: Router
   ) {
     effect(() => {
@@ -59,6 +66,8 @@ export class UserConfigComponent implements OnInit{
     this.userService.getUser(this.userId!).subscribe({
       next: (response: any) => {
         this.userProfile = response.user;
+        this.userProfilePicUrl = response.user.picture ? environment.rootUrl + response.user.picture : '/defaultUser.jpg';
+
       }, error: (error: any) => {
         console.error("Error fetching user:" + error);
       }
@@ -115,8 +124,20 @@ export class UserConfigComponent implements OnInit{
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
-      console.log('Selected profile picture:', file);
-      // Here you would implement the actual profile picture update logic
+      this.userService.update(file).subscribe({
+        next: (response: any) => {
+          this.messageService.add(
+            {
+              severity: 'success',
+              key: 'success',
+              summary: 'Profile picture updated!',
+              detail: 'Your profile picture has been updated successfully.'}
+          );
+        },
+        error: (error) => {
+          console.error('Error updating profile picture:', error);
+        }
+      })
     }
   }
 
@@ -142,8 +163,6 @@ export class UserConfigComponent implements OnInit{
   updateHouse(): void {
     if (this.selectedHouse) {
       this.router.navigate(['/updateHouse', this.selectedHouse.id]);
-      //console.log('Update house with ID:', this.selectedHouse.id);
-      // Later this will navigate to the update form
       this.closeModal();
     }
   }

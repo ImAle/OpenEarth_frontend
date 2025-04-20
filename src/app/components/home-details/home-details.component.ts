@@ -38,6 +38,7 @@ import {CurrencyService} from '../../core/services/currency.service';
 export class HomeDetailsComponent implements OnInit, AfterViewInit {
   private km: number = 5.0;
   private idHouse!: number;
+  userProfilePictureUrl: string = '/defaultUser.jpg';
   currency!: string;
   coords: {latitude: number, longitude: number} = {latitude: 0, longitude: 0};
   house!: House;
@@ -113,6 +114,7 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     this.houseService.getById(id, currency).subscribe({
       next: (response: any) => {
         this.house = response.house;
+        this.userProfilePictureUrl = response.house.owner.picture ? environment.rootUrl + response.house.owner.picture : '/defaultUser.jpg';
         this.setupPictures();
         this.getNearbyHouses();
       },
