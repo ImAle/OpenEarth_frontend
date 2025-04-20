@@ -39,6 +39,7 @@ export class UserConfigComponent implements OnInit{
   selectedHouse: HousePreview | null = null;
   showModal = false;
   confirmDelete = false;
+  isFirstLoad = false;
 
   constructor(
     private authService: AuthService,
@@ -88,6 +89,11 @@ export class UserConfigComponent implements OnInit{
         }
 
         this.isLoading = false;
+        this.isFirstLoad = true;
+
+        setTimeout(() => {
+          this.isFirstLoad = false;
+        }, 3000);
       },
       error: (error) => {
         console.error('Error fetching user role:', error);

@@ -1,0 +1,74 @@
+.profile-card {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+}
+
+.profile-image-container:hover {
+  transform: scale(1.05);
+}
+
+.first-load-shine {
+  animation: card-appear 0.5s ease-out forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.first-load-shine::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shine-sweep 1.5s ease-in-out 0.5s forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes shine-sweep {
+  0% {
+    left: -150%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  99% {
+    left: 100%;
+    opacity: 0;
+  }
+  100% {
+    left: -150%;
+    opacity: 0;
+    display: none;
+    visibility: hidden;
+  }
+}
