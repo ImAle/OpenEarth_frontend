@@ -14,11 +14,11 @@ export class User {
   houses: HousePreview[];
   rents: Rent[];
   reviews: Review[];
-  creationDate : Date;
+  creationDate : number;
 
   constructor(id: number, username: string, firstName: string, lastName: string, email: string,
               role: string, enabled: boolean, picture: string, houses: HousePreview[], rents: Rent[], reviews: Review[],
-              creationDate: Date) {
+              creationDate: number) {
     this.id = id;
     this.username = username;
     this.firstName = firstName;

@@ -12,6 +12,7 @@ import {ErrorComponent} from './components/error/error.component';
 import {AdminGuard} from './auth/admin.guard';
 import {UserConfigComponent} from './components/user-config/user-config.component';
 import {HouseUpdateFormComponent} from './components/house-update-form/house-update-form.component';
+import {ChatComponent} from './components/chat/chat.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -25,6 +26,8 @@ export const routes: Routes = [
   {path: 'admin/panel', component: AdminPanelComponent, canActivate: [AdminGuard]},
   {path: 'forgot-password', component: ForgotPasswordComponent},
   {path: 'configuration', component: UserConfigComponent},
+  {path: 'chat', component: ChatComponent},
+  {path: 'chat/:userId', component: ChatComponent},
   {path: 'error/:code', component: ErrorComponent},
   {path: '**', component: ErrorComponent} // Error 404 for unknown paths
 ];

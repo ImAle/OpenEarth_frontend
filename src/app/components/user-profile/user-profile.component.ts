@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, ElementRef, AfterViewInit, effect} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../core/models/user.model';
@@ -57,6 +57,7 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private userService: UserService,
     private houseService: HouseService,
     private messageService: MessageService,
@@ -128,6 +129,7 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
 
   openChat(): void {
     console.log('Opening chat with user: ', this.user.id);
+    this.router.navigate(['/chat', this.user.id]);
   }
 
   openReportDialog(): void {
