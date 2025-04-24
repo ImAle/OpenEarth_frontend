@@ -31,4 +31,8 @@ export class HousePopupComponent implements OnInit {
     return environment.rootUrl + url;
   }
 
+  navigateToHouseDetails(){
+    window.location.href = `/house/${this.house.id}`;
+  }
+
 }

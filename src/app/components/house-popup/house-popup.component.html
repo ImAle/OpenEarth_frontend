@@ -14,11 +14,6 @@
         </div>
       </ng-template>
     </p-galleria>
-
-    <!-- Wishlist heart icon with better styling -->
-    <span class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
-      <i class="bi bi-heart" style="font-size: 1.4rem; color: white; filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.5)); cursor: pointer; transition: all 0.2s;" onmouseover="this.classList.replace('bi-heart', 'bi-heart-fill'); this.style.color='#ff5a5f';" onmouseout="this.classList.replace('bi-heart-fill', 'bi-heart'); this.style.color='white';"></i>
-    </span>
   </div>
 
   <!-- Card body with improved spacing and typography -->
@@ -31,7 +26,7 @@
 
     <div class="d-flex justify-content-between align-items-center">
       <a [routerLink]="['/house', house.id]" class="text-decoration-none w-100">
-        <button class="btn btn-primary w-100" style="border-radius: 6px; background-color: #3498db; border: none; padding: 8px 0; font-weight: 500; letter-spacing: 0.3px; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#2980b9';" onmouseout="this.style.backgroundColor='#3498db';">Visit Property</button>
+        <button (click)="navigateToHouseDetails()" class="btn btn-primary w-100" style="border-radius: 6px; background-color: #3498db; border: none; padding: 8px 0; font-weight: 500; letter-spacing: 0.3px; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#2980b9';" onmouseout="this.style.backgroundColor='#3498db';">Visit Property</button>
       </a>
     </div>
   </div>
