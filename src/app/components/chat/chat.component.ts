@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild, AfterViewChecked} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {CommonModule, DatePipe} from '@angular/common';
 import {ChatMessage} from '../../core/models/ChatMessage.model';
@@ -22,15 +22,19 @@ import {UserService} from '../../core/services/user.service';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+
   conversations: ChatConversation[] = [];
   messages: ChatMessage[] = [];
   selectedConversation: ChatConversation | null = null;
   userId!: number;
   username!: string;
   isEmojiPickerVisible: boolean = false;
+  isAttachmentMenuVisible: boolean = false;
   private messageSubscription!: Subscription;
   private routeParamSubscription!: Subscription;
+  private shouldScrollToBottom: boolean = false;
 
   newMessageText = '';
   pendingAttachments: MessageAttachment[] = [];
@@ -60,6 +64,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       console.log('[DEBUG] Mensaje recibido desde messages$:', message);
       if (message) {
         this.handleIncomingMessage(message);
+        this.shouldScrollToBottom = true;
       }
     });
 
@@ -71,6 +76,21 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.initializeDirectChat(Number(otherUserId));
       }
     });
+  }
+
+  ngAfterViewChecked() {
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom();
+    }
+  }
+
+  private scrollToBottom(): void {
+    try {
+      if (this.messagesContainer) {
+        this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+      }
+      this.shouldScrollToBottom = false;
+    } catch (err) { }
   }
 
   ngOnDestroy(): void {
@@ -116,6 +136,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
       this.chatService.uploadAttachment(file, 'IMAGE').subscribe(attachment => {
         this.pendingAttachments.push(attachment);
+        this.isAttachmentMenuVisible = false;
       });
     }
   }
@@ -126,6 +147,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
       this.chatService.uploadAttachment(file, 'AUDIO').subscribe(attachment => {
         this.pendingAttachments.push(attachment);
+        this.isAttachmentMenuVisible = false;
       });
     });
   }
@@ -155,6 +177,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   loadMessages(otherUserId: number): void {
     this.chatService.getMessageHistory(otherUserId).subscribe(messages => {
       this.messages = messages;
+      this.shouldScrollToBottom = true;
 
       messages.forEach(message => {
         if (message.id != undefined && message.receiverId === this.userId && !message.read) {
@@ -169,39 +192,44 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage(): void {
-    if (!this.selectedConversation) {
+    if (!this.selectedConversation || (!this.newMessageText.trim() && this.pendingAttachments.length === 0)) {
       return;
     }
 
     const otherUserId = this.getOtherUserId(this.selectedConversation);
 
-    if (!this.newMessageText.trim()) {
-      return;
+    // If we have pending attachments, send them first
+    if (this.pendingAttachments.length > 0) {
+      // Logic for sending attachments would go here
+      // For now, just handle text messages
     }
 
-    this.chatService.sendTextMessage(otherUserId, this.newMessageText).subscribe({
-      next: (message) => {
-        this.messages = [...this.messages, message];
-        this.newMessageText = '';
+    if (this.newMessageText.trim()) {
+      this.chatService.sendTextMessage(otherUserId, this.newMessageText).subscribe({
+        next: (message) => {
+          this.messages = [...this.messages, message];
+          this.newMessageText = '';
+          this.shouldScrollToBottom = true;
 
-        if (this.selectedConversation) {
-          this.selectedConversation = {
-            ...this.selectedConversation,
-            lastActivity: new Date(),
-            lastMessage: message
-          };
+          if (this.selectedConversation) {
+            this.selectedConversation = {
+              ...this.selectedConversation,
+              lastActivity: new Date(),
+              lastMessage: message
+            };
 
-          if (this.selectedConversation.id === -1) {
-            this.refreshConversations();
-          } else {
-            this.updateConversationInList(this.selectedConversation);
+            if (this.selectedConversation.id === -1) {
+              this.refreshConversations();
+            } else {
+              this.updateConversationInList(this.selectedConversation);
+            }
           }
+        },
+        error: (error) => {
+          console.error('Error sending message:', error);
         }
-      },
-      error: (error) => {
-        console.error('Error sending message:', error);
-      }
-    });
+      });
+    }
   }
 
   sendAudio(audioBlob: Blob): void {
@@ -214,6 +242,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.chatService.sendAudioMessage(otherUserId, audioFile).subscribe(message => {
       this.messages.push(message);
+      this.shouldScrollToBottom = true;
 
       if (this.selectedConversation) {
         this.selectedConversation.lastActivity = new Date();
@@ -254,10 +283,21 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   addEmoji(emoji: string): void {
     this.newMessageText += emoji;
+    this.isEmojiPickerVisible = false;
   }
 
   toggleEmojiPicker(): void {
     this.isEmojiPickerVisible = !this.isEmojiPickerVisible;
+    if (this.isEmojiPickerVisible) {
+      this.isAttachmentMenuVisible = false;
+    }
+  }
+
+  toggleAttachmentMenu(): void {
+    this.isAttachmentMenuVisible = !this.isAttachmentMenuVisible;
+    if (this.isAttachmentMenuVisible) {
+      this.isEmojiPickerVisible = false;
+    }
   }
 
   isMyMessage(message: ChatMessage): boolean {
@@ -293,7 +333,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
       if (isCurrentConversation) {
         this.selectedConversation = updatedConversation;
-        this.messages.push(message);
+        this.messages = [...this.messages, message];
+        // Mark that we should scroll to bottom when view is checked
+        this.shouldScrollToBottom = true;
+
+        if (message.id != undefined && message.receiverId === this.userId && !message.read) {
+          this.chatService.markMessageAsRead(message.id, this.userId);
+        }
       }
     }
   }
@@ -305,7 +351,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   updateConversationInList(conversation: ChatConversation): void {
     const index = this.conversations.findIndex(c => c.id === conversation.id);
     if (index !== -1) {
-      this.conversations[index] = conversation;
+      const updatedConversations = [...this.conversations];
+      updatedConversations.splice(index, 1);
+      updatedConversations.unshift(conversation);
+      this.conversations = updatedConversations;
     }
   }
 }
