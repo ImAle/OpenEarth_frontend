@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg" style="height: 8.5vh">
     <div class="container">
       <!-- logo and title -->
-      <a class="navbar-brand d-flex align-items-center" [routerLink]="['/home']">
+      <a class="navbar-brand d-flex align-items-center" (click)="goToHome()" style="cursor: pointer;">
         <img src="/logo.svg" alt="OpenEarth" style="width: 25px; height: 25px; margin-right: 6px"/>
         <span class="fw-semibold text-primary">OpenEarth</span>
       </a>

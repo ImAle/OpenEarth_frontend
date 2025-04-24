@@ -36,4 +36,8 @@ export class HeaderComponent implements OnInit{
   logout(){
     this.authService.logout();
   }
+
+  goToHome(){
+    window.location.href = '/home';
+  }
 }
