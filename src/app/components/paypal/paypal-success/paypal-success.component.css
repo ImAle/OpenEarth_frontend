@@ -1,0 +1,254 @@
+.payment-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Estado de carga */
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 30px;
+  border-radius: 50%;
+  border: 6px solid #e0e0e0;
+  border-top-color: #0066cc;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-state h2 {
+  color: #0066cc;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.loading-state p {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Estado de éxito */
+.success-state {
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.success-icon {
+  width: 100px;
+  height: 100px;
+  background-color: #f0f8ff;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.check-icon {
+  display: inline-block;
+  transform: rotate(45deg);
+  height: 40px;
+  width: 20px;
+  border-bottom: 7px solid #0066cc;
+  border-right: 7px solid #0066cc;
+  margin-top: -10px;
+}
+
+.success-state h1 {
+  color: #0066cc;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.reservation-details {
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 25px 0;
+  text-align: left;
+}
+
+.reservation-details h3 {
+  color: #0066cc;
+  margin-bottom: 15px;
+  font-weight: 500;
+  border-bottom: 1px solid #ddecff;
+  padding-bottom: 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.detail-row span:first-child {
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-row span:last-child {
+  font-weight: 600;
+  color: #333;
+}
+
+.detail-row.total {
+  border-top: 1px solid #ddecff;
+  margin-top: 15px;
+  padding-top: 15px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.reservation-id {
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.confirmation-message {
+  color: #666;
+  margin: 20px 0;
+  font-size: 16px;
+}
+
+/* Estado de error */
+.error-state {
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.error-icon {
+  width: 100px;
+  height: 100px;
+  background-color: #fff0f0;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-mark {
+  position: relative;
+  display: inline-block;
+}
+
+.error-mark:before, .error-mark:after {
+  position: absolute;
+  content: '';
+  width: 36px;
+  height: 6px;
+  background-color: #cc0000;
+  border-radius: 3px;
+}
+
+.error-mark:before {
+  transform: rotate(45deg);
+}
+
+.error-mark:after {
+  transform: rotate(-45deg);
+}
+
+.error-state h2 {
+  color: #cc0000;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.error-message {
+  color: #cc0000;
+  font-weight: 500;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.error-state p {
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+/* Botones de acción */
+.action-buttons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0066cc;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #0055aa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+  background-color: #f0f8ff;
+  color: #0066cc;
+  border: 1px solid #0066cc;
+}
+
+.btn-secondary:hover {
+  background-color: #ddecff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 600px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+
+  .detail-row span:first-child {
+    margin-bottom: 5px;
+  }
+}

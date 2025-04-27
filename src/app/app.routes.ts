@@ -13,6 +13,8 @@ import {AdminGuard} from './auth/admin.guard';
 import {UserConfigComponent} from './components/user-config/user-config.component';
 import {HouseUpdateFormComponent} from './components/house-update-form/house-update-form.component';
 import {ChatComponent} from './components/chat/chat.component';
+import {PaypalSuccessComponent} from './components/paypal/paypal-success/paypal-success.component';
+import {PaypalCancelComponent} from './components/paypal/paypal-cancel/paypal-cancel.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -29,5 +31,7 @@ export const routes: Routes = [
   {path: 'chat', component: ChatComponent},
   {path: 'chat/:userId', component: ChatComponent},
   {path: 'error/:code', component: ErrorComponent},
+  {path: 'paypal-success', component: PaypalSuccessComponent},
+  {path: 'paypal-cancel', component: PaypalCancelComponent},
   {path: '**', component: ErrorComponent} // Error 404 for unknown paths
 ];

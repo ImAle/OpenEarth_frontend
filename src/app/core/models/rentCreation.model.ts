@@ -1,9 +1,9 @@
 export class RentCreation{
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
   houseId: number;
 
-  constructor(startTime: string, endTime: string, houseId: number) {
+  constructor(startTime: Date, endTime: Date, houseId: number) {
     this.startTime = startTime;
     this.endTime = endTime;
     this.houseId = houseId;

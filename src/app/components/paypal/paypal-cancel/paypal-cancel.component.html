@@ -1,0 +1,57 @@
+<app-header/>
+
+<div style="padding-top: 8.5vh;"></div>
+
+<div class="cancel-container">
+  <div class="cancel-card">
+    <div class="cancel-icon">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="#0066cc" stroke-width="2" fill="none"/>
+        <path d="M12 6L12 14" stroke="#0066cc" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="12" cy="17" r="1" fill="#0066cc"/>
+      </svg>
+    </div>
+
+    <h1>Payment not completed</h1>
+    <h3>{{ getCancelMessage() }}</h3>
+
+    <p class="cancel-description">
+      {{ getCancelDescription() }}
+    </p>
+
+    <div class="options-container">
+      <h4>What would you like to do next?</h4>
+
+      <div class="option-cards">
+        <div class="option-card" (click)="retryPayment()">
+          <div class="option-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C14.8273 3 17.35 4.30071 19 6.34267" stroke="#0066cc" stroke-width="2" stroke-linecap="round"/>
+              <path d="M19 3V7H15" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h5>Retry payment</h5>
+          <p>Return to the accommodation and complete your booking</p>
+        </div>
+
+        <div class="option-card" (click)="goToHome()">
+          <div class="option-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9.5L12 4L21 9.5" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M19 13V19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V13" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 20V15C10 14.4477 10.4477 14 11 14H13C13.5523 14 14 14.4477 14 15V20" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h5>Return home</h5>
+          <p>Go back to the main page</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="support-section">
+      <h4>Need help?</h4>
+      <p>If you have any questions or issues with your payment, feel free to contact our support team.</p>
+      <button class="support-button">Contact support</button>
+    </div>
+  </div>
+</div>

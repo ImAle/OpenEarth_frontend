@@ -87,8 +87,7 @@
       </div>
     }
 
-    <!-- GUEST Section - Rents Table -->
-    @if (userRole === 'GUEST') {
+    <!-- Rents Table -->
       <div class="mb-4">
         <h2>My Rentals</h2>
         <hr>
@@ -111,11 +110,15 @@
                 @for (rent of rents; track rent.id) {
                   <tr>
                     <td>{{ rent.id }}</td>
-                    <td>House ID: {{ rent.houseId }}</td>
+                    <td [routerLink]="['/house', rent.houseId]" class="text-decoration-none" style="cursor: pointer;">{{ houseIdNameMap.get(rent.houseId) }}</td>
                     <td>{{ rent.startTime | date }}</td>
                     <td>{{ rent.endTime | date }}</td>
                     <td>
-                      <span class="badge bg-success">Active</span>
+                      <span
+                        class="badge"
+                        [ngClass]="getBadgeClass(getRentStatus(rent))">
+                        {{ getRentStatus(rent) | uppercase }}
+                      </span>
                     </td>
                   </tr>
                 }
@@ -125,7 +128,6 @@
         }
       </div>
     }
-  }
 </div>
 
 <!-- House Options Modal -->

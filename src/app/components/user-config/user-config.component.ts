@@ -1,12 +1,12 @@
 import {Component, effect, OnInit} from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../core/services/auth.service';
 import {HeaderComponent} from '../header/header.component';
 import {HousePreview} from '../../core/models/housePreview.model';
 import {Rent} from '../../core/models/rent.model';
 import {HouseService} from '../../core/services/house.service';
 import {RentService} from '../../core/services/rent.service';
-import {DatePipe} from '@angular/common';
+import {DatePipe, NgClass, UpperCasePipe} from '@angular/common';
 import {CardComponent} from '../card/card.component';
 import {UserService} from '../../core/services/user.service';
 import {User} from '../../core/models/user.model';
@@ -21,7 +21,10 @@ import {environment} from '../../../environments/environment';
     HeaderComponent,
     DatePipe,
     CardComponent,
-    Toast
+    Toast,
+    RouterLink,
+    NgClass,
+    UpperCasePipe
   ],
   providers: [MessageService],
   templateUrl: './user-config.component.html',
@@ -40,6 +43,7 @@ export class UserConfigComponent implements OnInit{
   showModal = false;
   confirmDelete = false;
   isFirstLoad = false;
+  houseIdNameMap: Map<number, string> = new Map();
 
   constructor(
     private authService: AuthService,
@@ -64,8 +68,9 @@ export class UserConfigComponent implements OnInit{
     this.isLoading = true;
     this.userId = this.authService.getMyId();
 
-    this.userService.getUser(this.userId!).subscribe({
+    this.userService.getProfile().subscribe({
       next: (response: any) => {
+        console.log(response.user);
         this.userProfile = response.user;
         this.userProfilePicUrl = response.user.picture ? environment.rootUrl + response.user.picture : '/defaultUser.jpg';
 
@@ -82,6 +87,7 @@ export class UserConfigComponent implements OnInit{
         // If user is HOSTESS, load their houses
         if (this.userRole === 'HOSTESS') {
           this.loadHouses(this.currency);
+          this.getRentsOfMyHouses();
         }
         // If user is GUEST, load their rents
         else if (this.userRole === 'GUEST') {
@@ -115,14 +121,45 @@ export class UserConfigComponent implements OnInit{
     }
   }
 
+  // If guest
   loadRents(): void {
     this.rentService.getMyRents().subscribe({
       next: (response: any) => {
         this.rents = response.rents;
+        this.getHousesRentName();
       },
       error: (error) => {
         console.error('Error loading rents:', error);
       }
+    });
+  }
+
+  // if Hostess
+  getRentsOfMyHouses() {
+    this.rentService.getRentsOfMyHouses().subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.rents = response.rents;
+        if(this.rents) {
+          this.getHousesRentName();
+        }
+      },
+      error: (error: any) => {
+        console.log(error);
+        console.error('Error loading rents:', error);
+      }
+    })
+  }
+
+  getHousesRentName(){
+    this.rents.forEach(rent => {
+      this.houseService.getById(rent.houseId, this.currency).subscribe({
+        next: (response: any)=> {
+          this.houseIdNameMap.set(rent.houseId, response.house.title);
+        }, error: (error: any) => {
+          console.log(error);
+        }
+      })
     });
   }
 
@@ -194,5 +231,22 @@ export class UserConfigComponent implements OnInit{
 
   navigateToCreateHouse(): void {
     this.router.navigate(['/registerHouse']);
+  }
+
+  getRentStatus(rent: Rent): 'pending'|'active'|'completed' {
+    const now = new Date();
+    const start = new Date(rent.startTime);
+    const end   = new Date(rent.endTime);
+    if (now < start)   return 'pending';
+    if (now > end)     return 'completed';
+    return 'active';
+  }
+
+  getBadgeClass(status: 'pending'|'active'|'completed'): string {
+    switch (status) {
+      case 'pending':   return 'bg-warning text-dark';
+      case 'active':    return 'bg-success';
+      case 'completed': return 'bg-secondary';
+    }
   }
 }

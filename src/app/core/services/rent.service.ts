@@ -9,7 +9,7 @@ import {Observable, throwError} from 'rxjs';
   providedIn: 'root'
 })
 export class RentService {
-  baseUrl = environment.rootUrl + "/rent";
+  baseUrl = environment.rootUrl + "/api/rent";
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -54,15 +54,10 @@ export class RentService {
   getRentsByHouse(houseId: number): any {
     try{
       const url = this.baseUrl + '/house';
-      const token: string = this.authService.retrieveToken();
-
-      const headers = new HttpHeaders({
-        'Authorization': token
-      });
 
       const params = new HttpParams().set('id', houseId);
 
-      return this.http.get<any>(url, {headers, params});
+      return this.http.get<any>(url, {params: params});
     }catch(error){
       console.error(error);
       return throwError(() => error);

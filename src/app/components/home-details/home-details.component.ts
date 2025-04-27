@@ -14,6 +14,11 @@ import {ReviewComponent} from '../review/review.component';
 import {HousePreview} from '../../core/models/housePreview.model';
 import {environment} from '../../../environments/environment';
 import {CurrencyService} from '../../core/services/currency.service';
+import {PaypalService} from '../../core/services/paypal.service';
+import {RentCreation} from '../../core/models/rentCreation.model';
+import {AuthService} from '../../core/services/auth.service';
+import {RentService} from '../../core/services/rent.service';
+import {Rent} from '../../core/models/rent.model';
 
 @Component({
   selector: 'app-home-details',
@@ -48,6 +53,9 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
   tomorrow: Date = new Date();
   showDescriptionModal: boolean = false;
   nearbyHouses: HousePreview[] = [];
+  totalPrice: number = 0;
+  amIguest: boolean = false;
+  disabledDates: Date[] = [];
 
   // Full screen image properties
   showFullScreenImage: boolean = false;
@@ -73,7 +81,9 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     }
   ];
 
-  constructor(private route: ActivatedRoute, private houseService: HouseService, private currencyService: CurrencyService) {
+  constructor(private route: ActivatedRoute, private houseService: HouseService,
+              private currencyService: CurrencyService, private paypalService: PaypalService,
+              private authService: AuthService, private rentService: RentService) {
     effect(() => {
       // Get the current currency from the store signal
       const currency = this.currencyService.current().code;
@@ -100,7 +110,10 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     this.route.paramMap.subscribe(params => {
       this.idHouse = Number(params.get('id'));
       this.getHouseDetails(this.idHouse, this.currency);
+      sessionStorage.setItem("visitingHouse", this.idHouse.toString());
     });
+
+    this.getRole();
   }
 
   ngAfterViewInit(): void {
@@ -113,10 +126,12 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
   getHouseDetails(id: number, currency: string) {
     this.houseService.getById(id, currency).subscribe({
       next: (response: any) => {
+        console.log(response);
         this.house = response.house;
         this.userProfilePictureUrl = response.house.owner.picture ? environment.rootUrl + response.house.owner.picture : '/defaultUser.jpg';
         this.setupPictures();
         this.getNearbyHouses();
+        this.getRentsByHouse();
       },
       error: (err: Error) => {
         console.log(err);
@@ -163,7 +178,8 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
   }
 
   getTotalPrice(): number {
-    return this.house.price * this.getNights();
+    this.totalPrice = this.house.price * this.getNights();
+    return this.totalPrice;
   }
 
   isValidReservation(): boolean {
@@ -210,5 +226,63 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
       this.currentImageIndex = (this.currentImageIndex + 1) % this.pictures.length;
     }
     this.currentFullScreenImage = this.pictures[this.currentImageIndex];
+  }
+
+  rentHouse(){
+    console.log("Renting house: " + this.house.id);
+    this.paypalService.createPayment(this.totalPrice, this.currency, "renting " + this.house.title + " in " + this.house.location).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        const rent: RentCreation = new RentCreation(this.startDate, this.endDate, this.house.id);
+        sessionStorage.setItem("rent", JSON.stringify(rent));
+
+        window.location.href = response.message;
+      },
+      error: (err: Error) => {
+        console.log(err);
+      }
+    });
+  }
+
+  getRole(): void {
+    this.authService.getRole().subscribe({
+      next: (response) => {
+        this.amIguest = response.role === 'GUEST';
+      },
+      error: (error) => {
+        console.error('Error fetching user role:', error);
+      }
+    })
+  }
+
+  getRentsByHouse(){
+    console.log("Getting rents by house: " + this.house.id);
+    this.rentService.getRentsByHouse(this.house.id).subscribe({
+      next: (response: any) => {
+        this.setDisabledDatesFromRents(response.rents);
+      },
+      error: (error: any) => {
+        console.log(error);
+        console.error('Error fetching user role:', error);
+      }
+    });
+  }
+
+  private normalizeDate(date: Date): Date {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  setDisabledDatesFromRents(rents: Rent[]) {
+    this.disabledDates = [];
+    rents.forEach(r => {
+      const start = this.normalizeDate(new Date(r.startTime));
+      const end = this.normalizeDate(new Date(r.endTime));
+      for (let cur = new Date(start); cur <= end; cur.setDate(cur.getDate() + 1)) {
+        this.disabledDates.push(this.normalizeDate(cur));
+      }
+      console.log(this.disabledDates);
+    });
   }
 }

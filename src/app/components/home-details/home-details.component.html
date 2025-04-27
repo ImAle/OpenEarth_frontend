@@ -130,6 +130,7 @@
                 <h5>Check-in</h5>
               </div>
               <p-calendar [(ngModel)]="startDate"
+                          [disabledDates]="disabledDates"
                           [minDate]="tomorrow"
                           [inline]="true"
                           [showIcon]="false"
@@ -144,6 +145,7 @@
                 <h5>Check-out</h5>
               </div>
               <p-calendar [(ngModel)]="endDate"
+                          [disabledDates]="disabledDates"
                           [minDate]="minEndDate"
                           [inline]="true"
                           [showIcon]="false"
@@ -167,6 +169,7 @@
           <div class="col-6">
             <label class="form-label">Check-in</label>
             <p-calendar [(ngModel)]="startDate"
+                        [disabledDates]="disabledDates"
                         [minDate]="tomorrow"
                         [showIcon]="true"
                         dateFormat="dd/mm/yy"
@@ -177,6 +180,7 @@
           <div class="col-6">
             <label class="form-label">Checkout</label>
             <p-calendar [(ngModel)]="endDate"
+                        [disabledDates]="disabledDates"
                         [minDate]="minEndDate"
                         [showIcon]="true"
                         dateFormat="dd/mm/yy"
@@ -186,7 +190,7 @@
           </div>
         </div>
 
-        <button class="btn btn-primary w-100 py-2 mb-3" [disabled]="!isValidReservation()">Rent</button>
+        <button class="btn btn-primary w-100 py-2 mb-3" [disabled]="!isValidReservation() || !amIguest" (click)="rentHouse()">Rent</button>
 
         @if (isValidReservation()) {
           <div class="total-price p-3 bg-light rounded-3">

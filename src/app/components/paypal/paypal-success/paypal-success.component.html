@@ -1,0 +1,67 @@
+<app-header/>
+
+<div style="padding-top: 8.5vh;"></div>
+
+<div class="payment-container">
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <h2>Payment on process</h2>
+      <p>We're confirming your reservation. Please wait a moment...</p>
+    </div>
+  }
+
+  <!-- Success -->
+  @if (!isLoading && isSuccess) {
+    <div class="success-state">
+      <div class="success-icon">
+        <i class="check-icon"></i>
+      </div>
+      <h1>¡Reservation confirmed!</h1>
+      <div class="reservation-details">
+        <h3>Reservation Details</h3>
+        <div class="detail-row">
+          <span>Estate:</span>
+          <span>{{ house?.title }}</span>
+        </div>
+        <div class="detail-row">
+          <span>Start Date:</span>
+          <span>{{ rent?.startTime  | date:'yyyy-MM-dd'}}</span>
+        </div>
+        <div class="detail-row">
+          <span>End Date:</span>
+          <span>{{ rent?.endTime  | date:'yyyy-MM-dd'}}</span>
+        </div>
+        <div class="detail-row">
+          <span>Number of reservation:</span>
+          <span class="reservation-id">{{ rent?.id }}</span>
+        </div>
+      </div>
+      <p class="confirmation-message">
+        You will receive an email with all the details of your reservation.
+      </p>
+      <div class="action-buttons">
+        <button class="btn-primary" (click)="goToReservations()">See my reservations</button>
+        <button class="btn-secondary" (click)="goToHome()">Go Home</button>
+      </div>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (!isLoading && !isSuccess) {
+    <div class="error-state">
+      <div class="error-icon">
+        <i class="error-mark"></i>
+      </div>
+      <h2>The reservation could not be completed</h2>
+      <p class="error-message">{{ errorMessage }}</p>
+      <p>Your payment was processed by PayPal, but there was a problem confirming your reservation.
+        Don't worry, if you were charged, you'll be automatically refunded.</p>
+      <div class="action-buttons">
+        <button class="btn-primary" (click)="goToHome()">Go Home</button>
+        <button class="btn-secondary" (click)="confirmPayment()">Retry</button>
+      </div>
+    </div>
+  }
+</div>

@@ -67,6 +67,18 @@ export class UserService {
 
   }
 
+  // GET /api/user/profile
+  getProfile(): Observable<any>{
+    const url: string = this.baseUrl + '/profile';
+    const token: string = this.authService.retrieveToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': token
+    });
+
+    return this.http.get<any>(url, {headers: headers});
+  }
+
   // GET /api/user/details
   getUser(id: number): Observable<any>{
     const url: string = this.baseUrl + '/details';
