@@ -268,19 +268,13 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private normalizeDate(date: Date): Date {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }
-
   setDisabledDatesFromRents(rents: Rent[]) {
     this.disabledDates = [];
     rents.forEach(r => {
-      const start = this.normalizeDate(new Date(r.startTime));
-      const end = this.normalizeDate(new Date(r.endTime));
+      const start = new Date(r.startTime);
+      const end = new Date(r.endTime);
       for (let cur = new Date(start); cur <= end; cur.setDate(cur.getDate() + 1)) {
-        this.disabledDates.push(this.normalizeDate(cur));
+        this.disabledDates.push(cur);
       }
       console.log(this.disabledDates);
     });

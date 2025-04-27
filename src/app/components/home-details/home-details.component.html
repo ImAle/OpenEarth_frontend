@@ -131,7 +131,6 @@
               </div>
               <p-calendar [(ngModel)]="startDate"
                           [disabledDates]="disabledDates"
-                          [minDate]="tomorrow"
                           [inline]="true"
                           [showIcon]="false"
                           dateFormat="dd/mm/yy"
@@ -146,7 +145,6 @@
               </div>
               <p-calendar [(ngModel)]="endDate"
                           [disabledDates]="disabledDates"
-                          [minDate]="minEndDate"
                           [inline]="true"
                           [showIcon]="false"
                           dateFormat="dd/mm/yy"
@@ -170,7 +168,6 @@
             <label class="form-label">Check-in</label>
             <p-calendar [(ngModel)]="startDate"
                         [disabledDates]="disabledDates"
-                        [minDate]="tomorrow"
                         [showIcon]="true"
                         dateFormat="dd/mm/yy"
                         [readonlyInput]="true"
@@ -181,7 +178,6 @@
             <label class="form-label">Checkout</label>
             <p-calendar [(ngModel)]="endDate"
                         [disabledDates]="disabledDates"
-                        [minDate]="minEndDate"
                         [showIcon]="true"
                         dateFormat="dd/mm/yy"
                         [readonlyInput]="true"

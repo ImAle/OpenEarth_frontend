@@ -14,6 +14,9 @@ import {CurrencyService} from '../../core/services/currency.service';
 import {MessageService} from 'primeng/api';
 import {Toast} from 'primeng/toast';
 import {environment} from '../../../environments/environment';
+import {ReviewService} from '../../core/services/review.service';
+import {ReviewCreation} from '../../core/models/reviewCreation.model';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-user-config',
@@ -24,7 +27,8 @@ import {environment} from '../../../environments/environment';
     Toast,
     RouterLink,
     NgClass,
-    UpperCasePipe
+    UpperCasePipe,
+    ReactiveFormsModule
   ],
   providers: [MessageService],
   templateUrl: './user-config.component.html',
@@ -45,6 +49,11 @@ export class UserConfigComponent implements OnInit{
   isFirstLoad = false;
   houseIdNameMap: Map<number, string> = new Map();
 
+  // Nuevas propiedades para el modal de review
+  showReviewModal = false;
+  selectedRent: Rent | null = null;
+  reviewForm: FormGroup;
+
   constructor(
     private authService: AuthService,
     private houseService: HouseService,
@@ -52,6 +61,8 @@ export class UserConfigComponent implements OnInit{
     private userService: UserService,
     private currencyService: CurrencyService,
     private messageService: MessageService,
+    private reviewService: ReviewService,
+    private fb: FormBuilder,
     private router: Router
   ) {
     effect(() => {
@@ -61,6 +72,12 @@ export class UserConfigComponent implements OnInit{
       if (this.currency) {
         this.loadHouses(this.currency);
       }
+    });
+
+    // Inicializar formulario de review
+    this.reviewForm = this.fb.group({
+      score: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
+      comment: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]]
     });
   }
 
@@ -194,6 +211,75 @@ export class UserConfigComponent implements OnInit{
     this.showModal = false;
     this.selectedHouse = null;
     this.confirmDelete = false;
+  }
+
+  openReviewModal(rent: Rent): void {
+    this.selectedRent = rent;
+    this.showReviewModal = true;
+    this.reviewForm.reset({ score: 5, comment: '' });
+  }
+
+  closeReviewModal(): void {
+    this.showReviewModal = false;
+    this.selectedRent = null;
+  }
+
+  submitReview(): void {
+    if (this.reviewForm.valid && this.selectedRent) {
+      const reviewData: ReviewCreation = {
+        houseId: this.selectedRent.houseId,
+        comment: this.reviewForm.value.comment,
+      };
+
+      this.reviewService.create(reviewData).subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            key: 'success',
+            summary: 'Review Created!',
+            detail: 'Your review has been submitted successfully.'
+          });
+          this.closeReviewModal();
+        },
+        error: (error) => {
+          console.error('Error creating review:', error);
+          this.messageService.add({
+            severity: 'error',
+            key: 'success',
+            summary: 'Error',
+            detail: 'Failed to submit review. Please try again.'
+          });
+        }
+      });
+    }
+  }
+
+  cancelRent(rentId: number): void {
+    this.rentService.cancel(rentId).subscribe({
+      next: (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          key: 'success',
+          summary: 'Rental Cancelled!',
+          detail: 'Your rental has been cancelled successfully.'
+        });
+
+        if (this.userRole === 'HOSTESS') {
+          this.getRentsOfMyHouses();
+        } else {
+          this.loadRents();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error cancelling rent:', error);
+        this.messageService.add({
+          severity: 'error',
+          key: 'success',
+          summary: 'Error',
+          detail: 'Failed to cancel rental. Please try again.'
+        });
+      }
+    });
   }
 
   viewHouse(): void {

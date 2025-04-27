@@ -88,46 +88,67 @@
     }
 
     <!-- Rents Table -->
-      <div class="mb-4">
-        <h2>My Rentals</h2>
-        <hr>
+    <div class="mb-4">
+      <h2>My Rentals</h2>
+      <hr>
 
-        @if (rents.length === 0) {
-          <div class="alert alert-info">You don't have any rentals yet.</div>
-        } @else {
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-              <tr>
-                <th>ID</th>
-                <th>Property</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Status</th>
-              </tr>
-              </thead>
-              <tbody>
-                @for (rent of rents; track rent.id) {
-                  <tr>
-                    <td>{{ rent.id }}</td>
-                    <td [routerLink]="['/house', rent.houseId]" class="text-decoration-none" style="cursor: pointer;">{{ houseIdNameMap.get(rent.houseId) }}</td>
-                    <td>{{ rent.startTime | date }}</td>
-                    <td>{{ rent.endTime | date }}</td>
-                    <td>
+      @if (rents.length === 0) {
+        <div class="alert alert-info">You don't have any rentals yet.</div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Property</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              @if(userRole === 'GUEST') {
+                <th>Actions</th>
+              }
+            </tr>
+            </thead>
+            <tbody>
+              @for (rent of rents; track rent.id) {
+                <tr>
+                  <td>{{ rent.id }}</td>
+                  <td [routerLink]="['/house', rent.houseId]" class="text-decoration-none" style="cursor: pointer;">{{ houseIdNameMap.get(rent.houseId) }}</td>
+                  <td>{{ rent.startTime | date }}</td>
+                  <td>{{ rent.endTime | date }}</td>
+                  <td>
                       <span
                         class="badge"
                         [ngClass]="getBadgeClass(getRentStatus(rent))">
                         {{ getRentStatus(rent) | uppercase }}
                       </span>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        }
-      </div>
-    }
+                  </td>
+                  @if (userRole === 'GUEST') {
+                  <td>
+                    @if (getRentStatus(rent) === 'pending') {
+                      <button class="btn btn-sm btn-danger" (click)="cancelRent(rent.id)">
+                        <i class="bi bi-x-circle me-1"></i> Cancel Rental
+                      </button>
+                    } @else if (getRentStatus(rent) === 'completed') {
+                      <button class="btn btn-sm btn-primary" (click)="openReviewModal(rent)">
+                        <i class="bi bi-star me-1"></i> Create Review
+                      </button>
+                    } @else {
+                      <button class="btn btn-sm btn-primary" disabled
+                              title="You can create a review once your stay is completed">
+                        <i class="bi bi-star me-1"></i> Create Review
+                      </button>
+                    }
+                  </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
 </div>
 
 <!-- House Options Modal -->
@@ -177,6 +198,71 @@
             </button>
           </div>
         }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Review Modal -->
+@if (showReviewModal && selectedRent) {
+  <div class="modal fade show" style="display: block; background-color: rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-star-fill text-warning me-2"></i>
+            Create Review for {{ houseIdNameMap.get(selectedRent.houseId) }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeReviewModal()"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+            <div class="mb-4">
+              <label for="score" class="form-label fw-bold">Rating</label>
+              <div class="d-flex">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" [id]="'star' + star"
+                           formControlName="score" [value]="star">
+                    <label class="form-check-label" [for]="'star' + star">
+                      {{ star }}
+                    </label>
+                  </div>
+                }
+              </div>
+              @if (reviewForm.get('score')?.invalid && reviewForm.get('score')?.touched) {
+                <div class="text-danger mt-1">Please provide a rating</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="comment" class="form-label fw-bold">Your Review</label>
+              <textarea formControlName="comment" class="form-control"
+                        rows="5" placeholder="Share your experience..."></textarea>
+              @if (reviewForm.get('comment')?.invalid && reviewForm.get('comment')?.touched) {
+                <div class="text-danger mt-1">
+                  @if (reviewForm.get('comment')?.errors?.['required']) {
+                    Please provide a comment
+                  }
+                  @if (reviewForm.get('comment')?.errors?.['minlength']) {
+                    Comment must be at least 10 characters
+                  }
+                  @if (reviewForm.get('comment')?.errors?.['maxlength']) {
+                    Comment must be less than 500 characters
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary"
+                      [disabled]="reviewForm.invalid">
+                <i class="bi bi-send me-2"></i> Submit Review
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
