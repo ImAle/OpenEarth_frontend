@@ -89,6 +89,8 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
       this.userService.getUser(userId).subscribe(response => {
         this.user = response.user;
         this.getHouses(this.user.id, this.currency);
+        this.reviews = this.user.reviews;
+
         // Check scroll status after data is loaded
         setTimeout(() => {
           this.checkHousesScroll();
@@ -96,7 +98,6 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
         }, 100);
       });
     });
-    this.getReviews();
   }
 
   ngAfterViewInit() {
@@ -197,27 +198,6 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
   scrollReviewsRight(): void {
     const container = this.reviewsContainer.nativeElement;
     container.scrollBy({ left: 300, behavior: 'smooth' });
-  }
-
-  private getReviews(){
-    if (this.user){
-      this.reviews = this.user.reviews;
-
-      if (this.isHostess()) {
-        let houses: House[] = [];
-
-        this.user.houses.forEach((house) => {
-          this.houseService.getById(house.id, this.currency).subscribe(response => {
-            houses.push(response.house);
-          }, err => {
-            console.log(err);
-          })
-        })
-
-        this.reviews = houses.flatMap(h => h.reviews);
-      }
-
-    }
   }
 
 }

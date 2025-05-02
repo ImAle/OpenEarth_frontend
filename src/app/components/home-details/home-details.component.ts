@@ -271,12 +271,18 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
   setDisabledDatesFromRents(rents: Rent[]) {
     this.disabledDates = [];
     rents.forEach(r => {
-      const start = new Date(r.startTime);
-      const end = new Date(r.endTime);
-      for (let cur = new Date(start); cur <= end; cur.setDate(cur.getDate() + 1)) {
-        this.disabledDates.push(cur);
+      if(!r.cancelled){
+        const start = new Date(r.startTime);
+        const end = new Date(r.endTime);
+
+        const currentDate = new Date(start);
+        const endDateComparison = new Date(end);
+
+        while (currentDate <= endDateComparison) {
+          this.disabledDates.push(new Date(currentDate));
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
       }
-      console.log(this.disabledDates);
     });
   }
 }

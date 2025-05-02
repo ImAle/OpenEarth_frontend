@@ -91,9 +91,9 @@ export class RentService {
         'Authorization': token
       });
 
-      const params = new HttpParams().set('id', rentId);
+      const params = new HttpParams().set('rentId', rentId);
 
-      return this.http.get<any>(url, {headers, params});
+      return this.http.post<any>(url, null, {headers, params});
     }catch(error){
       console.error(error);
       return throwError(() => error);

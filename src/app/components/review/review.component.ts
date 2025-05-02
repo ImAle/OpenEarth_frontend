@@ -4,6 +4,10 @@ import { RouterLink } from '@angular/router';
 import { Review } from '../../core/models/review.model';
 import { HouseService } from '../../core/services/house.service';
 import { CardModule } from 'primeng/card';
+import { AvatarModule } from 'primeng/avatar';
+import { RatingModule } from 'primeng/rating';
+import { UserService } from '../../core/services/user.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-review',
@@ -11,7 +15,10 @@ import { CardModule } from 'primeng/card';
   imports: [
     CommonModule,
     RouterLink,
-    CardModule
+    CardModule,
+    AvatarModule,
+    RatingModule,
+    FormsModule
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.css'
@@ -19,14 +26,24 @@ import { CardModule } from 'primeng/card';
 export class ReviewComponent implements OnInit {
   @Input() review!: Review;
   @Input() currency!: string;
-  houseName: string = '';
+  username: string = '';
+  userPicture: string = '';
+  userId!: number;
 
-  constructor(private houseService: HouseService) {}
+  constructor(private houseService: HouseService, private userService: UserService) {}
 
   ngOnInit(): void {
-    if (this.review && this.review.houseId) {
-      this.houseService.getById(this.review.houseId, this.currency).subscribe(house => {
-        this.houseName = house.title;
+    if (this.review) {
+      this.userService.getUser(this.review.userId).subscribe({
+        next: (response) => {
+          const user = response.user;
+          this.username = user.username;
+          this.userPicture = user.picture;
+          this.userId = user.id;
+        },
+        error: (err) => {
+          console.log(err);
+        }
       });
     }
   }

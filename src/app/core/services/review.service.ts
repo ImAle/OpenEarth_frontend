@@ -23,10 +23,12 @@ export class ReviewService {
         'Authorization': token
       });
 
-      const formData = new FormData();
-      formData.append('review', new Blob([JSON.stringify(review)], { type: 'application/json' }));
+      const reviewJson = {
+        'houseId': review.houseId,
+        'comment': review.comment
+      };
 
-      return this.http.post<any>(url, formData, {headers: headers});
+      return this.http.post<any>(url, reviewJson, {headers: headers});
     }catch(error){
       console.error(error);
       return throwError(() => error);

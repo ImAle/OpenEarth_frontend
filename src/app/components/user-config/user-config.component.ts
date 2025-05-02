@@ -17,6 +17,7 @@ import {environment} from '../../../environments/environment';
 import {ReviewService} from '../../core/services/review.service';
 import {ReviewCreation} from '../../core/models/reviewCreation.model';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Review} from '../../core/models/review.model';
 
 @Component({
   selector: 'app-user-config',
@@ -48,6 +49,7 @@ export class UserConfigComponent implements OnInit{
   confirmDelete = false;
   isFirstLoad = false;
   houseIdNameMap: Map<number, string> = new Map();
+  userReviews: Review[] = [];
 
   // Nuevas propiedades para el modal de review
   showReviewModal = false;
@@ -90,6 +92,10 @@ export class UserConfigComponent implements OnInit{
         console.log(response.user);
         this.userProfile = response.user;
         this.userProfilePicUrl = response.user.picture ? environment.rootUrl + response.user.picture : '/defaultUser.jpg';
+
+        if (response.user.reviews) {
+          this.userReviews = response.user.reviews;
+        }
 
       }, error: (error: any) => {
         console.error("Error fetching user:" + error);
@@ -142,7 +148,7 @@ export class UserConfigComponent implements OnInit{
   loadRents(): void {
     this.rentService.getMyRents().subscribe({
       next: (response: any) => {
-        this.rents = response.rents;
+        this.rents = response.rents.reverse();
         this.getHousesRentName();
       },
       error: (error) => {
@@ -166,6 +172,11 @@ export class UserConfigComponent implements OnInit{
         console.error('Error loading rents:', error);
       }
     })
+  }
+
+  // Check if a house has been already reviewed by the user
+  hasReviewedHouse(houseId: number): boolean {
+    return this.userReviews.some(review => review.houseId === houseId);
   }
 
   getHousesRentName(){
@@ -233,6 +244,11 @@ export class UserConfigComponent implements OnInit{
 
       this.reviewService.create(reviewData).subscribe({
         next: (response) => {
+          if (response && response.review) {
+            this.userReviews.push(response.review);
+            this.loadRents();
+          }
+
           this.messageService.add({
             severity: 'success',
             key: 'success',
@@ -257,6 +273,7 @@ export class UserConfigComponent implements OnInit{
   cancelRent(rentId: number): void {
     this.rentService.cancel(rentId).subscribe({
       next: (response: any) => {
+        console.log(response);
         this.messageService.add({
           severity: 'success',
           key: 'success',
@@ -323,6 +340,11 @@ export class UserConfigComponent implements OnInit{
     const now = new Date();
     const start = new Date(rent.startTime);
     const end   = new Date(rent.endTime);
+
+    now.setHours(0, 0, 0, 0);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
     if (now < start)   return 'pending';
     if (now > end)     return 'completed';
     return 'active';
