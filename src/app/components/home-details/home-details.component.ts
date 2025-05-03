@@ -19,6 +19,8 @@ import {RentCreation} from '../../core/models/rentCreation.model';
 import {AuthService} from '../../core/services/auth.service';
 import {RentService} from '../../core/services/rent.service';
 import {Rent} from '../../core/models/rent.model';
+import {FaIconComponent} from '@fortawesome/angular-fontawesome';
+import {faBath, faBed, faHome, faUsers} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-home-details',
@@ -34,7 +36,8 @@ import {Rent} from '../../core/models/rent.model';
     MapComponent,
     CardComponent,
     ReviewComponent,
-    RouterLink
+    RouterLink,
+    FaIconComponent
   ],
   templateUrl: './home-details.component.html',
   styleUrl: './home-details.component.css',
@@ -56,6 +59,12 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
   totalPrice: number = 0;
   amIguest: boolean = false;
   disabledDates: Date[] = [];
+
+  // Icons
+  protected readonly faUsers = faUsers;
+  protected readonly faHome = faHome;
+  protected readonly faBed = faBed;
+  protected readonly faBath = faBath;
 
   // Full screen image properties
   showFullScreenImage: boolean = false;

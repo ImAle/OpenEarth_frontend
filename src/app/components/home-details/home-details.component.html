@@ -37,15 +37,19 @@
       <!-- Main features -->
       <div class="d-flex flex-wrap gap-4 mt-3 mb-2">
         <div class="feature-item">
-          <i class="bi bi-people-fill me-2"></i>
+          <fa-icon [icon]="faUsers" class="text-secondary me-1" style="{'font-size': '0.9rem'}"></fa-icon>
           <span>{{house.guests}} Guests</span>
         </div>
         <div class="feature-item">
-          <i class="bi bi-door-closed-fill me-2"></i>
+          <fa-icon [icon]="faHome" class="text-secondary me-1" style="{'font-size': '0.9rem'}"></fa-icon>
+          <span>{{house.bedrooms}} Bedrooms</span>
+        </div>
+        <div class="feature-item">
+          <fa-icon [icon]="faBed" class="text-secondary me-1" style="{'font-size': '0.9rem'}"></fa-icon>
           <span>{{house.beds}} Beds</span>
         </div>
         <div class="feature-item">
-          <i class="bi bi-droplet-fill me-2"></i>
+          <fa-icon [icon]="faBath" class="text-secondary me-1" style="{'font-size': '0.9rem'}"></fa-icon>
           <span>{{house.bathrooms}} Bathrooms</span>
         </div>
       </div>
@@ -237,7 +241,7 @@
     <!-- Map -->
     <div class="row mt-5 mb-5">
       <div class="col-12">
-        <h3 class="mb-3">Where you'll be</h3>
+        <h3 class="mb-3"><i class="bi bi-geo-alt-fill me-2"></i>Where you'll be</h3>
         <p class="mb-3">{{house.location}}</p>
         <app-map [coordsByUser]="coords" [isInteractive]="false" [title]="house.title"></app-map>
       </div>

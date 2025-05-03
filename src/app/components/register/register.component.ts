@@ -125,6 +125,9 @@ export class RegisterComponent {
     this.authService.register(user).subscribe({
       next: (response) => {
         sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('id', response.id);
+        sessionStorage.setItem('role', response.role);
+        sessionStorage.setItem('username', response.username);
         this.router.navigate(['/home']);
       },
       error: (err: any) => {

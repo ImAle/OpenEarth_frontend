@@ -7,6 +7,7 @@ export class House{
   title: string;
   description: string;
   guests: number;
+  bedrooms: number;
   beds: number;
   bathrooms: number;
   price: number;
@@ -21,13 +22,14 @@ export class House{
   owner: UserInfo;
   reviews: Review[];
 
-  constructor(id: number, title: string, description: string, guests: number, beds: number,
+  constructor(id: number, title: string, description: string, guests: number, bedrooms: number, beds: number,
               bathrooms: number, price: number, currency: string, location: string, latitude: number, longitude: number,
               category: string, status: string, creationDate: string, pictures: Picture[], owner: UserInfo, reviews: Review[]) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.guests = guests;
+    this.bedrooms = bedrooms;
     this.beds = beds;
     this.bathrooms = bathrooms;
     this.price = price;

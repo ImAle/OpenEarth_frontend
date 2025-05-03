@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {HeaderComponent} from '../header/header.component';
+import {FaIconComponent} from '@fortawesome/angular-fontawesome';
+import {faArrowLeft, faHome, faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 
 interface ErrorInfo {
   code: number;
@@ -13,7 +15,7 @@ interface ErrorInfo {
 
 @Component({
   selector: 'app-error',
-  imports: [CommonModule, HeaderComponent],
+  imports: [CommonModule, HeaderComponent, FaIconComponent],
   templateUrl: './error.component.html',
   styleUrl: './error.component.css'
 })
@@ -107,4 +109,8 @@ export class ErrorComponent implements OnInit {
   goBack(): void {
     window.history.back();
   }
+
+  protected readonly faHome = faHome;
+  protected readonly faArrowLeft = faArrowLeft;
+  protected readonly faInfoCircle = faInfoCircle;
 }

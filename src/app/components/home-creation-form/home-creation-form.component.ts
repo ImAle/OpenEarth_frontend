@@ -326,7 +326,7 @@ export class HomeCreationFormComponent implements OnInit {
       this.houseForm.value.price,
       this.houseForm.value.currency,
       this.houseForm.value.location,
-      this.houseForm.value.category,
+      this.houseForm.value.category.replace(" ", "_"),
       this.houseForm.value.latitude,
       this.houseForm.value.longitude,
     );

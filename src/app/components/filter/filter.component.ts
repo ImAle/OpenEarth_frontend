@@ -232,12 +232,6 @@ export class FilterComponent implements OnInit {
   }
 
   fetchHouses() {
-    // const minPrice: number | null = this.minPrice !== null ? this.minPrice : null;
-    // const maxPrice: number | null = this.maxPrice !== null ? this.maxPrice : null;
-    // const beds: number | null = this.beds !== null ? this.beds : null;
-    // const guests: number | null = this.guests !== null ? this.guests : null;
-    // const category: string | null = this.selectedCategory || null;
-
     this.filtersChanged.emit({
       minPrice: this.minPrice,
       maxPrice: this.maxPrice,

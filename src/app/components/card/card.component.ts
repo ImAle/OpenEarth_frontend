@@ -25,10 +25,10 @@ export class CardComponent implements OnInit {
   galleryImages: any[] = [];
 
   // Icons
-  faUsers = faUsers;
-  faHome = faHome;
-  faBed = faBed;
-  faBath = faBath;
+  protected readonly faUsers = faUsers;
+  protected readonly faHome = faHome;
+  protected readonly faBed = faBed;
+  protected readonly faBath = faBath;
 
   constructor() {}
 
