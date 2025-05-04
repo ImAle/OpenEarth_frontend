@@ -9,7 +9,7 @@ import {Observable, throwError} from 'rxjs';
   providedIn: 'root'
 })
 export class ReviewService {
-  baseUrl: string = environment.rootUrl + "/api/review";
+  baseUrl: string = environment.rootUrl + "/review";
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 

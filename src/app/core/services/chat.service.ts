@@ -17,6 +17,7 @@ export class ChatService {
   private client!: Client;
   private connected = false;
   private apiUrl = environment.rootUrl;
+  private chatApiUrl = this.apiUrl + '/chat';
 
   private messageSubject = new BehaviorSubject<ChatMessage | null>(null);
   public messages$ = this.messageSubject.asObservable();
@@ -79,19 +80,21 @@ export class ChatService {
   }
 
   getConversations(): Observable<ChatConversation[]> {
+    const url = `${this.chatApiUrl}/conversations`;
     const token = this.authService.retrieveToken();
     const headers = new HttpHeaders({
       'Authorization': token,
     });
-    return this.http.get<ChatConversation[]>(`${this.apiUrl}/api/chat/conversations`, {headers: headers});
+    return this.http.get<ChatConversation[]>(url, {headers: headers});
   }
 
   getMessageHistory(otherUserId: number): Observable<ChatMessage[]> {
+    const url = `${this.chatApiUrl}/messages/${otherUserId}`;
     const token = this.authService.retrieveToken();
     const headers = new HttpHeaders({
       'Authorization': token,
     });
-    return this.http.get<ChatMessage[]>(`${this.apiUrl}/api/chat/messages/${otherUserId}`, {headers: headers});
+    return this.http.get<ChatMessage[]>(url, {headers: headers});
   }
 
   // websocket
@@ -122,6 +125,7 @@ export class ChatService {
   }
 
   sendTextMessage(receiverId: number, textContent: string): Observable<ChatMessage> {
+    const url = `${this.chatApiUrl}/messages`;
     const token = this.authService.retrieveToken();
     const headers = new HttpHeaders({
       'Authorization': token,
@@ -131,10 +135,11 @@ export class ChatService {
       content: textContent
     }
 
-    return this.http.post<ChatMessage>(`${this.apiUrl}/api/chat/send`, payload, {headers: headers});
+    return this.http.post<ChatMessage>(url, payload, {headers: headers});
   }
 
   sendAudioMessage(receiverId: number, audioFile: File): Observable<ChatMessage> {
+    const url = `${this.chatApiUrl}/send-audio`;
     const token = this.authService.retrieveToken();
     const headers = new HttpHeaders({
       'Authorization': token,
@@ -144,11 +149,12 @@ export class ChatService {
     formData.append('receiverId', receiverId.toString());
     formData.append('audioFile', audioFile);
 
-    return this.http.post<ChatMessage>(`${this.apiUrl}/api/chat/send-audio`, formData, {headers: headers});
+    return this.http.post<ChatMessage>(url, formData, {headers: headers});
   }
 
   sendMessageWithAttachments(receiverId: number, textContent: string, attachments: MessageAttachment[]): Observable<ChatMessage> {
-    return this.http.post<ChatMessage>(`${this.apiUrl}/api/chat/send`, {
+    const url = `${this.chatApiUrl}/send`;
+    return this.http.post<ChatMessage>(url, {
       receiverId: receiverId,
       textContent: textContent,
       attachments: attachments
@@ -156,10 +162,11 @@ export class ChatService {
   }
 
   uploadAttachment(file: File, type: 'IMAGE' | 'AUDIO' | 'FILE'): Observable<MessageAttachment> {
+    const url = `${this.chatApiUrl}/upload-attachment`;
     const formData = new FormData();
     formData.append('file', file);
     formData.append('type', type);
 
-    return this.http.post<MessageAttachment>(`${this.apiUrl}/api/chat/upload-attachment`, formData);
+    return this.http.post<MessageAttachment>(url, formData);
   }
 }

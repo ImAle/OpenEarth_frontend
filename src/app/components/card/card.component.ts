@@ -35,13 +35,13 @@ export class CardComponent implements OnInit {
   ngOnInit(): void {
     if(this.house?.pictures){
       this.galleryImages = this.house.pictures.map((url: string) => ({
-        itemImageSrc: url
+        itemImageSrc: environment.imgUrl + url
       }));
     }
   }
 
   getImageUrl(url: string){
-    return environment.rootUrl + url;
+    return url;
   }
 
   truncateText(text: string, maxLength: number): string {

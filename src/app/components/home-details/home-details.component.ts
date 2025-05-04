@@ -137,7 +137,7 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
       next: (response: any) => {
         console.log(response);
         this.house = response.house;
-        this.userProfilePictureUrl = response.house.owner.picture ? environment.rootUrl + response.house.owner.picture : '/defaultUser.jpg';
+        this.userProfilePictureUrl = response.house.owner.picture ? environment.imgUrl + response.house.owner.picture : '/defaultUser.jpg';
         this.setupPictures();
         this.getNearbyHouses();
         this.getRentsByHouse();
@@ -150,8 +150,8 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
 
   setupPictures() {
     this.pictures = this.house.pictures.map(pic => ({
-      itemImageSrc: environment.rootUrl + pic.url,
-      thumbnailImageSrc: environment.rootUrl + pic.url
+      itemImageSrc: environment.imgUrl + pic.url,
+      thumbnailImageSrc: environment.imgUrl + pic.url
     }));
   }
 

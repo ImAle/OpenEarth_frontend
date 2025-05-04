@@ -7,7 +7,7 @@ import {environment} from '../../../environments/environment';
 })
 export class GeolocationService {
 
-  baseUrl: string = environment.rootUrl + "/api/geo";
+  baseUrl: string = environment.rootUrl + "/geo";
 
   constructor(private http: HttpClient) { }
 

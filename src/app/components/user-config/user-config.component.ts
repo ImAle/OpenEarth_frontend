@@ -91,7 +91,7 @@ export class UserConfigComponent implements OnInit{
       next: (response: any) => {
         console.log(response.user);
         this.userProfile = response.user;
-        this.userProfilePicUrl = response.user.picture ? environment.rootUrl + response.user.picture : '/defaultUser.jpg';
+        this.userProfilePicUrl = response.user.picture ? environment.imgUrl + response.user.picture : environment.imgUrl + '/defaultUser.jpg';
 
         if (response.user.reviews) {
           this.userReviews = response.user.reviews;

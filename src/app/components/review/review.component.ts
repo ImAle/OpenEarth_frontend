@@ -8,6 +8,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { RatingModule } from 'primeng/rating';
 import { UserService } from '../../core/services/user.service';
 import { FormsModule } from '@angular/forms';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-review',
@@ -38,7 +39,7 @@ export class ReviewComponent implements OnInit {
         next: (response) => {
           const user = response.user;
           this.username = user.username;
-          this.userPicture = user.picture;
+          this.userPicture = environment.imgUrl + user.picture;
           this.userId = user.id;
         },
         error: (err) => {

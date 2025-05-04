@@ -8,7 +8,7 @@ import {RentCreation} from '../models/rentCreation.model';
   providedIn: 'root'
 })
 export class PaypalService {
-  baseUrl: string = environment.rootUrl + "/api/paypal";
+  baseUrl: string = environment.rootUrl + "/paypal";
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

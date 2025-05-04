@@ -112,10 +112,12 @@ export class HouseUpdateFormComponent implements OnInit {
 
         // Load existing images if available
         if (house.pictures && house.pictures.length > 0) {
-          this.pictures = house.pictures;
+          this.pictures = house.pictures.map((url: string) => ({
+            itemImageSrc: environment.imgUrl + url
+          }));
           this.originalPictureCount = house.pictures.length;
           house.pictures.forEach((img: any) => {
-            this.imagePreviews.push(environment.rootUrl + img.url);
+            this.imagePreviews.push(environment.imgUrl + img.url);
           });
         }
       },

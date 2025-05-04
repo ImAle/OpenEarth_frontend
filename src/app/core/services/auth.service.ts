@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  baseUrl: string = environment.rootUrl + "/api/auth";
+  baseUrl: string = environment.rootUrl + "/auth";
   private readonly key = 'token';
 
   constructor(private http: HttpClient, private router: Router) { }

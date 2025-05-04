@@ -12,7 +12,7 @@ import {AuthService} from './auth.service';
 })
 export class HouseService {
 
-  baseUrl: string = environment.rootUrl + "/api/house";
+  baseUrl: string = environment.rootUrl + "/house";
   private filteredHousesSubject = new BehaviorSubject<HousePreview[] | null>(null);
   public filteredHouses$ = this.filteredHousesSubject.asObservable();
 

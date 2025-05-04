@@ -10,7 +10,7 @@ import {Observable, throwError} from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  baseUrl: string = environment.rootUrl + "/api/user";
+  baseUrl: string = environment.rootUrl + "/user";
 
   constructor(private router: Router, private http: HttpClient, private authService: AuthService) { }
 
