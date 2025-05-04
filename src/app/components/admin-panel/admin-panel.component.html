@@ -247,7 +247,7 @@
                   <div class="d-flex align-items-center mt-1">
                     @if (findUserById(selectedReport()!.reporterId)?.picture) {
                       <img
-                        [src]="findUserById(selectedReport()!.reporterId)?.picture"
+                        [src]="imageUrl + findUserById(selectedReport()!.reporterId)?.picture"
                         alt="Reporter"
                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;"
                       >
@@ -272,7 +272,7 @@
                   <div class="d-flex align-items-center mt-1">
                     @if (findUserById(selectedReport()!.reportedId)?.picture) {
                       <img
-                        [src]="findUserById(selectedReport()!.reportedId)?.picture"
+                        [src]="imageUrl + findUserById(selectedReport()!.reportedId)?.picture"
                         alt="Reported User"
                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;"
                       >
@@ -282,7 +282,7 @@
                       </div>
                     }
                     <div>
-                      <div style="font-weight: 500;"><a [routerLink]="['/user', selectedReport()!.reporterId]">{{ findUserById(selectedReport()!.reportedId)?.username }}</a></div>
+                      <div style="font-weight: 500;"><a [routerLink]="['/user', selectedReport()!.reportedId]">{{ findUserById(selectedReport()!.reportedId)?.username }}</a></div>
                       <div style="font-size: 0.875rem; color: #6c757d;">{{ findUserById(selectedReport()!.reportedId)?.email }}</div>
                     </div>
                   </div>

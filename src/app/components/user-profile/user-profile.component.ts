@@ -115,7 +115,7 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
   }
 
   getProfilePicUrl(): string {
-    return this.user.picture ? environment.imgUrl + this.user.picture : environment.imgUrl + '/defaultUser.jpg';
+    return this.user.picture ? environment.imgUrl + this.user.picture : '/defaultUser.jpg';
   }
 
   getHouses(id: number, currency: string){

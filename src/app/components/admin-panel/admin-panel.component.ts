@@ -9,6 +9,7 @@ import { ReportService } from '../../core/services/report.service';
 import { finalize } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import {HeaderComponent} from '../header/header.component';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-admin-panel',
@@ -17,6 +18,8 @@ import {HeaderComponent} from '../header/header.component';
   styleUrl: './admin-panel.component.css'
 })
 export class AdminPanelComponent implements OnInit {
+  // imageURL
+  imageUrl = environment.imgUrl;
 
   // Modal reference
   @ViewChild('reportModalRef') reportModalRef!: ElementRef;

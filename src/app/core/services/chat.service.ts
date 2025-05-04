@@ -125,7 +125,7 @@ export class ChatService {
   }
 
   sendTextMessage(receiverId: number, textContent: string): Observable<ChatMessage> {
-    const url = `${this.chatApiUrl}/messages`;
+    const url = `${this.chatApiUrl}/send`;
     const token = this.authService.retrieveToken();
     const headers = new HttpHeaders({
       'Authorization': token,
