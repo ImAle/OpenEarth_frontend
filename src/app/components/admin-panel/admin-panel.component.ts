@@ -30,8 +30,9 @@ export class AdminPanelComponent implements OnInit {
   processingUser = signal<number | null>(null);
   processingReport = signal<number | null>(null);
 
-  // Modal state
+  // Modal states
   showModal = signal<boolean>(false);
+  showDeleteConfirmation = signal<boolean>(false);
 
   // Users
   allUsers = signal<User[]>([]);
@@ -55,6 +56,8 @@ export class AdminPanelComponent implements OnInit {
 
   // Selected report for modal
   selectedReport = signal<Report | null>(null);
+  // Report to delete (for confirmation)
+  reportToDelete = signal<Report | null>(null);
 
   // Error handling
   error = signal<string | null>(null);
@@ -275,19 +278,42 @@ export class AdminPanelComponent implements OnInit {
     document.body.style.overflow = '';
   }
 
-  deleteReport(report: Report): void {
+  openDeleteConfirmation(report: Report): void {
+    this.reportToDelete.set(report);
+    this.showDeleteConfirmation.set(true);
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeDeleteConfirmation(): void {
+    this.showDeleteConfirmation.set(false);
+    this.reportToDelete.set(null);
+    // Restore body scrolling if no other modal is open
+    if (!this.showModal()) {
+      document.body.style.overflow = '';
+    }
+  }
+
+  confirmDeleteReport(): void {
+    if (!this.reportToDelete()) return;
+
+    const report = this.reportToDelete()!;
     this.processingReport.set(report.id);
 
     this.reportService.delete(report.id)
-      .pipe(finalize(() => this.processingReport.set(null)))
+      .pipe(finalize(() => {
+        this.processingReport.set(null);
+        this.closeDeleteConfirmation();
+      }))
       .subscribe({
         next: () => {
           // Remove the report from the list
           const reports = this.allReports().filter(r => r.id !== report.id);
           this.allReports.set(reports);
           this.updateDisplayedReports();
-          // Close modal if open
-          if (this.showModal()) {
+
+          // Close detail modal if open and it's the same report
+          if (this.showModal() && this.selectedReport()?.id === report.id) {
             this.closeModal();
           }
         },

@@ -148,6 +148,12 @@ export class UserProfileComponent implements OnInit, AfterViewInit {
 
   onReportSubmitted(): void {
     this.showReportDialog = false;
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Report submitted!',
+      detail: 'Your report has been submitted successfully.',
+      key: 'success'
+    });
   }
 
   isHostess(): boolean {
