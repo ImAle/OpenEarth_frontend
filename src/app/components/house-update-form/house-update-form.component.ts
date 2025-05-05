@@ -97,6 +97,7 @@ export class HouseUpdateFormComponent implements OnInit {
     this.houseService.getById(id, this.currency).subscribe({
       next: (response: any) => {
         let house = response.house;
+
         this.houseForm.patchValue({
           title: house.title,
           description: house.description,
@@ -112,13 +113,15 @@ export class HouseUpdateFormComponent implements OnInit {
 
         // Load existing images if available
         if (house.pictures && house.pictures.length > 0) {
-          this.pictures = house.pictures.map((url: string) => ({
-            itemImageSrc: environment.imgUrl + url
-          }));
-          this.originalPictureCount = house.pictures.length;
-          house.pictures.forEach((img: any) => {
-            this.imagePreviews.push(environment.imgUrl + img.url);
+
+          // Properly populate the pictures array with Picture objects
+          this.pictures = [];
+          house.pictures.forEach((pic: any) => {
+            this.pictures.push(new Picture(pic.id, pic.url));
+            this.imagePreviews.push(environment.imgUrl + pic.url);
           });
+
+          this.originalPictureCount = house.pictures.length;
         }
       },
       error: (err) => {
@@ -274,10 +277,16 @@ export class HouseUpdateFormComponent implements OnInit {
   }
 
   removeImage(index: number): void {
+
     // Check if the image is from existing pictures or newly added files
     if (index < this.pictures.length) {
       // It's an existing image - add its ID to the list for deletion
-      this.pictureIdsToDelete.push(this.pictures[index].id);
+      const pictureId = this.pictures[index]?.id;
+
+      if (pictureId !== undefined) {
+        this.pictureIdsToDelete.push(pictureId);
+      }
+
       // Remove from pictures array
       this.pictures.splice(index, 1);
     } else {
@@ -410,7 +419,6 @@ export class HouseUpdateFormComponent implements OnInit {
       this.houseForm.value.status
     );
 
-    console.log(this.selectedFiles);
     this.houseService.update(this.houseId, houseData, this.selectedFiles).subscribe({
       next: (response: any) => {
         this.messageService.add({
