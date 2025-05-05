@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
   rootUrl: '/api',
-  imgUrl: 'http://localhost:8080',
+  imgUrl: 'http://openearth.duckdns.org:8080',
   map: "pk.eyJ1IjoiYWxlamFuZHJvZ2FsbGRvbSIsImEiOiJjbTlmbndhMXQwb3Y5MmpzY3BmeXlybzNmIn0.hxP85fpmJu5TpjeQVJQtcQ",
 };
