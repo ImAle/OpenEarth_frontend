@@ -190,7 +190,16 @@
           </div>
         </div>
 
-        <button class="btn btn-primary w-100 py-2 mb-3" [disabled]="!isValidReservation() || !amIguest" (click)="rentHouse()">Rent</button>
+        <button class="btn btn-primary w-100 py-2 mb-3"
+                [disabled]="!isValidReservation() || !amIguest || isLoading"
+                (click)="rentHouse()">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            <span>Booking...</span>
+          } @else {
+            Book now
+          }
+        </button>
 
         @if (isValidReservation()) {
           <div class="total-price p-3 bg-light rounded-3">

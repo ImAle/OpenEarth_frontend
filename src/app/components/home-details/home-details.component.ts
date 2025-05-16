@@ -59,6 +59,7 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
   totalPrice: number = 0;
   amIguest: boolean = false;
   disabledDates: Date[] = [];
+  isLoading: boolean = false;
 
   // Icons
   protected readonly faUsers = faUsers;
@@ -237,8 +238,8 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
     this.currentFullScreenImage = this.pictures[this.currentImageIndex];
   }
 
-  rentHouse(){
-    console.log("Renting house: " + this.house.id);
+  rentHouse() {
+    this.isLoading = true;
     this.paypalService.createPayment(this.totalPrice, this.currency, "renting " + this.house.title + " in " + this.house.location).subscribe({
       next: (response: any) => {
         console.log(response);
@@ -249,6 +250,7 @@ export class HomeDetailsComponent implements OnInit, AfterViewInit {
       },
       error: (err: Error) => {
         console.log(err);
+        this.isLoading = false;
       }
     });
   }
