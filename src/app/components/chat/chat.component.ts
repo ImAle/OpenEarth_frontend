@@ -200,8 +200,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     // If we have pending attachments, send them first
     if (this.pendingAttachments.length > 0) {
-      // Logic for sending attachments would go here
-      // For now, just handle text messages
+      // Not implemented yet
     }
 
     if (this.newMessageText.trim()) {
